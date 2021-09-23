@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Gaboom.Util;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
@@ -22,20 +23,27 @@ public class PhysicCore : MonoBehaviour
 
     public static void Solve(PhysicCore core, IBlock block, Vector3 force)
     {
-        openList.Add(block);
-        for (int i = 0; i < block.connector.Count; i++)
+        if (!openList.Contains(block))
         {
-            IBlock m = block.connector[i];
-            Vector3 f = (force - core.acceleration * block.mass) / Vector3.Dot(force.normalized, block.r_pos[i]); // The function that calculate force taken
-            if (f.magnitude > block.breakForce + m.breakForce)
+            openList.Add(block);
+            for (int i = 0; i < block.connector.Count; i++)
             {
-                block.connector.Remove(m);
-                m.connector.Remove(block);
-                core.dirty = true;
-            }
-            if (!openList.Contains(m))
-            {
-                Solve(core, m, f);
+                IBlock m = block.connector[i];
+                Vector3 collisionforce;
+                core.collideEvent.TryGetValue(block, out collisionforce);
+                Vector3 f = (force + collisionforce - core.acceleration * block.mass) / block.connector.Count;
+                f *= IMath.Sigmoid(1 / Vector3.Dot(f.normalized, block.r_pos[i].normalized), 2 / (block.bouncy + m.bouncy));
+                if (f.magnitude > block.breakForce + m.breakForce)
+                {
+                    block.connector.Remove(m);
+                    m.connector.Remove(block);
+                    core.dirty = true;
+                    f = Vector3.zero;
+                }
+                if (!openList.Contains(m))
+                {
+                    Solve(core, m, f);
+                }
             }
         }
     }
@@ -48,12 +56,15 @@ public class PhysicCore : MonoBehaviour
             if (physicCore.collideEvent.Count != 0)
             {
                 openList.Clear();
+                physicCore.locked = true;
                 foreach (KeyValuePair<IBlock, Vector3> cevent in physicCore.collideEvent)
                 {
-                    Solve(physicCore, cevent.Key, cevent.Value);
+                    Solve(physicCore, cevent.Key, Vector3.zero);
+                    break;
                 }
+                physicCore.locked = false;
                 physicCore.collideEvent.Clear();
-                CalculateRelativeForce(openList);
+                //CalculateRelativeForce(openList);
             }
             if (physicCore.dirty)
             {
@@ -64,10 +75,10 @@ public class PhysicCore : MonoBehaviour
         }
     }
 
-    public static void CalculateRelativeForce(List<IBlock> blocks)
+    /*public static void CalculateRelativeForce(List<IBlock> blocks)
     {
 
-    }
+    }*/
 
     public static List<IBlock> openList = new List<IBlock>();
 
@@ -77,8 +88,9 @@ public class PhysicCore : MonoBehaviour
     bool run = true;
     public static int deltaT;
     [HideInInspector]
-    public bool dirty = false;
-    public Ring mring = new Ring();
+    bool dirty = false;
+    Ring mring = new Ring();
+    bool locked = false;
 
     private void Start()
     {
@@ -87,9 +99,13 @@ public class PhysicCore : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        Vector3 deltaV = GetComponent<Rigidbody>().velocity - lastV;
-        acceleration = deltaV / Time.fixedDeltaTime;
-        lastV = GetComponent<Rigidbody>().velocity;
+        if (!locked)
+        {
+            Vector3 deltaV = GetComponent<Rigidbody>().velocity - lastV;
+            acceleration = deltaV / Time.fixedDeltaTime;
+            //Debug.Log(acceleration);
+            lastV = GetComponent<Rigidbody>().velocity;
+        }
         if (rings.Count > 1)
         {
             foreach (Ring ring in rings)
@@ -123,7 +139,7 @@ public class PhysicCore : MonoBehaviour
 
     void ReCombind(List<IBlock> list)
     {
-        GameObject newObj = Instantiate(emptyGameObject,transform.position,transform.rotation);
+        GameObject newObj = Instantiate(emptyGameObject, transform.position, transform.rotation);
         Rigidbody rigidbody = newObj.GetComponent<Rigidbody>();
         rigidbody.mass = 0;
         rigidbody.centerOfMass = Vector3.zero;
@@ -154,8 +170,16 @@ public class PhysicCore : MonoBehaviour
 
     public void OnCollisionEnter(Collision collision)
     {
-        if(enabled)
+        if (enabled)
+        {
+            Vector3 deltaV = GetComponent<Rigidbody>().velocity - lastV;
+            acceleration = deltaV / Time.fixedDeltaTime;
             collideEvent.Add(collision.GetContact(0).thisCollider.GetComponent<IBlock>(), collision.impulse / Time.fixedDeltaTime);
+            if (!worker.IsAlive)
+            {
+                worker.Start(this);
+            }
+        }
     }
 }
 

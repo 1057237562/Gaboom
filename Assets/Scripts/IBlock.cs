@@ -12,11 +12,16 @@ public class IBlock : MonoBehaviour
     [HideInInspector]
     public PhysicCore core;
 
-    public float breakForce = 200f;
+    public float breakForce = 400f;
     public float toughness = 10f;
+    [Range(0,float.PositiveInfinity)]
+    public float bouncy = 0.8f;
 
     public float mass;
     public Vector3 centerOfmass;
+
+    [HideInInspector]
+    public string alias;
     public void Load()
     {
         position = transform.localPosition;
@@ -27,5 +32,6 @@ public class IBlock : MonoBehaviour
             r_pos.Add(block.transform.localPosition - position);
         }
         core = transform.parent.GetComponent<PhysicCore>();
+        alias = name;
     }
 }
