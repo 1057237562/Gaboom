@@ -75,9 +75,13 @@ public class PhysicCore : MonoBehaviour
         }
     }
 
-    public void CalculateAngularForce()
+    public void CalculateAngularForce(Vector3 angularVelocity)
     {
-
+        foreach(IBlock block in mring.blocks)
+        {
+            Vector3 dis = block.transform.position - transform.position;
+            Vector3 force = new Vector3(angularVelocity.x*new Vector2(dis.y,dis.z).magnitude,0,0);
+        }
     }
 
     public static List<IBlock> openList = new List<IBlock>();
@@ -108,7 +112,7 @@ public class PhysicCore : MonoBehaviour
             angular = GetComponent<Rigidbody>().angularVelocity;
             if(angular.magnitude > sensitive)
             {
-
+                CalculateAngularForce(angular);
             }
             //Debug.Log(acceleration);
             lastV = GetComponent<Rigidbody>().velocity;
