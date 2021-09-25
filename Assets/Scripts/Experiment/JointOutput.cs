@@ -10,4 +10,11 @@ public class JointOutput : MonoBehaviour
         float torque = GetComponent<Joint>().currentTorque.magnitude;
         Debug.Log(gameObject.name + ":"+force+":"+torque+":"+collision.impulse/Time.fixedDeltaTime);
     }
+
+    private void Update()
+    {
+        float force = GetComponent<Joint>().currentForce.magnitude;
+        float torque = GetComponent<Joint>().currentTorque.magnitude;
+        Debug.Log(force);
+    }
 }

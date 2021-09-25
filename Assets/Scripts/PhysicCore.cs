@@ -75,15 +75,17 @@ public class PhysicCore : MonoBehaviour
         }
     }
 
-    /*public static void CalculateRelativeForce(List<IBlock> blocks)
+    public void CalculateAngularForce()
     {
 
-    }*/
+    }
 
     public static List<IBlock> openList = new List<IBlock>();
 
     public Dictionary<IBlock, Vector3> collideEvent = new Dictionary<IBlock, Vector3>();
     public Vector3 acceleration;
+    public Vector3 angular;
+    public float sensitive = 5f;
     Vector3 lastV;
     bool run = true;
     public static int deltaT;
@@ -102,7 +104,12 @@ public class PhysicCore : MonoBehaviour
         if (!locked)
         {
             Vector3 deltaV = GetComponent<Rigidbody>().velocity - lastV;
-            acceleration = deltaV / Time.fixedDeltaTime;
+            acceleration = transform.InverseTransformVector(deltaV / Time.fixedDeltaTime);
+            angular = GetComponent<Rigidbody>().angularVelocity;
+            if(angular.magnitude > sensitive)
+            {
+
+            }
             //Debug.Log(acceleration);
             lastV = GetComponent<Rigidbody>().velocity;
         }
@@ -173,8 +180,8 @@ public class PhysicCore : MonoBehaviour
         if (enabled)
         {
             Vector3 deltaV = GetComponent<Rigidbody>().velocity - lastV;
-            acceleration = deltaV / Time.fixedDeltaTime;
-            collideEvent.Add(collision.GetContact(0).thisCollider.GetComponent<IBlock>(), collision.impulse / Time.fixedDeltaTime);
+            acceleration = transform.InverseTransformVector(deltaV / Time.fixedDeltaTime);
+            collideEvent.Add(collision.GetContact(0).thisCollider.GetComponent<IBlock>(), transform.InverseTransformVector(collision.impulse / Time.fixedDeltaTime));
             if (!worker.IsAlive)
             {
                 worker.Start(this);

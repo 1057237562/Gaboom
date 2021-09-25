@@ -14,10 +14,22 @@ public class CombindObject : MonoBehaviour
 
     public void Combind()
     {
-        Rigidbody rigidbody = gameObject.AddComponent<Rigidbody>();
+
+        Rigidbody rigidbody = gameObject.GetComponent<Rigidbody>();
+        if(rigidbody == null)
+        {
+            rigidbody = gameObject.AddComponent<Rigidbody>();
+        }
         rigidbody.mass = 0;
         rigidbody.centerOfMass = Vector3.zero;
         List<IBlock> list = new List<IBlock>();
+        if (generateIBlock)
+        {
+            foreach(Transform child in transform)
+            {
+                child.gameObject.AddComponent<IBlock>();
+            }
+        }
         foreach (Transform child in transform)
         {
             Rigidbody m_rigid = child.GetComponent<Rigidbody>();
@@ -25,7 +37,7 @@ public class CombindObject : MonoBehaviour
             rigidbody.centerOfMass += (child.localPosition + m_rigid.centerOfMass) * m_rigid.mass;
             if (generateIBlock)
             {
-                IBlock component = child.gameObject.AddComponent<IBlock>();
+                IBlock component = child.gameObject.GetComponent<IBlock>();
                 list.Add(component);
                 component.mass = m_rigid.mass;
                 component.centerOfmass = m_rigid.centerOfMass;
