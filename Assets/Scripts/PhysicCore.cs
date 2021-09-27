@@ -77,13 +77,15 @@ public class PhysicCore : MonoBehaviour
 
     public void CalculateAngularForce(Vector3 angularVelocity)
     {
-        foreach(IBlock block in mring.blocks)
+        //Debug.DrawLine(transform.TransformPoint(GetComponent<Rigidbody>().centerOfMass), transform.TransformPoint(GetComponent<Rigidbody>().centerOfMass) + Vector3.up);
+        foreach (IBlock block in mring.blocks)
         {
-            Vector3 dis = block.transform.position - transform.position;
-            Vector3 force = new Vector3(0,dis.z,dis.y).normalized * angularVelocity.x * new Vector2(dis.y, dis.z).magnitude;
-            force += new Vector3(dis.z, 0, dis.x).normalized * angularVelocity.y * new Vector2(dis.x, dis.z).magnitude;
-            force += new Vector3(dis.y, dis.x, 0).normalized * angularVelocity.z * new Vector2(dis.x, dis.y).magnitude;
-            Debug.DrawLine(block.transform.position,block.transform.position + force,Color.green);
+            Vector3 dis = block.transform.localPosition - GetComponent<Rigidbody>().centerOfMass;
+            Debug.DrawLine(transform.TransformPoint(GetComponent<Rigidbody>().centerOfMass), transform.TransformPoint(GetComponent<Rigidbody>().centerOfMass) + transform.TransformVector(dis));
+            Vector3 force = new Vector3(0,dis.y,dis.z).normalized * angularVelocity.x * new Vector2(dis.y, dis.z).magnitude;
+            force += new Vector3(dis.x, 0, dis.z).normalized * angularVelocity.y * new Vector2(dis.x, dis.z).magnitude;
+            force += new Vector3(dis.x, dis.y, 0).normalized * angularVelocity.z * new Vector2(dis.x, dis.y).magnitude;
+            //Debug.DrawLine(block.transform.position,block.transform.position + transform.TransformVector(force),Color.green);
             try
             {
                 collideEvent.Add(block, transform.InverseTransformVector(force));
