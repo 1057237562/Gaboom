@@ -16,6 +16,6 @@ public class Rotate : MonoBehaviour
     {
         ConfigurableJoint joint = GetComponent<ConfigurableJoint>();
         joint.angularYMotion = ConfigurableJointMotion.Free;
-        joint.connectedBody.AddRelativeTorque(new Vector3(0, acceleration * 1000, 0), ForceMode.Acceleration);
+        joint.connectedBody.AddRelativeTorque(new Vector3(0, acceleration * 1000, 0), ForceMode.VelocityChange);
     }
 }

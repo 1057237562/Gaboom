@@ -42,7 +42,6 @@ public class ConnectJoint : MonoBehaviour
         }
         if (rigid.velocity.magnitude > sensitive)
         {
-            Debug.Log(fixedJoint.currentForce);
             try
             {
                 core.collideEvent.Add(connectedBody.GetComponent<IBlock>(), core.transform.InverseTransformVector(fixedJoint.currentForce));

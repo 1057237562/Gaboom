@@ -80,7 +80,19 @@ public class PhysicCore : MonoBehaviour
         foreach(IBlock block in mring.blocks)
         {
             Vector3 dis = block.transform.position - transform.position;
-            Vector3 force = new Vector3(angularVelocity.x*new Vector2(dis.y,dis.z).magnitude,0,0);
+            Vector3 force = new Vector3(0,dis.z,dis.y).normalized * angularVelocity.x * new Vector2(dis.y, dis.z).magnitude;
+            force += new Vector3(dis.z, 0, dis.x).normalized * angularVelocity.y * new Vector2(dis.x, dis.z).magnitude;
+            force += new Vector3(dis.y, dis.x, 0).normalized * angularVelocity.z * new Vector2(dis.x, dis.y).magnitude;
+            Debug.DrawLine(block.transform.position,block.transform.position + force,Color.green);
+            try
+            {
+                collideEvent.Add(block, transform.InverseTransformVector(force));
+            }
+            catch
+            {
+
+            }
+            
         }
     }
 
