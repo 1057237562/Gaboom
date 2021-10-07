@@ -74,28 +74,54 @@ public class PhysicCore : MonoBehaviour
             Thread.Sleep(deltaT);
         }
     }
-
-    public void CalculateAngularForce(Vector3 angularVelocity)
+    public static float DisPoint2Line(Vector3 point, Vector3 linePoint1, Vector3 linePoint2, out Vector3 vecProj)
     {
-        //Debug.DrawLine(transform.TransformPoint(GetComponent<Rigidbody>().centerOfMass), transform.TransformPoint(GetComponent<Rigidbody>().centerOfMass) + Vector3.up);
+        Vector3 vec1 = point - linePoint1;
+        Vector3 vec2 = linePoint2 - linePoint1;
+        vecProj = Vector3.Project(vec1, vec2);
+        float dis = Mathf.Sqrt(Mathf.Pow(Vector3.Magnitude(vec1), 2) - Mathf.Pow(Vector3.Magnitude(vecProj), 2));
+        return dis;
+    }
+
+    public void AppendForce(IBlock block,Vector3 force)
+    {
+        if (!collideEvent.ContainsKey(block))
+        {
+            collideEvent.Add(block, transform.InverseTransformVector(force));
+        }
+        else
+        {
+            collideEvent[block] += transform.InverseTransformVector(force);
+        }
+    }
+
+    public void CalculateAngularForce(Quaternion rotation)
+    {
+        Vector3 axis;
+        float angle;
+        rotation.ToAngleAxis(out angle, out axis);
+        //Debug.DrawLine(transform.TransformPoint(GetComponent<Rigidbody>().centerOfMass), transform.TransformPoint(GetComponent<Rigidbody>().centerOfMass) + axis, Color.green);
         foreach (IBlock block in mring.blocks)
         {
-            Vector3 dis = block.transform.localPosition - GetComponent<Rigidbody>().centerOfMass;
-            Debug.DrawLine(transform.TransformPoint(GetComponent<Rigidbody>().centerOfMass), transform.TransformPoint(GetComponent<Rigidbody>().centerOfMass) + transform.TransformVector(dis));
-            Vector3 force = new Vector3(0,dis.y,dis.z).normalized * angularVelocity.x * new Vector2(dis.y, dis.z).magnitude;
-            force += new Vector3(dis.x, 0, dis.z).normalized * angularVelocity.y * new Vector2(dis.x, dis.z).magnitude;
-            force += new Vector3(dis.x, dis.y, 0).normalized * angularVelocity.z * new Vector2(dis.x, dis.y).magnitude;
-            //Debug.DrawLine(block.transform.position,block.transform.position + transform.TransformVector(force),Color.green);
-            try
-            {
-                collideEvent.Add(block, transform.InverseTransformVector(force));
-            }
-            catch
-            {
-
-            }
-            
+            Vector3 vecProj;
+            float radius = DisPoint2Line(block.transform.position, transform.TransformPoint(GetComponent<Rigidbody>().centerOfMass), transform.TransformPoint(GetComponent<Rigidbody>().centerOfMass) + axis, out vecProj);
+            float multiplier = radius * Mathf.Pow(Mathf.Deg2Rad* angle,2);
+            Vector3 force = (block.transform.position - transform.TransformPoint(GetComponent<Rigidbody>().centerOfMass) - vecProj).normalized * multiplier;
+            Debug.DrawLine(block.transform.position, block.transform.position + force*200, Color.green);
+            AppendForce(block, force);
         }
+    }
+
+    public void AppendRigidBody(GameObject gameObject)
+    {
+        Rigidbody rigidbody = GetComponent<Rigidbody>();
+        Rigidbody appendRigidbody = gameObject.GetComponent<Rigidbody>();
+
+        float mass = rigidbody.mass + appendRigidbody.mass;
+        rigidbody.centerOfMass *= rigidbody.mass;
+        rigidbody.centerOfMass += (appendRigidbody.position - rigidbody.position + appendRigidbody.centerOfMass) * appendRigidbody.mass;
+        rigidbody.centerOfMass /= mass;
+        rigidbody.mass = mass;
     }
 
     public static List<IBlock> openList = new List<IBlock>();
@@ -124,9 +150,9 @@ public class PhysicCore : MonoBehaviour
             Vector3 deltaV = GetComponent<Rigidbody>().velocity - lastV;
             acceleration = transform.InverseTransformVector(deltaV / Time.fixedDeltaTime);
             angular = GetComponent<Rigidbody>().angularVelocity;
-            if(angular.magnitude > sensitive)
+            if (angular.magnitude > sensitive)
             {
-                CalculateAngularForce(angular);
+                CalculateAngularForce(Quaternion.Euler(angular));
             }
             //Debug.Log(acceleration);
             lastV = GetComponent<Rigidbody>().velocity;
@@ -199,7 +225,7 @@ public class PhysicCore : MonoBehaviour
         {
             Vector3 deltaV = GetComponent<Rigidbody>().velocity - lastV;
             acceleration = transform.InverseTransformVector(deltaV / Time.fixedDeltaTime);
-            collideEvent.Add(collision.GetContact(0).thisCollider.GetComponent<IBlock>(), transform.InverseTransformVector(collision.impulse / Time.fixedDeltaTime));
+            AppendForce(collision.GetContact(0).thisCollider.GetComponent<IBlock>(), transform.InverseTransformVector(collision.impulse / Time.fixedDeltaTime));
             if (!worker.IsAlive)
             {
                 worker.Start(this);

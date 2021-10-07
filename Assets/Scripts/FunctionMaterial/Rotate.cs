@@ -8,7 +8,7 @@ public class Rotate : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -16,6 +16,6 @@ public class Rotate : MonoBehaviour
     {
         ConfigurableJoint joint = GetComponent<ConfigurableJoint>();
         joint.angularYMotion = ConfigurableJointMotion.Free;
-        joint.connectedBody.AddRelativeTorque(new Vector3(0, acceleration * 1000, 0), ForceMode.VelocityChange);
+        joint.connectedBody.AddRelativeTorque(new Vector3(0, acceleration, 0), ForceMode.VelocityChange);
     }
 }
