@@ -27,7 +27,7 @@ public class BuildFunction : MonoBehaviour
             if (align)
             {
                 Collider hitObj = raycastHit.collider;
-                generated = Instantiate(prefabs[selectedPrefab], Align(raycastHit.point, prefabs[selectedPrefab], hitObj.gameObject, 4), hitObj.transform.rotation);
+                generated = Instantiate(prefabs[selectedPrefab], Align(raycastHit.normal, prefabs[selectedPrefab], hitObj.gameObject), hitObj.transform.rotation);
             }
             else
             {
@@ -41,6 +41,10 @@ public class BuildFunction : MonoBehaviour
             generated.layer = LayerMask.NameToLayer("Ignore Raycast");
             generated.GetComponent<MeshRenderer>().material = preview;
         }
+    }
+    public Vector3 Align(Vector3 normal, GameObject preview, GameObject hitObj)
+    {
+        return hitObj.transform.position + normal * (hitObj.transform.lossyScale.x + preview.transform.lossyScale.x) / 2;
     }
 
     public Vector3 Align(Vector3 hitPoint, GameObject preview, GameObject hitObj, int slice)
