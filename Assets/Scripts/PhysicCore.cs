@@ -142,6 +142,10 @@ public class PhysicCore : MonoBehaviour
     {
         deltaT = (int)(Time.fixedDeltaTime * 1000);
     }
+    private void Update()
+    {
+        Debug.DrawLine(GetComponent<Rigidbody>().worldCenterOfMass, GetComponent<Rigidbody>().worldCenterOfMass+new Vector3(0,-1,0));
+    }
     // Update is called once per frame
     void FixedUpdate()
     {
@@ -197,9 +201,8 @@ public class PhysicCore : MonoBehaviour
         foreach (IBlock block in list)
         {
             block.transform.parent = newObj.transform;
-
             rigidbody.mass += block.mass;
-            rigidbody.centerOfMass += (block.position + block.centerOfmass) * block.mass;
+            rigidbody.centerOfMass += (block.transform.localPosition + block.centerOfmass) * block.mass;
         }
         rigidbody.centerOfMass /= rigidbody.mass;
         PhysicCore physicCore = newObj.GetComponent<PhysicCore>();

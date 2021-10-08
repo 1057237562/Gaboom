@@ -32,7 +32,6 @@ public class BuildFunction : MonoBehaviour
             else
             {
                 generated = Instantiate(prefabs[selectedPrefab], raycastHit.point, transform.rotation);
-
             }
 
             foreach (Transform child in generated.transform)
@@ -64,7 +63,7 @@ public class BuildFunction : MonoBehaviour
         int f_d = degree / 2;
         if (input <= f_d)
         {
-            return input;
+            return 0;
         }
         else
         {
