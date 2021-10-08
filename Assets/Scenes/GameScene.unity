@@ -880,7 +880,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecb5de9ffde533e48b02213ae8d34b03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  acceleration: 1
+  acceleration: 0
 --- !u!54 &372861931
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1940,6 +1940,7 @@ MonoBehaviour:
   - {fileID: 2534866582014686872}
   selectedPrefab: 0
   align: 1
+  autoConnect: 1
 --- !u!114 &1297650287
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -57,10 +57,16 @@ public class PhysicCore : MonoBehaviour
             {
                 openList.Clear();
                 physicCore.locked = true;
+                try { 
                 foreach (KeyValuePair<IBlock, Vector3> cevent in physicCore.collideEvent)
                 {
                     Solve(physicCore, cevent.Key, Vector3.zero);
                     break;
+                }
+                }
+                catch
+                {
+
                 }
                 physicCore.locked = false;
                 physicCore.collideEvent.Clear();
@@ -119,9 +125,13 @@ public class PhysicCore : MonoBehaviour
 
         float mass = rigidbody.mass + appendRigidbody.mass;
         rigidbody.centerOfMass *= rigidbody.mass;
-        rigidbody.centerOfMass += (appendRigidbody.position - rigidbody.position + appendRigidbody.centerOfMass) * appendRigidbody.mass;
+        rigidbody.centerOfMass += (transform.InverseTransformPoint(appendRigidbody.transform.position + appendRigidbody.centerOfMass)) * appendRigidbody.mass;
         rigidbody.centerOfMass /= mass;
         rigidbody.mass = mass;
+
+        Destroy(appendRigidbody);
+
+        mring.blocks.Add(gameObject.GetComponent<IBlock>());
     }
 
     public static List<IBlock> openList = new List<IBlock>();

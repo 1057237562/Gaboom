@@ -12,6 +12,7 @@ public class BuildFunction : MonoBehaviour
     public int selectedPrefab = 0;
     GameObject generated;
     public bool align = true;
+    public bool autoConnect = true;
 
     private void Update()
     {
@@ -22,24 +23,53 @@ public class BuildFunction : MonoBehaviour
         {
             Destroy(generated);
         }
-        if (raycastHit.collider != null && !ignores.Contains(raycastHit.collider.gameObject))
+        if (selectedPrefab > -1)
         {
-            if (align)
+            if (raycastHit.collider != null && !ignores.Contains(raycastHit.collider.gameObject))
             {
-                Collider hitObj = raycastHit.collider;
-                generated = Instantiate(prefabs[selectedPrefab], Align(raycastHit.normal, prefabs[selectedPrefab], hitObj.gameObject), hitObj.transform.rotation);
-            }
-            else
-            {
-                generated = Instantiate(prefabs[selectedPrefab], raycastHit.point, transform.rotation);
-            }
+                if (align)
+                {
+                    Collider hitObj = raycastHit.collider;
+                    generated = Instantiate(prefabs[selectedPrefab], Align(raycastHit.normal, prefabs[selectedPrefab], hitObj.gameObject), hitObj.transform.rotation);
+                }
+                else
+                {
+                    generated = Instantiate(prefabs[selectedPrefab], raycastHit.point, transform.rotation);
+                }
 
-            foreach (Transform child in generated.transform)
-            {
-                child.GetComponent<MeshRenderer>().material = preview;
+                if (Input.GetMouseButtonDown(0))
+                {
+                    if(raycastHit.collider.transform.parent != null)
+                    {
+                        IBlock block = generated.AddComponent<IBlock>();
+                        generated.transform.parent = raycastHit.collider.transform.parent;
+                        IBlock relativeBlock = raycastHit.collider.GetComponent<IBlock>();
+                        relativeBlock.connector.Add(block);
+                        block.connector.Add(raycastHit.collider.GetComponent<IBlock>());
+                        block.mass = generated.GetComponent<Rigidbody>().mass;
+                        block.centerOfmass = generated.GetComponent<Rigidbody>().centerOfMass;
+                        block.Load();
+                        relativeBlock.ReloadRPos();
+                        block.core.AppendRigidBody(generated);
+                        foreach(Transform child in generated.transform)
+                        {
+                            child.GetComponent<Collider>().isTrigger = false;
+                        }
+                        generated.GetComponent<Collider>().isTrigger = false;
+                    }
+                    generated = null;
+                }
+                else
+                {
+
+                    foreach (Transform child in generated.transform)
+                    {
+                        child.GetComponent<MeshRenderer>().material = preview;
+                    }
+                    generated.layer = LayerMask.NameToLayer("Ignore Raycast");
+                    generated.GetComponent<MeshRenderer>().material = preview;
+                }
             }
-            generated.layer = LayerMask.NameToLayer("Ignore Raycast");
-            generated.GetComponent<MeshRenderer>().material = preview;
         }
     }
     public Vector3 Align(Vector3 normal, GameObject preview, GameObject hitObj)

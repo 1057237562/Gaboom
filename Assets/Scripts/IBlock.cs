@@ -34,4 +34,12 @@ public class IBlock : MonoBehaviour
         core = transform.parent.GetComponent<PhysicCore>();
         alias = name;
     }
+
+    public void ReloadRPos()
+    {
+        foreach (IBlock block in connector)
+        {
+            r_pos.Add(block.transform.localPosition - position);
+        }
+    }
 }
