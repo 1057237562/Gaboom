@@ -47,7 +47,7 @@ public class BuildFunction : MonoBehaviour
         return hitObj.transform.position + normal * (hitObj.transform.lossyScale.x + preview.transform.lossyScale.x) / 2;
     }
 
-    public Vector3 Align(Vector3 hitPoint, GameObject preview, GameObject hitObj, int slice)
+    /*public Vector3 Align(Vector3 hitPoint, GameObject preview, GameObject hitObj, int slice)
     {
         Vector3 rotate = Quaternion.FromToRotation(hitObj.transform.forward, hitPoint - hitObj.transform.position).eulerAngles;
         int degree = 360 / slice;
@@ -73,5 +73,5 @@ public class BuildFunction : MonoBehaviour
         {
             return Mathf.CeilToInt((input - f_d) / degree) * degree + f_d;
         }
-    }
+    }*/
 }
