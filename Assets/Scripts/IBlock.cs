@@ -12,7 +12,7 @@ public class IBlock : MonoBehaviour
     [HideInInspector]
     public PhysicCore core;
 
-    public float breakForce = 400f;
+    public float breakForce = 100f;
     public float toughness = 10f;
     [Range(0,float.PositiveInfinity)]
     public float bouncy = 0.8f;

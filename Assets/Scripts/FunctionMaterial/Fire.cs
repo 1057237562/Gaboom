@@ -11,7 +11,7 @@ public class Fire : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.F))
+        if (Input.GetKeyDown(KeyCode.F))
         {
             GameObject n_s = Instantiate(shell,transform.position + firespot,transform.rotation);
             n_s.GetComponent<Rigidbody>().AddForce(transform.forward * force);
