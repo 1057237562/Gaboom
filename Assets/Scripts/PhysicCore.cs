@@ -57,12 +57,13 @@ public class PhysicCore : MonoBehaviour
             {
                 openList.Clear();
                 physicCore.locked = true;
-                try { 
-                foreach (KeyValuePair<IBlock, Vector3> cevent in physicCore.collideEvent)
+                try
                 {
-                    Solve(physicCore, cevent.Key, Vector3.zero);
-                    break;
-                }
+                    foreach (KeyValuePair<IBlock, Vector3> cevent in physicCore.collideEvent)
+                    {
+                        Solve(physicCore, cevent.Key, Vector3.zero);
+                        break;
+                    }
                 }
                 catch
                 {
@@ -89,7 +90,7 @@ public class PhysicCore : MonoBehaviour
         return dis;
     }
 
-    public void AppendForce(IBlock block,Vector3 force)
+    public void AppendForce(IBlock block, Vector3 force)
     {
         if (!collideEvent.ContainsKey(block))
         {
@@ -111,9 +112,9 @@ public class PhysicCore : MonoBehaviour
         {
             Vector3 vecProj;
             float radius = DisPoint2Line(block.transform.position, transform.TransformPoint(GetComponent<Rigidbody>().centerOfMass), transform.TransformPoint(GetComponent<Rigidbody>().centerOfMass) + axis, out vecProj);
-            float multiplier = radius * Mathf.Pow(Mathf.Deg2Rad* angle,2);
+            float multiplier = radius * Mathf.Pow(Mathf.Deg2Rad * angle, 2);
             Vector3 force = (block.transform.position - transform.TransformPoint(GetComponent<Rigidbody>().centerOfMass) - vecProj).normalized * multiplier;
-            Debug.DrawLine(block.transform.position, block.transform.position + force*200, Color.green);
+            Debug.DrawLine(block.transform.position, block.transform.position + force * 200, Color.green);
             AppendForce(block, force);
         }
     }
@@ -154,7 +155,7 @@ public class PhysicCore : MonoBehaviour
     }
     private void Update()
     {
-        Debug.DrawLine(GetComponent<Rigidbody>().worldCenterOfMass, GetComponent<Rigidbody>().worldCenterOfMass+new Vector3(0,-1,0));
+        Debug.DrawLine(GetComponent<Rigidbody>().worldCenterOfMass, GetComponent<Rigidbody>().worldCenterOfMass + new Vector3(0, -1, 0));
     }
     // Update is called once per frame
     void FixedUpdate()
