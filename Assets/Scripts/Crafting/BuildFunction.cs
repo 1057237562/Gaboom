@@ -34,7 +34,7 @@ public class BuildFunction : MonoBehaviour
                 }
                 else
                 {
-                    generated = Instantiate(prefabs[selectedPrefab], raycastHit.point, transform.rotation);
+                    generated = Instantiate(prefabs[selectedPrefab], raycastHit.point + prefabs[selectedPrefab].transform.lossyScale / 2, transform.rotation);
                 }
 
                 if (Input.GetMouseButtonDown(0))
