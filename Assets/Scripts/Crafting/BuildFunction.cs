@@ -93,32 +93,4 @@ public class BuildFunction : MonoBehaviour
     {
         return hitObj.transform.position + normal * (hitObj.transform.lossyScale.x + preview.transform.lossyScale.x) / 2;
     }
-
-    /*public Vector3 Align(Vector3 hitPoint, GameObject preview, GameObject hitObj, int slice)
-    {
-        Vector3 rotate = Quaternion.FromToRotation(hitObj.transform.forward, hitPoint - hitObj.transform.position).eulerAngles;
-        int degree = 360 / slice;
-        Vector3 outputRotation = Clamp(rotate, degree);
-        Debug.Log(outputRotation);
-        Vector3 alignPos = Quaternion.Euler(outputRotation) * hitObj.transform.forward * (hitObj.transform.lossyScale.x + preview.transform.lossyScale.x) / 2;
-        return hitObj.transform.TransformPoint(alignPos);
-    }
-
-    Vector3 Clamp(Vector3 input, int degree)
-    {
-        return new Vector3(Clamp(input.x, degree), Clamp(input.y, degree), Clamp(input.z, degree));
-    }
-
-    float Clamp(float input, int degree)
-    {
-        int f_d = degree / 2;
-        if (input <= f_d)
-        {
-            return 0;
-        }
-        else
-        {
-            return Mathf.CeilToInt((input - f_d) / degree) * degree + f_d;
-        }
-    }*/
 }
