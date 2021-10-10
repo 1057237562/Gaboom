@@ -220,6 +220,21 @@ public class PhysicCore : MonoBehaviour
         physicCore.Load(list);
     }
 
+    public void RecalculateRigidbody(List<IBlock> list)
+    {
+        Rigidbody rigidbody = GetComponent<Rigidbody>();
+        rigidbody.mass = 0;
+        rigidbody.centerOfMass = Vector3.zero;
+        foreach (IBlock block in list)
+        {
+            block.transform.parent = transform;
+            rigidbody.mass += block.mass;
+            rigidbody.centerOfMass += (block.transform.localPosition + block.centerOfmass) * block.mass;
+        }
+        rigidbody.centerOfMass /= rigidbody.mass;
+        Load(list);
+    }
+
     void dfs(IBlock block, ref List<IBlock> blocks, ref List<IBlock> openList)
     {
         foreach (IBlock m in block.connector)

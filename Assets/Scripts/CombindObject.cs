@@ -14,7 +14,6 @@ public class CombindObject : MonoBehaviour
 
     public void Combind()
     {
-
         Rigidbody rigidbody = gameObject.GetComponent<Rigidbody>();
         if(rigidbody == null)
         {

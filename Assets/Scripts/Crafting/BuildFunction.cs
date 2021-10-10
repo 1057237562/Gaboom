@@ -57,6 +57,23 @@ public class BuildFunction : MonoBehaviour
                         }
                         generated.GetComponent<Collider>().isTrigger = false;
                     }
+                    else
+                    {
+                        GameObject parent = Instantiate(PhysicCore.emptyGameObject, raycastHit.point, Quaternion.identity);
+                        generated.transform.parent = parent.transform;
+
+                        PhysicCore core = parent.GetComponent<PhysicCore>();
+
+                        List<IBlock> blocks = new List<IBlock>();
+
+                        IBlock block = generated.AddComponent<IBlock>();
+                        block.mass = generated.GetComponent<Rigidbody>().mass;
+                        block.centerOfmass = generated.GetComponent<Rigidbody>().centerOfMass;
+                        block.Load();
+                        blocks.Add(block);
+
+                        core.RecalculateRigidbody(blocks);
+                    }
                     generated = null;
                 }
                 else
