@@ -7,12 +7,12 @@ public class UIGenerator : MonoBehaviour
 {
 
     public List<Sprite> ui = new List<Sprite>();
-
+    public int i = 0;
     public GameObject model;
+    public bool positive = true;
     // Start is called before the first frame update
     void Start()
     {
-        int i = 0;
         //Run the logic
         foreach(Sprite sprite in ui)
         {
@@ -20,7 +20,14 @@ public class UIGenerator : MonoBehaviour
             obj.GetComponent<Image>().sprite = sprite;
             int tag = i;
             obj.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => { BuildFunction.selectedPrefab = tag; }));
-            i++;
+            if (positive)
+            {
+                i++;
+            }
+            else
+            {
+                i--;
+            }
             obj.SetActive(true);
         }
         enabled = false;
