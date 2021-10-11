@@ -9,7 +9,7 @@ public class BuildFunction : MonoBehaviour
 
     public List<GameObject> prefabs;
     public List<GameObject> ignores;
-    public int selectedPrefab = 0;
+    public static int selectedPrefab;
     GameObject generated;
     public bool align = true;
     public bool autoConnect = true;
