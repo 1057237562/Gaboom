@@ -105,7 +105,7 @@ namespace UnityTemplateProjects
             {
                 direction += Vector3.down;
             }
-            if (Input.GetKey(KeyCode.E))
+            if (Input.GetKey(KeyCode.E) || Input.GetKey(KeyCode.Space))
             {
                 direction += Vector3.up;
             }
@@ -154,7 +154,7 @@ namespace UnityTemplateProjects
             translation = GetInputTranslationDirection() * Time.deltaTime;
 
             // Speed up movement when shift key held
-            if (Input.GetKey(KeyCode.LeftShift))
+            if (!Input.GetKey(KeyCode.LeftShift))
             {
                 translation *= 10.0f;
             }
