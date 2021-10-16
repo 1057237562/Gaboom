@@ -16,7 +16,7 @@ public class ScaleHandler : MonoBehaviour
 
     private void Update()
     {
-        if(BuildFunction.selectedObj != gameObject || BuildFunction.selectedPrefab != -3)
+        if(BuildFunction.selectedObj != gameObject || BuildFunction.selectedPrefab != -4)
         {
             Destroy(this);
         }

@@ -1012,6 +1012,7 @@ MonoBehaviour:
   ui:
   - {fileID: 21300000, guid: b959a256d09f06e4c8cdf0cc068c2246, type: 3}
   - {fileID: 21300000, guid: da71a5a5dacdcbe42906d623de2e3085, type: 3}
+  - {fileID: 21300000, guid: de04fcd17b2f3ce45ac01fd5fb26de81, type: 3}
   i: 0
   model: {fileID: 188863113}
   positive: 1
@@ -6797,8 +6798,9 @@ MonoBehaviour:
   preview: {fileID: 2100000, guid: 3a891a6655067c343be0704d3af9f533, type: 2}
   deny: {fileID: 2100000, guid: b6af50ebaa244b3498a8a5a0658542d4, type: 2}
   prefabs:
-  - {fileID: 3096479800268515038, guid: bfcea66073a4d904686ced598a134526, type: 3}
+  - {fileID: 5341572649704942880, guid: bfcea66073a4d904686ced598a134526, type: 3}
   - {fileID: 3578436326011583956, guid: a31be67c00f1e2b408bb8f80aef8fb89, type: 3}
+  - {fileID: 8261906837377023327, guid: e1114fa85bb9ac14fa10c90ff0ff91a4, type: 3}
   ignores:
   - {fileID: 2534866582014686872}
   keypanel: {fileID: 755246382}
