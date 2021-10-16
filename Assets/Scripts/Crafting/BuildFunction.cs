@@ -163,13 +163,16 @@ public class BuildFunction : MonoBehaviour
                 default:
                     if (Input.GetMouseButtonDown(2))
                     {
-                        KeyFunction[] keyFunction = raycastHit.collider.transform.parent.GetComponents<KeyFunction>();
-                        if (keyFunction.Length > 0)
+                        if (raycastHit.collider.transform.parent != null)
                         {
-                            keypanel.SetActive(true);
-                            KeyPanel kp = keypanel.GetComponent<KeyPanel>();
-                            kp.objname.text = raycastHit.collider.transform.parent.name;
-                            kp.CreateItem(keyFunction);
+                            KeyFunction[] keyFunction = raycastHit.collider.transform.parent.GetComponents<KeyFunction>();
+                            if (keyFunction.Length > 0)
+                            {
+                                keypanel.SetActive(true);
+                                KeyPanel kp = keypanel.GetComponent<KeyPanel>();
+                                kp.objname.text = raycastHit.collider.transform.parent.name;
+                                kp.CreateItem(keyFunction);
+                            }
                         }
                     }
                     break;
