@@ -98,12 +98,70 @@ public class BuildFunction : MonoBehaviour
                 }
             }
         }
-        switch (selectedPrefab)
+        if (raycastHit.collider != null)
         {
-            case -1:
-                if (Input.GetMouseButtonDown(0))
-                {
-                    if (raycastHit.collider != null && raycastHit.collider.transform.parent != null)
+            switch (selectedPrefab)
+            {
+                case -1:
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        if (raycastHit.collider != null && raycastHit.collider.transform.parent != null)
+                        {
+                            KeyFunction[] keyFunction = raycastHit.collider.transform.parent.GetComponents<KeyFunction>();
+                            if (keyFunction.Length > 0)
+                            {
+                                keypanel.SetActive(true);
+                                KeyPanel kp = keypanel.GetComponent<KeyPanel>();
+                                kp.objname.text = raycastHit.collider.transform.parent.name;
+                                kp.CreateItem(keyFunction);
+                            }
+                        }
+                    }
+                    break;
+                case -2:
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        if (!ignores.Contains(raycastHit.collider.gameObject) && raycastHit.collider.transform.parent != null)
+                        {
+                            selectedObj = raycastHit.collider.transform.parent.gameObject; // Not Good
+                            if (selectedObj.GetComponent<PositionHandler>() == null)
+                            {
+                                PositionHandler ph = selectedObj.AddComponent<PositionHandler>();
+                                ph.cam = GetComponent<Camera>();
+                            }
+                        }
+                    }
+                    break;
+                case -3:
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        if (!ignores.Contains(raycastHit.collider.gameObject) && raycastHit.collider.transform.parent != null)
+                        {
+                            selectedObj = raycastHit.collider.transform.parent.gameObject; // Not Good
+                            if (selectedObj.GetComponent<RotationHandler>() == null)
+                            {
+                                RotationHandler ph = selectedObj.AddComponent<RotationHandler>();
+                                ph.cam = GetComponent<Camera>();
+                            }
+                        }
+                    }
+                    break;
+                case -4:
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        if (!ignores.Contains(raycastHit.collider.gameObject) && raycastHit.collider.transform.parent != null)
+                        {
+                            selectedObj = raycastHit.collider.transform.parent.gameObject; // Not Good
+                            if (selectedObj.GetComponent<ScaleHandler>() == null)
+                            {
+                                ScaleHandler ph = selectedObj.AddComponent<ScaleHandler>();
+                                ph.cam = GetComponent<Camera>();
+                            }
+                        }
+                    }
+                    break;
+                default:
+                    if (Input.GetMouseButtonDown(2))
                     {
                         KeyFunction[] keyFunction = raycastHit.collider.transform.parent.GetComponents<KeyFunction>();
                         if (keyFunction.Length > 0)
@@ -114,66 +172,8 @@ public class BuildFunction : MonoBehaviour
                             kp.CreateItem(keyFunction);
                         }
                     }
-                }
-                break;
-            case -2:
-                if (Input.GetMouseButtonDown(0))
-                {
-                    if (!ignores.Contains(raycastHit.collider.gameObject) && raycastHit.collider.transform.parent != null)
-                    {
-                        selectedObj = raycastHit.collider.transform.parent.gameObject; // Not Good
-                        if (selectedObj.GetComponent<PositionHandler>() == null)
-                        {
-                            PositionHandler ph = selectedObj.AddComponent<PositionHandler>();
-                            ph.cam = GetComponent<Camera>();
-                        }
-                    }
-                }
-                break;
-            case -3:
-                if (Input.GetMouseButtonDown(0))
-                {
-                    if (!ignores.Contains(raycastHit.collider.gameObject) && raycastHit.collider.transform.parent != null)
-                    {
-                        selectedObj = raycastHit.collider.transform.parent.gameObject; // Not Good
-                        if (selectedObj.GetComponent<RotationHandler>() == null)
-                        {
-                            RotationHandler ph = selectedObj.AddComponent<RotationHandler>();
-                            ph.cam = GetComponent<Camera>();
-                        }
-                    }
-                }
-                break;
-            case -4:
-                if (Input.GetMouseButtonDown(0))
-                {
-                    if (!ignores.Contains(raycastHit.collider.gameObject) && raycastHit.collider.transform.parent != null)
-                    {
-                        selectedObj = raycastHit.collider.transform.parent.gameObject; // Not Good
-                        if (selectedObj.GetComponent<ScaleHandler>() == null)
-                        {
-                            ScaleHandler ph = selectedObj.AddComponent<ScaleHandler>();
-                            ph.cam = GetComponent<Camera>();
-                        }
-                    }
-                }
-                break;
-            default:
-                if (Input.GetMouseButtonDown(2))
-                {
-                    if (raycastHit.collider != null)
-                    {
-                        KeyFunction[] keyFunction = raycastHit.collider.transform.parent.GetComponents<KeyFunction>();
-                        if (keyFunction.Length > 0)
-                        {
-                            keypanel.SetActive(true);
-                            KeyPanel kp = keypanel.GetComponent<KeyPanel>();
-                            kp.objname.text = raycastHit.collider.transform.parent.name;
-                            kp.CreateItem(keyFunction);
-                        }
-                    }
-                }
-                break;
+                    break;
+            }
         }
     }
     public Vector3 Align(Vector3 normal, GameObject preview, GameObject hitObj)
