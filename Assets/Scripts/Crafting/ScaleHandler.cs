@@ -10,13 +10,13 @@ public class ScaleHandler : MonoBehaviour
     {
         Handles.BeginGUI();
         Handles.SetCamera(cam);
-        transform.localScale = Handles.DoScaleHandle(transform.localScale,transform.position, transform.rotation, 1f);
+        transform.localScale = Handles.DoScaleHandle(transform.localScale, transform.position, transform.rotation, HandleUtility.GetHandleSize(transform.position));
         Handles.EndGUI();
     }
 
     private void Update()
     {
-        if(BuildFunction.selectedObj != gameObject || BuildFunction.selectedPrefab != -4)
+        if (BuildFunction.selectedObj != gameObject || BuildFunction.selectedPrefab != -4)
         {
             Destroy(this);
         }
