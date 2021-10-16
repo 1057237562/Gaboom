@@ -1,12 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class UIGenerator : MonoBehaviour
 {
 
     public List<Sprite> ui = new List<Sprite>();
+    public List<AllocateEvent> events = new List<AllocateEvent>();
     public int i = 0;
     public GameObject model;
     public bool positive = true;
@@ -14,12 +17,13 @@ public class UIGenerator : MonoBehaviour
     void Start()
     {
         //Run the logic
-        foreach(Sprite sprite in ui)
+        foreach (Sprite sprite in ui)
         {
             GameObject obj = Instantiate(model, transform);
             obj.GetComponent<Image>().sprite = sprite;
             int tag = i;
-            obj.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => { BuildFunction.selectedPrefab = tag; }));
+            Button btn = obj.GetComponent<Button>();
+            btn.onClick.AddListener(new UnityAction(() => { if (!positive) { events[-tag - 1].Invoke(); } else { events[tag].Invoke(); } BuildFunction.selectedPrefab = tag; }));
             if (positive)
             {
                 i++;
@@ -32,4 +36,10 @@ public class UIGenerator : MonoBehaviour
         }
         enabled = false;
     }
+}
+
+[Serializable]
+public class AllocateEvent : UnityEvent
+{
+
 }

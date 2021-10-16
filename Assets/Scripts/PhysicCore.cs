@@ -234,6 +234,20 @@ public class PhysicCore : MonoBehaviour
         Load(list);
     }
 
+    public void RecalculateRigidbody()
+    {
+        Rigidbody rigidbody = GetComponent<Rigidbody>();
+        rigidbody.mass = 0;
+        rigidbody.centerOfMass = Vector3.zero;
+        foreach (IBlock block in mring.blocks)
+        {
+            block.transform.parent = transform;
+            rigidbody.mass += block.mass;
+            rigidbody.centerOfMass += (block.transform.localPosition + block.centerOfmass) * block.mass;
+        }
+        rigidbody.centerOfMass /= rigidbody.mass;
+    }
+
     void dfs(IBlock block, ref List<IBlock> blocks, ref List<IBlock> openList)
     {
         foreach (IBlock m in block.connector)
@@ -253,7 +267,7 @@ public class PhysicCore : MonoBehaviour
         {
             Vector3 deltaV = GetComponent<Rigidbody>().velocity - lastV;
             acceleration = transform.InverseTransformVector(deltaV / Time.fixedDeltaTime);
-            AppendForce(collision.GetContact(0).thisCollider.GetComponent<IBlock>(), transform.InverseTransformVector(collision.impulse / Time.fixedDeltaTime));
+            AppendForce(collision.GetContact(0).thisCollider.transform.parent.GetComponent<IBlock>(), transform.InverseTransformVector(collision.impulse / Time.fixedDeltaTime));
             if (!worker.IsAlive)
             {
                 worker.Start(this);

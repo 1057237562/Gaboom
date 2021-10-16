@@ -1,8 +1,9 @@
+using RTEditor;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IBlock : MonoBehaviour
+public class IBlock : MonoBehaviour, IRTEditorEventListener
 {
     public Vector3 position;
     public Quaternion rotation;
@@ -14,11 +15,13 @@ public class IBlock : MonoBehaviour
 
     public float breakForce = 100f;
     public float toughness = 10f;
-    [Range(0,float.PositiveInfinity)]
+    [Range(0, float.PositiveInfinity)]
     public float bouncy = 0.8f;
 
     public float mass;
     public Vector3 centerOfmass;
+
+    float o_mass;
 
     [HideInInspector]
     public string alias;
@@ -26,13 +29,14 @@ public class IBlock : MonoBehaviour
     {
         position = transform.localPosition;
         rotation = transform.localRotation;
-        foreach(IBlock block in connector)
+        foreach (IBlock block in connector)
         {
             //Debug.Log(gameObject.name);
             r_pos.Add(block.transform.localPosition - position);
         }
         core = transform.parent.GetComponent<PhysicCore>();
         alias = name;
+        o_mass = GetComponent<Rigidbody>().mass;
     }
 
     public void ReloadRPos()
@@ -41,5 +45,29 @@ public class IBlock : MonoBehaviour
         {
             r_pos.Add(block.transform.localPosition - position);
         }
+    }
+
+    void IRTEditorEventListener.OnAlteredByTransformGizmo(Gizmo gizmo)
+    {
+        mass = o_mass * transform.localScale.x * transform.localScale.y * transform.localScale.z;
+        if(core == null)
+            core = transform.parent.GetComponent<PhysicCore>();
+        core.RecalculateRigidbody();
+        ReloadRPos();
+    }
+
+    bool IRTEditorEventListener.OnCanBeSelected(ObjectSelectEventArgs selectEventArgs)
+    {
+        return true;
+    }
+
+    void IRTEditorEventListener.OnDeselected(ObjectDeselectEventArgs deselectEventArgs)
+    {
+
+    }
+
+    void IRTEditorEventListener.OnSelected(ObjectSelectEventArgs selectEventArgs)
+    {
+
     }
 }

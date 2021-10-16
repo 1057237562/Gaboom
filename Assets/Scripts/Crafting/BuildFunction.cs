@@ -1,3 +1,4 @@
+using RTEditor;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -51,9 +52,9 @@ public class BuildFunction : MonoBehaviour
                     {
                         IBlock block = generated.AddComponent<IBlock>();
                         generated.transform.parent = raycastHit.collider.transform.parent;
-                        IBlock relativeBlock = raycastHit.collider.GetComponent<IBlock>();
+                        IBlock relativeBlock = raycastHit.collider.transform.parent.GetComponent<IBlock>();
                         relativeBlock.connector.Add(block);
-                        block.connector.Add(raycastHit.collider.GetComponent<IBlock>());
+                        block.connector.Add(raycastHit.collider.transform.parent.GetComponent<IBlock>());
                         block.mass = generated.GetComponent<Rigidbody>().mass;
                         block.centerOfmass = generated.GetComponent<Rigidbody>().centerOfMass;
                         block.Load();
@@ -93,6 +94,10 @@ public class BuildFunction : MonoBehaviour
                         child.material = preview;
                     }
                     generated.layer = LayerMask.NameToLayer("Ignore Raycast");
+                    foreach(Transform child in generated.transform)
+                    {
+                        child.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+                    }
                     if (generated.GetComponent<MeshRenderer>() != null)
                         generated.GetComponent<MeshRenderer>().material = preview;
                 }
@@ -114,48 +119,6 @@ public class BuildFunction : MonoBehaviour
                                 KeyPanel kp = keypanel.GetComponent<KeyPanel>();
                                 kp.objname.text = raycastHit.collider.transform.parent.name;
                                 kp.CreateItem(keyFunction);
-                            }
-                        }
-                    }
-                    break;
-                case -2:
-                    if (Input.GetMouseButtonDown(0))
-                    {
-                        if (!ignores.Contains(raycastHit.collider.gameObject) && raycastHit.collider.transform.parent != null)
-                        {
-                            selectedObj = raycastHit.collider.transform.parent.gameObject; // Not Good
-                            if (selectedObj.GetComponent<PositionHandler>() == null)
-                            {
-                                PositionHandler ph = selectedObj.AddComponent<PositionHandler>();
-                                ph.cam = GetComponent<Camera>();
-                            }
-                        }
-                    }
-                    break;
-                case -3:
-                    if (Input.GetMouseButtonDown(0))
-                    {
-                        if (!ignores.Contains(raycastHit.collider.gameObject) && raycastHit.collider.transform.parent != null)
-                        {
-                            selectedObj = raycastHit.collider.transform.parent.gameObject; // Not Good
-                            if (selectedObj.GetComponent<RotationHandler>() == null)
-                            {
-                                RotationHandler ph = selectedObj.AddComponent<RotationHandler>();
-                                ph.cam = GetComponent<Camera>();
-                            }
-                        }
-                    }
-                    break;
-                case -4:
-                    if (Input.GetMouseButtonDown(0))
-                    {
-                        if (!ignores.Contains(raycastHit.collider.gameObject) && raycastHit.collider.transform.parent != null)
-                        {
-                            selectedObj = raycastHit.collider.transform.parent.gameObject; // Not Good
-                            if (selectedObj.GetComponent<ScaleHandler>() == null)
-                            {
-                                ScaleHandler ph = selectedObj.AddComponent<ScaleHandler>();
-                                ph.cam = GetComponent<Camera>();
                             }
                         }
                     }

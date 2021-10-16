@@ -17,7 +17,7 @@ public class ConfigSyncUI : MonoBehaviour
         for(int i = 0; i < ui.Count;i++)
         {
             GameObject obj = ui[i];
-            reflections.Add(new Reflection(i, obj.GetComponentInChildren<Attribute>().value));
+            reflections.Add(new Reflection(i, obj.GetComponentInChildren<AttributeObject>().value));
         }
         FileSystem.WriteConfigFile(configName,reflections);
     }
@@ -27,7 +27,7 @@ public class ConfigSyncUI : MonoBehaviour
         List<Reflection> reflections = FileSystem.ReadConfigFile(configName);
         foreach(Reflection refl in reflections)
         {
-            Attribute attr = ui[int.Parse(refl.key.ToString())].GetComponentInChildren<Attribute>();
+            AttributeObject attr = ui[int.Parse(refl.key.ToString())].GetComponentInChildren<AttributeObject>();
             attr.value = refl.value;
             attr.OnValueChanged();
         }
