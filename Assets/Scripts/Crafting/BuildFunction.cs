@@ -9,10 +9,17 @@ public class BuildFunction : MonoBehaviour
 
     public List<GameObject> prefabs;
     public List<GameObject> ignores;
-    public static int selectedPrefab;
+    public GameObject keypanel;
+    public static int selectedPrefab = -1;
     GameObject generated;
     public bool align = true;
     public bool autoConnect = true;
+    public static GameObject selectedObj;
+
+    public void Toggle()
+    {
+        enabled = !enabled;
+    }
 
     private void Update()
     {
@@ -25,6 +32,7 @@ public class BuildFunction : MonoBehaviour
         }
         if (selectedPrefab > -1)
         {
+            selectedObj = null;
             if (raycastHit.collider != null && !ignores.Contains(raycastHit.collider.gameObject))
             {
                 if (align)
@@ -39,7 +47,7 @@ public class BuildFunction : MonoBehaviour
 
                 if (Input.GetMouseButtonDown(0))
                 {
-                    if(raycastHit.collider.transform.parent != null)
+                    if (raycastHit.collider.transform.parent != null)
                     {
                         IBlock block = generated.AddComponent<IBlock>();
                         generated.transform.parent = raycastHit.collider.transform.parent;
@@ -51,11 +59,12 @@ public class BuildFunction : MonoBehaviour
                         block.Load();
                         relativeBlock.ReloadRPos();
                         block.core.AppendRigidBody(generated);
-                        foreach(Transform child in generated.transform)
+                        foreach (Collider child in generated.GetComponentsInChildren<Collider>())
                         {
-                            child.GetComponent<Collider>().isTrigger = false;
+                            child.isTrigger = false;
                         }
-                        generated.GetComponent<Collider>().isTrigger = false;
+                        if (generated.GetComponent<Collider>() != null)
+                            generated.GetComponent<Collider>().isTrigger = false;
                     }
                     else
                     {
@@ -79,14 +88,92 @@ public class BuildFunction : MonoBehaviour
                 else
                 {
 
-                    foreach (Transform child in generated.transform)
+                    foreach (MeshRenderer child in generated.GetComponentsInChildren<MeshRenderer>())
                     {
-                        child.GetComponent<MeshRenderer>().material = preview;
+                        child.material = preview;
                     }
                     generated.layer = LayerMask.NameToLayer("Ignore Raycast");
-                    generated.GetComponent<MeshRenderer>().material = preview;
+                    if (generated.GetComponent<MeshRenderer>() != null)
+                        generated.GetComponent<MeshRenderer>().material = preview;
                 }
             }
+        }
+        switch (selectedPrefab)
+        {
+            case -1:
+                if (Input.GetMouseButtonDown(0))
+                {
+                    if (raycastHit.collider != null && raycastHit.collider.transform.parent != null)
+                    {
+                        KeyFunction[] keyFunction = raycastHit.collider.transform.parent.GetComponents<KeyFunction>();
+                        if (keyFunction.Length > 0)
+                        {
+                            keypanel.SetActive(true);
+                            KeyPanel kp = keypanel.GetComponent<KeyPanel>();
+                            kp.objname.text = raycastHit.collider.transform.parent.name;
+                            kp.CreateItem(keyFunction);
+                        }
+                    }
+                }
+                break;
+            case -2:
+                if (Input.GetMouseButtonDown(0))
+                {
+                    if (!ignores.Contains(raycastHit.collider.gameObject) && raycastHit.collider.transform.parent != null)
+                    {
+                        selectedObj = raycastHit.collider.transform.parent.gameObject; // Not Good
+                        if (selectedObj.GetComponent<PositionHandler>() == null)
+                        {
+                            PositionHandler ph = selectedObj.AddComponent<PositionHandler>();
+                            ph.cam = GetComponent<Camera>();
+                        }
+                    }
+                }
+                break;
+            case -3:
+                if (Input.GetMouseButtonDown(0))
+                {
+                    if (!ignores.Contains(raycastHit.collider.gameObject) && raycastHit.collider.transform.parent != null)
+                    {
+                        selectedObj = raycastHit.collider.transform.parent.gameObject; // Not Good
+                        if (selectedObj.GetComponent<RotationHandler>() == null)
+                        {
+                            RotationHandler ph = selectedObj.AddComponent<RotationHandler>();
+                            ph.cam = GetComponent<Camera>();
+                        }
+                    }
+                }
+                break;
+            case -4:
+                if (Input.GetMouseButtonDown(0))
+                {
+                    if (!ignores.Contains(raycastHit.collider.gameObject) && raycastHit.collider.transform.parent != null)
+                    {
+                        selectedObj = raycastHit.collider.transform.parent.gameObject; // Not Good
+                        if (selectedObj.GetComponent<ScaleHandler>() == null)
+                        {
+                            ScaleHandler ph = selectedObj.AddComponent<ScaleHandler>();
+                            ph.cam = GetComponent<Camera>();
+                        }
+                    }
+                }
+                break;
+            default:
+                if (Input.GetMouseButtonDown(2))
+                {
+                    if (raycastHit.collider != null)
+                    {
+                        KeyFunction[] keyFunction = raycastHit.collider.transform.parent.GetComponents<KeyFunction>();
+                        if (keyFunction.Length > 0)
+                        {
+                            keypanel.SetActive(true);
+                            KeyPanel kp = keypanel.GetComponent<KeyPanel>();
+                            kp.objname.text = raycastHit.collider.transform.parent.name;
+                            kp.CreateItem(keyFunction);
+                        }
+                    }
+                }
+                break;
         }
     }
     public Vector3 Align(Vector3 normal, GameObject preview, GameObject hitObj)

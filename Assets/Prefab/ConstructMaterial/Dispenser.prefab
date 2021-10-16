@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8261906837377023325}
   - component: {fileID: 8261906837377023326}
+  - component: {fileID: 6635379869598021115}
   m_Layer: 0
   m_Name: Dispenser
   m_TagString: Untagged
@@ -44,9 +45,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8432b2d9f0176b0489ba21c634c15a48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shell: {fileID: 0}
+  shell: {fileID: 7174070733087649311, guid: 127cd734b76babf4e87ef527deb721d9, type: 3}
   force: 500
-  firespot: {x: 0, y: 0, z: 0}
+  firespot: {x: 0, y: 0.335, z: -1}
+--- !u!114 &6635379869598021115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8261906837377023327}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e94ce72f4c488e641ac98e03284ccc95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  func_name: 
+  keycode: 0
+  action:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8261906837377023326}
+        m_TargetAssemblyTypeName: Fire, Assembly-CSharp
+        m_MethodName: FireFunc
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  pattern: 0
 --- !u!65 &8261906836731122906
 BoxCollider:
   m_ObjectHideFlags: 0

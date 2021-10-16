@@ -107,7 +107,6 @@ public class PhysicCore : MonoBehaviour
         Vector3 axis;
         float angle;
         rotation.ToAngleAxis(out angle, out axis);
-        //Debug.DrawLine(transform.TransformPoint(GetComponent<Rigidbody>().centerOfMass), transform.TransformPoint(GetComponent<Rigidbody>().centerOfMass) + axis, Color.green);
         foreach (IBlock block in mring.blocks)
         {
             Vector3 vecProj;
@@ -261,6 +260,8 @@ public class PhysicCore : MonoBehaviour
             }
         }
     }
+
+    
 }
 
 public class Ring
