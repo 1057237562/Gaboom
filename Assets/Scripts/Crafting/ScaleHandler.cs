@@ -10,7 +10,9 @@ public class ScaleHandler : MonoBehaviour
     {
         Handles.BeginGUI();
         Handles.SetCamera(cam);
-        transform.localScale = Handles.DoScaleHandle(transform.localScale, transform.position, transform.rotation, HandleUtility.GetHandleSize(transform.position));
+        Vector3 vector = Handles.DoScaleHandle(transform.localScale, transform.position, transform.rotation, HandleUtility.GetHandleSize(transform.position));
+        GetComponent<Rigidbody>().mass *= vector.x * vector.y * vector.z / (transform.localScale.x * transform.localScale.y * transform.localScale.z);
+        transform.localScale = vector;
         Handles.EndGUI();
     }
 
