@@ -23,6 +23,7 @@ namespace RTEditor
         /// </summary>
         Scale,
 
-        VolumeScale
+        VolumeScale,
+        None
     }
 }

@@ -51,7 +51,7 @@ public class BuildFunction : MonoBehaviour
                     if (raycastHit.collider.transform.parent != null)
                     {
                         IBlock block = generated.AddComponent<IBlock>();
-                        generated.transform.parent = raycastHit.collider.transform.parent;
+                        generated.transform.parent = raycastHit.collider.transform.parent.parent;
                         IBlock relativeBlock = raycastHit.collider.transform.parent.GetComponent<IBlock>();
                         relativeBlock.connector.Add(block);
                         block.connector.Add(raycastHit.collider.transform.parent.GetComponent<IBlock>());

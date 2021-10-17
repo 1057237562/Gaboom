@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 2035111234}
-  m_IndirectSpecularColor: {r: 92.74414, g: 114.9187, b: 152.10059, a: 1}
+  m_IndirectSpecularColor: {r: 92.75073, g: 114.90674, b: 152.04211, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -622,7 +622,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &112666543
 Transform:
   m_ObjectHideFlags: 0
@@ -4083,7 +4083,7 @@ MonoBehaviour:
   _scaleGizmo: {fileID: 1168786682}
   _volumeScaleGizmo: {fileID: 112666544}
   _transformSpace: 1
-  _activeGizmoType: 0
+  _activeGizmoType: 4
   _transformPivotPoint: 1
   _gizmoTypeAvailableFlags: 01010101
 --- !u!1 &701709045
@@ -7853,7 +7853,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1336014758
 Transform:
   m_ObjectHideFlags: 0
@@ -8124,7 +8124,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1367197205
 Transform:
   m_ObjectHideFlags: 0
@@ -11954,6 +11954,18 @@ MonoBehaviour:
   events:
   - m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 672773530}
+        m_TargetAssemblyTypeName: RTEditor.EditorGizmoSystem, Assembly-CSharp
+        m_MethodName: ChangeActiveGizmo
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 4
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 672773530}
         m_TargetAssemblyTypeName: RTEditor.EditorGizmoSystem, Assembly-CSharp
         m_MethodName: DeactivateAllGizmoObjects

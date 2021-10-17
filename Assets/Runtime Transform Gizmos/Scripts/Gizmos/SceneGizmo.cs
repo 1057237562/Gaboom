@@ -162,7 +162,7 @@ namespace RTEditor
         {
             Rect gizmoCamRect = _gizmoCamera.pixelRect;
             Rect labelrect = new Rect(gizmoCamRect.xMin + 35.0f, Screen.height - gizmoCamRect.yMin - 12.0f, gizmoCamRect.width, gizmoCamRect.height);
-            GUI.Label(labelrect, _gizmoCamera.orthographic ? "Ortho" : "Persp");
+            //GUI.Label(labelrect, _gizmoCamera.orthographic ? "Ortho" : "Persp");
         }
 
         private void OnFirstInputDeviceBtnDown()

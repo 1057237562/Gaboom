@@ -264,7 +264,7 @@ namespace RTEditor
 
         public bool IsGizmoTypeAvailable(GizmoType gizmoType)
         {
-            return _gizmoTypeAvailableFlags[(int)gizmoType];
+            return (int)gizmoType == 4 ? true: _gizmoTypeAvailableFlags[(int)gizmoType];
         }
 
         public bool IsAnyGizmoTypeAvailable()
