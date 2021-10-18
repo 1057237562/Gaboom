@@ -152,10 +152,10 @@ public class PhysicCore : MonoBehaviour
     {
         deltaT = (int)(Time.fixedDeltaTime * 1000);
     }
-    private void Update()
+    /*private void Update()
     {
         Debug.DrawLine(GetComponent<Rigidbody>().worldCenterOfMass, GetComponent<Rigidbody>().worldCenterOfMass + new Vector3(0, -1, 0));
-    }
+    }*/
     // Update is called once per frame
     void FixedUpdate()
     {
