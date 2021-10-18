@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Laser : MonoBehaviour
 {
-    public Vector3 firespot = new Vector3(0,0.5f,2.34f);
+    public Vector3 firespot = new Vector3(0,0.125f,0.75f);
     public PhysicMaterial glass;
     // Update is called once per frame
     public void FireIteration()
