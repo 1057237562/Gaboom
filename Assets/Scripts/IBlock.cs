@@ -17,7 +17,7 @@ public class IBlock : MonoBehaviour, IRTEditorEventListener
     public float toughness = 10f;
     [Range(0, float.PositiveInfinity)]
     public float bouncy = 0.8f;
-
+    public float health = 100f;
     public float mass;
     public Vector3 centerOfmass;
 
@@ -44,6 +44,17 @@ public class IBlock : MonoBehaviour, IRTEditorEventListener
         foreach (IBlock block in connector)
         {
             r_pos.Add(block.transform.localPosition - position);
+        }
+    }
+
+    public void DoBreak()
+    {
+        if (health <= 0)
+        {
+            foreach (IBlock block in connector)
+            {
+                block.connector.Remove(this);
+            }
         }
     }
 
