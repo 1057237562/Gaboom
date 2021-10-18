@@ -1948,6 +1948,11 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8261906836731122906, guid: e1114fa85bb9ac14fa10c90ff0ff91a4,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8261906837377023325, guid: e1114fa85bb9ac14fa10c90ff0ff91a4,
         type: 3}
       propertyPath: m_RootOrder
@@ -12976,6 +12981,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Glass
       objectReference: {fileID: 0}
+    - target: {fileID: 1561112168031031451, guid: cd53eeb34d062be4aa71e7aeebaf11b6,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cd53eeb34d062be4aa71e7aeebaf11b6, type: 3}
 --- !u!1 &2534866582014686872
@@ -13039,10 +13049,20 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2383210517711389673, guid: 55a0f651fd41899489a79e85a71d880d,
+        type: 3}
+      propertyPath: firespot.y
+      value: 0.0125
+      objectReference: {fileID: 0}
+    - target: {fileID: 2383210517711389673, guid: 55a0f651fd41899489a79e85a71d880d,
+        type: 3}
+      propertyPath: firespot.z
+      value: 0.575
+      objectReference: {fileID: 0}
     - target: {fileID: 2999689661684137596, guid: 55a0f651fd41899489a79e85a71d880d,
         type: 3}
       propertyPath: m_Mode
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2999689661684137596, guid: 55a0f651fd41899489a79e85a71d880d,
         type: 3}
@@ -13117,6 +13137,11 @@ PrefabInstance:
     - target: {fileID: 3457983648773227701, guid: 55a0f651fd41899489a79e85a71d880d,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3457983649520967111, guid: 55a0f651fd41899489a79e85a71d880d,
+        type: 3}
+      propertyPath: m_IsTrigger
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6746968039249360011, guid: 55a0f651fd41899489a79e85a71d880d,

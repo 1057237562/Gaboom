@@ -5,21 +5,29 @@ using UnityEngine;
 public class Laser : MonoBehaviour
 {
     public Vector3 firespot = new Vector3(0,0.5f,2.34f);
-    public Vector3 direction = new Vector3(0,0,1);
     public PhysicMaterial glass;
     // Update is called once per frame
-    void FireIteration()
+    public void FireIteration()
     {
-        Ray ray = new Ray(transform.InverseTransformPoint(firespot),transform.InverseTransformDirection(direction));
+        Ray ray = new Ray(transform.TransformPoint(firespot),transform.forward);
         RaycastHit raycastHit;
         Physics.Raycast(ray, out raycastHit);
-        if(raycastHit.collider.material == glass)
+        if (raycastHit.collider != null)
         {
+            if (raycastHit.collider.material == glass)
+            {
 
-        }
-        else
-        {
+            }
+            else
+            {
 
+            }
         }
+    }
+
+    private void Update()
+    {
+        Debug.Log(transform.TransformPoint(firespot));
+        Debug.DrawRay(transform.TransformPoint(firespot), transform.forward);
     }
 }
