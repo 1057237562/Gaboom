@@ -12904,17 +12904,17 @@ PrefabInstance:
     - target: {fileID: 1561112166837897600, guid: cd53eeb34d062be4aa71e7aeebaf11b6,
         type: 3}
       propertyPath: m_Mode
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1561112166837897601, guid: cd53eeb34d062be4aa71e7aeebaf11b6,
         type: 3}
       propertyPath: m_ProbeSettings.distanceBasedRoughness
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1561112166837897601, guid: cd53eeb34d062be4aa71e7aeebaf11b6,
         type: 3}
       propertyPath: m_ProbeSettings.proxySettings.useInfluenceVolumeAsProxyVolume
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1561112167246741997, guid: cd53eeb34d062be4aa71e7aeebaf11b6,
         type: 3}
@@ -13117,6 +13117,11 @@ PrefabInstance:
     - target: {fileID: 3457983648773227701, guid: 55a0f651fd41899489a79e85a71d880d,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6746968039249360011, guid: 55a0f651fd41899489a79e85a71d880d,
+        type: 3}
+      propertyPath: m_ProbeSettings.realtimeMode
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
