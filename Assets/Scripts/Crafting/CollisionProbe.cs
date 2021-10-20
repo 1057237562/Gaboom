@@ -6,12 +6,12 @@ public class CollisionProbe : MonoBehaviour
 {
     public bool isIntersect = false;
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
         isIntersect = true;
     }
 
-    private void OnCollisionExit(Collision collision)
+    private void OnTriggerExit(Collider other)
     {
         isIntersect = false;
     }

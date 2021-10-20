@@ -100,6 +100,7 @@ public class BuildFunction : MonoSingletonBase<BuildFunction>
                     }
                     if (generated.GetComponent<MeshRenderer>() != null)
                         generated.GetComponent<MeshRenderer>().material = preview;
+                    //generated.AddComponent<CollisionProbe>();
                 }
             }
         }
