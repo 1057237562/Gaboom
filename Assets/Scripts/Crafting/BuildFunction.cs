@@ -59,7 +59,7 @@ public class BuildFunction : MonoSingletonBase<BuildFunction>
                         //block.centerOfmass = generated.GetComponent<Rigidbody>().centerOfMass;
                         block.Load();
                         relativeBlock.ReloadRPos();
-                        block.core.AppendRigidBody(generated);
+                        block.core.AppendIBlock(block);
                         foreach (Collider child in generated.GetComponentsInChildren<Collider>())
                         {
                             child.isTrigger = false;

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 2035111234}
-  m_IndirectSpecularColor: {r: 92.74414, g: 114.9187, b: 152.10059, a: 1}
+  m_IndirectSpecularColor: {r: 92.687744, g: 114.84375, b: 152.00671, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -198,13 +198,7 @@ MonoBehaviour:
   m_Script: {fileID: 719926109}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Entries:
-  - id: 0
-    category: 0
-    gameObject: {fileID: 0}
-  - id: 1
-    category: 0
-    gameObject: {fileID: 0}
+  m_Entries: []
 --- !u!4 &63686278
 Transform:
   m_ObjectHideFlags: 19
@@ -12052,6 +12046,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: e2ce86b0895e3c44da58bd69a47c21ee, type: 3}
   - {fileID: 21300000, guid: 7173d6849821bc94f8f0bef1b9331348, type: 3}
   - {fileID: 21300000, guid: 2266705e0b728cb4f889cd7122258bae, type: 3}
+  - {fileID: 21300000, guid: 875e4059ec05dab4c889f9cf7edd7ea0, type: 3}
   events:
   - m_PersistentCalls:
       m_Calls:
@@ -12341,7 +12336,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 5500
   m_UseColorTemperature: 1
-  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: -0.00000004125829}
+  m_BoundingSphereOverride: {x: 6e-44, y: -2.2694778, z: 6.01e-43, w: 1.22e-43}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0

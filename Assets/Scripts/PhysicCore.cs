@@ -123,6 +123,19 @@ public class PhysicCore : MonoBehaviour
         }
     }
 
+    public void AppendIBlock(IBlock iblock)
+    {
+        if (mring.blocks.Contains(iblock)) return;
+        Rigidbody rigidbody = GetComponent<Rigidbody>();
+        float mass = rigidbody.mass + iblock.mass;
+        rigidbody.centerOfMass *= rigidbody.mass;
+        rigidbody.centerOfMass += (transform.InverseTransformPoint(iblock.transform.position + iblock.centerOfmass)) * iblock.mass;
+        rigidbody.centerOfMass /= mass;
+        rigidbody.mass = mass;
+
+        mring.blocks.Add(iblock);
+    }
+
     public void AppendRigidBody(GameObject gameObject)
     {
         Rigidbody rigidbody = GetComponent<Rigidbody>();
