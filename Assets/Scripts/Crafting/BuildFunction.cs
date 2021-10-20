@@ -27,8 +27,10 @@ public class BuildFunction : MonoSingletonBase<BuildFunction>
         Ray ray = GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
         RaycastHit raycastHit;
         Physics.Raycast(ray, out raycastHit);
+        bool occupied = true;
         if (generated != null)
         {
+            occupied = generated.GetComponent<CollisionProbe>().isIntersect;
             Destroy(generated);
         }
         if (selectedPrefab > -1)
@@ -100,7 +102,7 @@ public class BuildFunction : MonoSingletonBase<BuildFunction>
                     }
                     if (generated.GetComponent<MeshRenderer>() != null)
                         generated.GetComponent<MeshRenderer>().material = preview;
-                    //generated.AddComponent<CollisionProbe>();
+                    generated.AddComponent<CollisionProbe>();
                 }
             }
         }
