@@ -8,6 +8,11 @@ public class PhysicCore : MonoBehaviour
 {
     public Thread worker = new Thread(new ParameterizedThreadStart(ThreadWorker));
 
+    public List<IBlock> GetBlocks()
+    {
+        return mring.blocks;
+    }
+
     public void Load(List<IBlock> list)
     {
         mring.blocks = list;
@@ -113,7 +118,7 @@ public class PhysicCore : MonoBehaviour
             float radius = DisPoint2Line(block.transform.position, transform.TransformPoint(GetComponent<Rigidbody>().centerOfMass), transform.TransformPoint(GetComponent<Rigidbody>().centerOfMass) + axis, out vecProj);
             float multiplier = radius * Mathf.Pow(Mathf.Deg2Rad * angle, 2);
             Vector3 force = (block.transform.position - transform.TransformPoint(GetComponent<Rigidbody>().centerOfMass) - vecProj).normalized * multiplier;
-            Debug.DrawLine(block.transform.position, block.transform.position + force * 200, Color.green);
+            //Debug.DrawLine(block.transform.position, block.transform.position + force * 200, Color.green);
             AppendForce(block, force);
         }
     }

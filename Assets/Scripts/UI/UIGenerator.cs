@@ -23,7 +23,7 @@ public class UIGenerator : MonoBehaviour
             obj.GetComponent<Image>().sprite = sprite;
             int tag = i;
             Button btn = obj.GetComponent<Button>();
-            btn.onClick.AddListener(new UnityAction(() => { if (!positive) { events[-tag - 1].Invoke(); } else { events[tag].Invoke(); } BuildFunction.selectedPrefab = tag; }));
+            btn.onClick.AddListener(new UnityAction(() => { if (!positive) { events[(-tag - 1) >= events.Count ? 0 : (-tag - 1)].Invoke(); } else { events[tag >= events.Count ? 0 : tag].Invoke(); } BuildFunction.selectedPrefab = tag; }));
             if (positive)
             {
                 i++;

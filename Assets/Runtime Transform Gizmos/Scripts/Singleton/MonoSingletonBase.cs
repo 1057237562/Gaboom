@@ -48,7 +48,10 @@ namespace RTEditor
                         // Retrieve the instance from the scene.
                         // Note: We will retrieve an array of instances and make sure that only one intance exists.
                         T[] singletonInstances = FindObjectsOfType(typeof(T)) as T[];
-                        if (singletonInstances.Length == 0) return null;
+                        if (singletonInstances.Length == 0)
+                        {
+                            return null;
+                        }
 
                         // More than one singleton?
                         if (singletonInstances.Length > 1)

@@ -460,6 +460,7 @@ GameObject:
   - component: {fileID: 3457983648773227701}
   - component: {fileID: 2383210517711389673}
   - component: {fileID: 1534812873967420239}
+  - component: {fileID: 9211196706472551271}
   m_Layer: 0
   m_Name: LaserGun
   m_TagString: Untagged
@@ -495,8 +496,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   firespot: {x: 0, y: 0.125, z: 0.75}
-  direction: {x: 0, y: 0, z: 1}
   glass: {fileID: 13400000, guid: 29a46be5e99626f4eb356bf436e74c11, type: 2}
+  range: 100
 --- !u!114 &1534812873967420239
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -527,6 +528,31 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   pattern: 0
+--- !u!114 &9211196706472551271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3457983648773227700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fcf1eb1c356e7e4eb7559c6fb7d7d00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  position: {x: 0, y: 0, z: 0}
+  rotation: {x: 0, y: 0, z: 0, w: 0}
+  connector: []
+  r_pos: []
+  core: {fileID: 0}
+  breakForce: 100
+  toughness: 10
+  bouncy: 0.8
+  health: 100
+  mass: 0
+  centerOfmass: {x: 0, y: 0, z: 0}
+  o_mass: 1
+  alias: 
 --- !u!1001 &3457983649520967108
 PrefabInstance:
   m_ObjectHideFlags: 0

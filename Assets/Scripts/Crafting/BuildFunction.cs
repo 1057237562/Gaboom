@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BuildFunction : MonoBehaviour
+public class BuildFunction : MonoSingletonBase<BuildFunction>
 {
     public Material preview;
     public Material deny;
@@ -55,8 +55,8 @@ public class BuildFunction : MonoBehaviour
                         IBlock relativeBlock = raycastHit.collider.transform.parent.GetComponent<IBlock>();
                         relativeBlock.connector.Add(block);
                         block.connector.Add(raycastHit.collider.transform.parent.GetComponent<IBlock>());
-                        block.mass = generated.GetComponent<Rigidbody>().mass;
-                        block.centerOfmass = generated.GetComponent<Rigidbody>().centerOfMass;
+                        //block.mass = generated.GetComponent<Rigidbody>().mass;
+                        //block.centerOfmass = generated.GetComponent<Rigidbody>().centerOfMass;
                         block.Load();
                         relativeBlock.ReloadRPos();
                         block.core.AppendRigidBody(generated);
@@ -77,8 +77,8 @@ public class BuildFunction : MonoBehaviour
                         List<IBlock> blocks = new List<IBlock>();
 
                         IBlock block = generated.AddComponent<IBlock>();
-                        block.mass = generated.GetComponent<Rigidbody>().mass;
-                        block.centerOfmass = generated.GetComponent<Rigidbody>().centerOfMass;
+                        //block.mass = generated.GetComponent<Rigidbody>().mass;
+                        //block.centerOfmass = generated.GetComponent<Rigidbody>().centerOfMass;
                         block.Load();
                         blocks.Add(block);
 

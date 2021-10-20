@@ -1,11 +1,11 @@
+using RTEditor;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class VariableInitializer : MonoBehaviour
+public class VariableInitializer : MonoSingletonBase<VariableInitializer>
 {
-    [SerializeField]
-    GameObject physicCore;
+    public GameObject physicCore;
     // Start is called before the first frame update
     void Start()
     {

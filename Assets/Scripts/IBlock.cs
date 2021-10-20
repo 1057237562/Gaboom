@@ -18,10 +18,11 @@ public class IBlock : MonoBehaviour, IRTEditorEventListener
     [Range(0, float.PositiveInfinity)]
     public float bouncy = 0.8f;
     public float health = 100f;
+    [HideInInspector]
     public float mass;
     public Vector3 centerOfmass;
 
-    float o_mass;
+    public float o_mass = 1f;
 
     [HideInInspector]
     public string alias;
@@ -35,8 +36,7 @@ public class IBlock : MonoBehaviour, IRTEditorEventListener
             r_pos.Add(block.transform.localPosition - position);
         }
         core = transform.parent.GetComponent<PhysicCore>();
-        alias = name;
-        o_mass = GetComponent<Rigidbody>().mass;
+        alias = name.Replace("(Clone)","");
     }
 
     public void ReloadRPos()
@@ -58,13 +58,18 @@ public class IBlock : MonoBehaviour, IRTEditorEventListener
         }
     }
 
-    void IRTEditorEventListener.OnAlteredByTransformGizmo(Gizmo gizmo)
+    public void OnScale()
     {
         mass = o_mass * transform.localScale.x * transform.localScale.y * transform.localScale.z;
-        if(core == null)
+        if (core == null)
             core = transform.parent.GetComponent<PhysicCore>();
         core.RecalculateRigidbody();
         ReloadRPos();
+    }
+
+    void IRTEditorEventListener.OnAlteredByTransformGizmo(Gizmo gizmo)
+    {
+        OnScale();
     }
 
     bool IRTEditorEventListener.OnCanBeSelected(ObjectSelectEventArgs selectEventArgs)
