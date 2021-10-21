@@ -53,6 +53,11 @@ public class PhysicCore : MonoBehaviour
         }
     }
 
+    public void setDirty()
+    {
+        dirty = true;
+    }
+
     public static void ThreadWorker(object obj)
     {
         PhysicCore physicCore = (PhysicCore)obj;

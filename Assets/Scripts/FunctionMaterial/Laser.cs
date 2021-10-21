@@ -14,7 +14,7 @@ public class Laser : MonoBehaviour
     {
         Debug.Log("Fire");
         List<Vector3> linePos = new List<Vector3>();
-        linePos.Add(transform.position + firespot);
+        linePos.Add(transform.TransformPoint(firespot));
         Ray ray = new Ray(transform.TransformPoint(firespot),transform.forward);
         RaycastHit raycastHit;
         Physics.Raycast(ray, out raycastHit,range);

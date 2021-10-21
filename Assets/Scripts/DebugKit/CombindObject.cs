@@ -53,15 +53,15 @@ public class CombindObject : MonoBehaviour
             }
             Destroy(m_rigid);
         }
-        foreach(Transform child in transform)
-        {
-            child.gameObject.GetComponent<IBlock>().Load();
-        }
         rigidbody.centerOfMass /= rigidbody.mass;
         //Debug.Log(rigidbody.centerOfMass);
         if (generateIBlock)
         {
             gameObject.AddComponent<PhysicCore>().Load(list);
+        }
+        foreach (Transform child in transform)
+        {
+            child.gameObject.GetComponent<IBlock>().Load();
         }
     }
 }
