@@ -168,7 +168,8 @@ public class PhysicCore : MonoBehaviour
     public static int deltaT;
     [HideInInspector]
     bool dirty = false;
-    Ring mring = new Ring();
+    [HideInInspector]
+    public Ring mring = new Ring();
     bool locked = false;
 
     private void Start()
