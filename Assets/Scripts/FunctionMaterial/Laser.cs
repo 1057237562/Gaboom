@@ -28,7 +28,7 @@ public class Laser : MonoBehaviour
 
                 if (raycastHit.collider == null)
                 {
-                    linePos.Add(ray.origin + Vector3.Reflect(transform.forward, raycastHit.normal) * leftRange);
+                    linePos.Add(ray.origin + ray.direction * leftRange);
                 }
                 else
                 {
