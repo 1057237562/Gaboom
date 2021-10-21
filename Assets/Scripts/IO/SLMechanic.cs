@@ -6,6 +6,7 @@ using System.Linq;
 using Gaboom.Util;
 using System;
 using Object = UnityEngine.Object;
+using System.IO;
 
 namespace Gaboom.IO
 {
@@ -159,7 +160,7 @@ namespace Gaboom.IO
 
         public static void SaveObjToFile(PhysicCore obj, string filename)
         {
-            if(!Directory.Exist(machineFolder)){
+            if(!Directory.Exists(machineFolder)){
                 Directory.CreateDirectory(machineFolder);
             }
             FileSystem.WriteFile(machineFolder + filename, SerializeToXml(obj));
