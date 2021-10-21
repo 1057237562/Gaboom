@@ -14,9 +14,9 @@ namespace Gaboom.IO
 
         public static string machineFolder = Environment.CurrentDirectory + "/saves/";
         /// <summary>
-        /// ½«ÓÎÏ·ÎïÌåĞòÁĞ»¯³ÉÎªXML
+        /// å°†æ¸¸æˆç‰©ä½“åºåˆ—åŒ–æˆä¸ºXML
         /// </summary>
-        /// <param name="core">ÎïÀíºËĞÄ</param>
+        /// <param name="core">ç‰©ç†æ ¸å¿ƒ</param>
         /// <returns></returns>
         public static string SerializeToXml(PhysicCore core)
         {
@@ -105,11 +105,11 @@ namespace Gaboom.IO
         }
 
         /// <summary>
-        /// ·´ĞòÁĞ»¯XMLµ½Ö¸¶¨Î»ÖÃ
+        /// ååºåˆ—åŒ–XMLåˆ°æŒ‡å®šä½ç½®
         /// </summary>
-        /// <param name="xmlstr">XMLÄÚÈİ</param>
-        /// <param name="position">Ö¸¶¨Î»ÖÃ</param>
-        /// <param name="rotation">Ğı×ªÁ¿</param>
+        /// <param name="xmlstr">XMLå†…å®¹</param>
+        /// <param name="position">æŒ‡å®šä½ç½®</param>
+        /// <param name="rotation">æ—‹è½¬é‡</param>
         /// <returns></returns>
         public static void DeserializeToGameObject(string xmlstr, Vector3 pos, Quaternion rota)
         {
@@ -159,6 +159,9 @@ namespace Gaboom.IO
 
         public static void SaveObjToFile(PhysicCore obj, string filename)
         {
+            if(!Directory.Exist(machineFolder)){
+                Directory.CreateDirectory(machineFolder);
+            }
             FileSystem.WriteFile(machineFolder + filename, SerializeToXml(obj));
         }
 
@@ -173,9 +176,9 @@ namespace Gaboom.IO
         }
 
         /// <summary>
-        /// ×Ö·û´®×ªVector3
+        /// å­—ç¬¦ä¸²è½¬Vector3
         /// </summary>
-        /// <param name="p_sVec3">ĞèÒª×ª»»µÄ×Ö·û´®</param>
+        /// <param name="p_sVec3">éœ€è¦è½¬æ¢çš„å­—ç¬¦ä¸²</param>
         /// <returns></returns>
         public static Vector3 GetVec3ByString(string p_sVec3)
         {
@@ -195,9 +198,9 @@ namespace Gaboom.IO
         }
 
         /// <summary>
-        /// ×Ö·û´®×ª»»Quaternion
+        /// å­—ç¬¦ä¸²è½¬æ¢Quaternion
         /// </summary>
-        /// <param name="p_sVec3">ĞèÒª×ª»»µÄ×Ö·û´®</param>
+        /// <param name="p_sVec3">éœ€è¦è½¬æ¢çš„å­—ç¬¦ä¸²</param>
         /// <returns></returns>
         public static Quaternion GetQuaByString(string p_sVec3)
         {
