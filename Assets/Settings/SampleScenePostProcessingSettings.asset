@@ -289,7 +289,7 @@ MonoBehaviour:
     m_Value: 0
   rayTracing:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 0
   reflectSky:
     m_OverrideState: 1
     m_Value: 1
