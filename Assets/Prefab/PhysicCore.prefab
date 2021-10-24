@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7261817291829730151}
   m_Layer: 0
   m_Name: PhysicCore
-  m_TagString: Untagged
+  m_TagString: PhysicCore
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -61,3 +61,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   acceleration: {x: 0, y: 0, z: 0}
+  angular: {x: 0, y: 0, z: 0}
+  sensitive: 5
