@@ -34,20 +34,20 @@ public class GetCoreList : MonoBehaviour
 
     public void SaveMachine()
     {
-        if (!Directory.Exists(Environment.CurrentDirectory + "/saves/"))
+        if (!Directory.Exists(SLMechanic.machineFolder))
         {
-            Directory.CreateDirectory(Environment.CurrentDirectory + "/saves/");
+            Directory.CreateDirectory(SLMechanic.machineFolder);
         }
         if (machinName.text.Length == 0)
         {
             int i = 0;
-            while (File.Exists(Environment.CurrentDirectory + "/saves/Untitled"+ (i != 0 ? "(" + i + ")" : "") + ".gsp"))
+            while (File.Exists(SLMechanic.machineFolder + "Untitled"+ (i != 0 ? "(" + i + ")" : "") + ".gsp"))
             {
                 i++;
             }
             machinName.text = "Untitled" + (i != 0 ? "(" + i + ")" : "");
         }
-        CameraShotIO.Save(Environment.CurrentDirectory + "/saves/" + machinName.text + ".gsp", CameraShotIO.CreateFrom(render));
+        CameraShotIO.Save(SLMechanic.machineFolder + machinName.text + ".gsp", CameraShotIO.CreateFrom(render));
         SLMechanic.SaveObjToFile(selected.target, machinName.text);
     }
 }

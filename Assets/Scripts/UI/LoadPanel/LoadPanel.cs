@@ -1,18 +1,20 @@
+using Gaboom.IO;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class LoadPanel : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public GameObject newItem;
+    public GameObject list;
+    private void OnEnable()
     {
-        
+        foreach(string filename in Directory.GetFiles(SLMechanic.machineFolder,"*.gm",SearchOption.AllDirectories))
+        {
+            Instantiate(newItem, list.transform);
+        }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
 }
