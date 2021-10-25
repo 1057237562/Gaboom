@@ -4731,7 +4731,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   physicCore: {fileID: 7261817291829730145, guid: 58a76adc7b339344bb65359e0efdbdae,
     type: 3}
-  camPrefab: {fileID: 0}
+  camPrefab: {fileID: 8323039755458967466, guid: 84d17f6cf3fa0524c8aa4da127290beb,
+    type: 3}
 --- !u!4 &646863813
 Transform:
   m_ObjectHideFlags: 0
@@ -9284,6 +9285,7 @@ GameObject:
   - component: {fileID: 1364282110}
   - component: {fileID: 1364282112}
   - component: {fileID: 1364282111}
+  - component: {fileID: 1364282113}
   m_Layer: 5
   m_Name: SaveMachine
   m_TagString: Untagged
@@ -9352,6 +9354,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1364282109}
   m_CullTransparentMesh: 1
+--- !u!114 &1364282113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1364282109}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72ddc0d2e9a886745afdad8e36555818, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 8561213184948837717, guid: 3e6b4548ee362524592aa582eacbc87d, type: 3}
+  list: {fileID: 1434772575}
+  selected: {fileID: 0}
+  machinName: {fileID: 577308524}
+  render: {fileID: 8400000, guid: 7d2e2646e7576cb45acf86507aadea29, type: 2}
 --- !u!1 &1367197204
 GameObject:
   m_ObjectHideFlags: 0
@@ -10094,7 +10113,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1427893332}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1364282113}
+        m_TargetAssemblyTypeName: GetCoreList, Assembly-CSharp
+        m_MethodName: SaveMachine
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1427893332
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12285,7 +12316,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Machine Name
+  m_Text: Enter Machine Name...
 --- !u!222 &1852130036
 CanvasRenderer:
   m_ObjectHideFlags: 0

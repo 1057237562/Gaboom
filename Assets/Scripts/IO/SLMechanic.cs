@@ -160,10 +160,11 @@ namespace Gaboom.IO
 
         public static void SaveObjToFile(PhysicCore obj, string filename)
         {
-            if(!Directory.Exists(machineFolder)){
+            if (!Directory.Exists(machineFolder))
+            {
                 Directory.CreateDirectory(machineFolder);
             }
-            FileSystem.WriteFile(machineFolder + filename, SerializeToXml(obj));
+            FileSystem.WriteFile(machineFolder + filename + ".gm", SerializeToXml(obj));
         }
 
         public static void LoadObjFromFile(string filename)
