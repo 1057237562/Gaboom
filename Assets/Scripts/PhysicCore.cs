@@ -1,6 +1,7 @@
 ﻿using Gaboom.Util;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using UnityEngine;
 
@@ -157,7 +158,7 @@ public class PhysicCore : MonoBehaviour
         mring.blocks.Add(gameObject.GetComponent<IBlock>());
     }
 
-    public static List<IBlock> openList = new List<IBlock>();
+    public static HashSet<IBlock> openList = new HashSet<IBlock>();
 
     public Dictionary<IBlock, Vector3> collideEvent = new Dictionary<IBlock, Vector3>();
     public Vector3 acceleration;
@@ -176,10 +177,11 @@ public class PhysicCore : MonoBehaviour
     {
         deltaT = (int)(Time.fixedDeltaTime * 1000);
     }
-    /*private void Update()
+    
+    private void Update()
     {
         Debug.DrawLine(GetComponent<Rigidbody>().worldCenterOfMass, GetComponent<Rigidbody>().worldCenterOfMass + new Vector3(0, -1, 0));
-    }*/
+    }
     // Update is called once per frame
     void FixedUpdate()
     {
@@ -209,17 +211,17 @@ public class PhysicCore : MonoBehaviour
     List<Ring> rings = new List<Ring>();
     void CheckBlock()
     {
-        List<IBlock> openList = new List<IBlock>();
+        HashSet<IBlock> ol = new HashSet<IBlock>();
         foreach (IBlock block in mring.blocks)
         {
-            if (!openList.Contains(block))
+            if (!ol.Contains(block))
             {
                 rings.Add(new Ring());
-                List<IBlock> blocks = new List<IBlock>();
+                HashSet<IBlock> blocks = new HashSet<IBlock>();
                 blocks.Add(block);
-                openList.Add(block);
-                dfs(block, ref blocks, ref openList);
-                rings[rings.Count - 1].blocks = blocks;
+                ol.Add(block);
+                dfs(block, ref blocks,ref ol);
+                rings[rings.Count - 1].blocks = blocks.ToList();
             }
         }
     }
@@ -272,15 +274,19 @@ public class PhysicCore : MonoBehaviour
         rigidbody.centerOfMass /= rigidbody.mass;
     }
 
-    void dfs(IBlock block, ref List<IBlock> blocks, ref List<IBlock> openList)
+    void dfs(IBlock block, ref HashSet<IBlock> blocks, ref HashSet<IBlock> ol)
     {
         foreach (IBlock m in block.connector)
         {
+            if(m == block)
+            {
+                continue;
+            }
             if (!blocks.Contains(m))
             {
                 blocks.Add(m);
-                openList.Add(m);
-                dfs(m, ref blocks, ref openList);
+                ol.Add(m);
+                dfs(m, ref blocks, ref ol);
             }
         }
     }

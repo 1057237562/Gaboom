@@ -18,16 +18,19 @@ public class IBlock : MonoBehaviour, IRTEditorEventListener
     [Range(0, float.PositiveInfinity)]
     public float bouncy = 0.8f;
     public float health = 100f;
-    [HideInInspector]
-    public float mass;
+    
     public Vector3 centerOfmass;
 
     public float o_mass = 1f;
 
     [HideInInspector]
+    public float mass;
+
+    [HideInInspector]
     public string alias;
     public void Load()
     {
+        mass = o_mass;
         position = transform.localPosition;
         rotation = transform.localRotation;
         foreach (IBlock block in connector)

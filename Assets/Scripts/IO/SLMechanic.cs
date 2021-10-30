@@ -59,7 +59,7 @@ namespace Gaboom.IO
             return xml.InnerXml;
         }
 
-        public static void DeserializeToGameObject(string xmlstr)
+        public static GameObject DeserializeToGameObject(string xmlstr)
         {
             XmlDocument xml = new XmlDocument();
             xml.LoadXml(xmlstr);
@@ -103,6 +103,7 @@ namespace Gaboom.IO
 
             physic.Load(content);
             physic.RecalculateRigidbody();
+            return core;
         }
 
         /// <summary>
@@ -167,9 +168,9 @@ namespace Gaboom.IO
             FileSystem.WriteFile(machineFolder + filename + ".gm", SerializeToXml(obj));
         }
 
-        public static void LoadObjFromFile(string filename)
+        public static GameObject LoadObjFromFile(string filename)
         {
-            DeserializeToGameObject(FileSystem.ReadFile(machineFolder + filename));
+            return DeserializeToGameObject(FileSystem.ReadFile(machineFolder + filename));
         }
 
         public static void LoadObjFromFile(string filename, Vector3 position, Quaternion rotation)

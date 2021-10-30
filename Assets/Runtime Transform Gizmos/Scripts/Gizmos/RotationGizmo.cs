@@ -1326,7 +1326,7 @@ namespace RTEditor
                                     if (!mask[rotationAxisIndex]) rotationAngle = 0.0f;
                                 }
 
-                                topParent.Rotate(rotationAxis, rotationAngle, _gizmoTransform.position);
+                                topParent.transform.parent.gameObject.Rotate(rotationAxis, rotationAngle, _gizmoTransform.position);
                                 IRTEditorEventListener editorEventListener = topParent.GetComponent<IRTEditorEventListener>();
                                 if (editorEventListener != null) editorEventListener.OnAlteredByTransformGizmo(this);
 
