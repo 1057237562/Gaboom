@@ -1,4 +1,5 @@
 ﻿using Gaboom.Util;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -158,6 +159,23 @@ public class PhysicCore : MonoBehaviour
         mring.blocks.Add(gameObject.GetComponent<IBlock>());
     }
 
+    public void RemoveIBlock(IBlock iblock)
+    {
+        Rigidbody rigidbody = GetComponent<Rigidbody>();
+
+        float mass = rigidbody.mass - iblock.mass;
+        rigidbody.centerOfMass *= rigidbody.mass;
+        rigidbody.centerOfMass -= (transform.InverseTransformPoint(iblock.transform.position + iblock.centerOfmass)) * iblock.mass;
+        rigidbody.centerOfMass /= mass;
+        rigidbody.mass = mass;
+
+        mring.blocks.Remove(iblock);
+        if(mring.blocks.Count == 0)
+        {
+            Destroy(gameObject);
+        }
+    }
+
     public static HashSet<IBlock> openList = new HashSet<IBlock>();
 
     public Dictionary<IBlock, Vector3> collideEvent = new Dictionary<IBlock, Vector3>();
@@ -167,6 +185,8 @@ public class PhysicCore : MonoBehaviour
     Vector3 lastV;
     bool run = true;
     public static int deltaT;
+    [HideInInspector]
+    public PhysXInterface deriveFrom;
     [HideInInspector]
     bool dirty = false;
     [HideInInspector]
@@ -211,6 +231,7 @@ public class PhysicCore : MonoBehaviour
     List<Ring> rings = new List<Ring>();
     void CheckBlock()
     {
+        rings.Clear();
         HashSet<IBlock> ol = new HashSet<IBlock>();
         foreach (IBlock block in mring.blocks)
         {

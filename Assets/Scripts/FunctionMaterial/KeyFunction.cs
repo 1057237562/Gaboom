@@ -1,3 +1,4 @@
+using Gaboom.Util;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ public class KeyFunction : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (GameLogic.inputingKey) return;
         if (Input.GetKeyDown(keycode) && pattern == 0)
         {
             action.Invoke();

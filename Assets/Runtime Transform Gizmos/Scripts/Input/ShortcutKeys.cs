@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections.Generic;
+using Gaboom.Util;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -242,7 +243,7 @@ namespace RTEditor
         public bool IsActiveInCurrentFrame()
         {
             // If no keys, mouse buttons or modifiers were specified, the shortcut can not possibly be active
-            if (IsEmpty()) return false;
+            if (IsEmpty() || GameLogic.IsPointerOverGameObject()) return false;
 
             // Loop through each key and check if it is active. If we find a key that is not active, we can
             // return false. Note: Keys that are set to 'None' can be ignored as they have no contribution.

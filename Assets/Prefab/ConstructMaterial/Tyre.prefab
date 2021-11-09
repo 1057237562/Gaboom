@@ -53,24 +53,10 @@ MonoBehaviour:
   toughness: 10
   bouncy: 0.8
   health: 100
-  mass: 0
   centerOfmass: {x: 0, y: 0, z: 0}
   o_mass: 0.12
+  mass: 0
   alias: 
---- !u!64 &8592502535544343456
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6125344879856262288}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -2432090755550338912, guid: c437616b736b72f46881552ddcc16f39, type: 3}
 --- !u!1001 &2747325105244226969
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -86,17 +72,17 @@ PrefabInstance:
     - target: {fileID: -4216859302048453862, guid: c437616b736b72f46881552ddcc16f39,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: c437616b736b72f46881552ddcc16f39,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: c437616b736b72f46881552ddcc16f39,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: c437616b736b72f46881552ddcc16f39,
         type: 3}
@@ -167,3 +153,17 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2747325105244226969}
   m_PrefabAsset: {fileID: 0}
+--- !u!64 &8592502535544343456
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6125344879856262288}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -2432090755550338912, guid: c437616b736b72f46881552ddcc16f39, type: 3}

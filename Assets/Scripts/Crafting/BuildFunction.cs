@@ -2,7 +2,7 @@ using RTEditor;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Gaboom.Util;
 public class BuildFunction : MonoSingletonBase<BuildFunction>
 {
     public Material preview;
@@ -22,31 +22,46 @@ public class BuildFunction : MonoSingletonBase<BuildFunction>
     }
     bool occupied = true;
 
+    public PhysicCore Reattach(PhysicCore core)
+    {
+        if(core.deriveFrom != null)
+        {
+            PhysXInterface pxi = core.deriveFrom;
+            pxi.Reattached();
+            return Reattach(pxi.core);
+        }
+        else
+        {
+            return core;
+        }
+    }
+
     private void FixedUpdate()
     {
-        if (selectedPrefab > -1)
+        if (generated != null)
+        {
+            occupied = generated.GetComponentInChildren<CollisionProbe>().isIntersect;
+            Destroy(generated);
+        }
+        if (selectedPrefab > -1 && !GameLogic.IsPointerOverGameObject())
         {
             Ray ray = GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
             RaycastHit raycastHit;
             Physics.Raycast(ray, out raycastHit);
-            if (generated != null)
-            {
-                occupied = generated.GetComponentInChildren<CollisionProbe>().isIntersect;
-                Destroy(generated);
-            }
 
-            if (raycastHit.collider != null && !ignores.Contains(raycastHit.collider.gameObject))
+            if (raycastHit.collider != null)
             {
-                if (align)
+                if (align && !ignores.Contains(raycastHit.collider.gameObject))
                 {
                     Collider hitObj = raycastHit.collider;
                     generated = Instantiate(prefabs[selectedPrefab], Vector3.zero, Quaternion.identity);
                     generated.transform.position = Align(generated, raycastHit);
-                    generated.transform.rotation = Quaternion.FromToRotation(generated.transform.forward, generated.transform.position - hitObj.transform.position);
+                    if (raycastHit.collider.transform.parent != null)
+                        generated.transform.rotation = Quaternion.FromToRotation(hitObj.transform.parent.forward, generated.transform.position - hitObj.transform.parent.position) * hitObj.transform.parent.rotation;
                 }
                 else
                 {
-                    generated = Instantiate(prefabs[selectedPrefab], raycastHit.point + prefabs[selectedPrefab].transform.lossyScale / 2, transform.rotation);
+                    generated = Instantiate(prefabs[selectedPrefab], raycastHit.point + prefabs[selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x,transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
                 }
                 foreach (MeshRenderer child in generated.GetComponentsInChildren<MeshRenderer>())
                 {
@@ -66,14 +81,14 @@ public class BuildFunction : MonoSingletonBase<BuildFunction>
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (!GameLogic.IsPointerOverGameObject() && Input.GetMouseButtonDown(0))
         {
             Ray ray = GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
             RaycastHit raycastHit;
             Physics.Raycast(ray, out raycastHit);
             if (selectedPrefab > -1)
             {
-                if (raycastHit.collider != null && !ignores.Contains(raycastHit.collider.gameObject))
+                if (raycastHit.collider != null)
                 {
                     if (!occupied)
                     {
@@ -82,22 +97,36 @@ public class BuildFunction : MonoSingletonBase<BuildFunction>
                             Destroy(generated);
                             generated = null;
                         }
-                        if (align)
+                        if (align && !ignores.Contains(raycastHit.collider.gameObject))
                         {
                             Collider hitObj = raycastHit.collider;
                             generated = Instantiate(prefabs[selectedPrefab], Vector3.zero, Quaternion.identity);
                             generated.transform.position = Align(generated, raycastHit);
-                            generated.transform.rotation = Quaternion.FromToRotation(generated.transform.forward, generated.transform.position - hitObj.transform.position);
+                            if(hitObj.transform.parent != null)
+                                generated.transform.rotation = Quaternion.FromToRotation(hitObj.transform.parent.forward, generated.transform.position - hitObj.transform.parent.position) * hitObj.transform.parent.rotation;
                         }
                         else
                         {
-                            generated = Instantiate(prefabs[selectedPrefab], raycastHit.point + prefabs[selectedPrefab].transform.lossyScale / 2, transform.rotation);
+                            generated = Instantiate(prefabs[selectedPrefab], raycastHit.point + prefabs[selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
                         }
 
                         if (raycastHit.collider.transform.parent != null)
                         {
                             IBlock block = generated.GetComponent<IBlock>();
-                            generated.transform.parent = raycastHit.collider.transform.parent.parent;
+                            PhysicCore parent = raycastHit.collider.transform.parent.parent.GetComponent<PhysicCore>();
+
+                            //Building logic
+                            if (block.GetType() == typeof(Engine))
+                            {
+                                Vector3 rpos = parent.transform.InverseTransformPoint(generated.transform.position);
+                                if (rpos.x < 0)
+                                {
+                                    ((Engine)block).reverse = true;
+                                }
+                            }
+
+                            parent = Reattach(parent);
+                            generated.transform.parent = parent.transform;
                             IBlock relativeBlock = raycastHit.collider.transform.parent.GetComponent<IBlock>();
                             relativeBlock.connector.Add(block);
                             block.connector.Add(raycastHit.collider.transform.parent.GetComponent<IBlock>());
@@ -106,6 +135,7 @@ public class BuildFunction : MonoSingletonBase<BuildFunction>
                             block.Load();
                             relativeBlock.ReloadRPos();
                             block.core.AppendIBlock(block);
+
                             foreach (Collider child in generated.GetComponentsInChildren<Collider>())
                             {
                                 child.isTrigger = false;
@@ -116,25 +146,28 @@ public class BuildFunction : MonoSingletonBase<BuildFunction>
                         else
                         {
                             GameObject parent = Instantiate(PhysicCore.emptyGameObject, raycastHit.point, Quaternion.identity);
-                            generated.transform.parent = parent.transform;
 
                             PhysicCore core = parent.GetComponent<PhysicCore>();
-
                             List<IBlock> blocks = new List<IBlock>();
 
                             IBlock block = generated.GetComponent<IBlock>();
                             //block.mass = generated.GetComponent<Rigidbody>().mass;
                             //block.centerOfmass = generated.GetComponent<Rigidbody>().centerOfMass;
+                            generated.transform.parent = parent.transform;
+                            foreach (Collider child in generated.GetComponentsInChildren<Collider>())
+                            {
+                                child.isTrigger = false;
+                            }
                             block.Load();
                             blocks.Add(block);
 
                             core.RecalculateRigidbody(blocks);
+                            core.enabled = true;
                         }
                         generated = null;
                     }
                 }
-            }
-            if (raycastHit.collider != null)
+            }else if (raycastHit.collider != null)
             {
                 switch (selectedPrefab)
                 {
@@ -149,6 +182,13 @@ public class BuildFunction : MonoSingletonBase<BuildFunction>
                                 kp.objname.text = raycastHit.collider.transform.parent.name;
                                 kp.CreateItem(keyFunction);
                             }
+                        }
+                        break;
+                    case -7:
+                        if (raycastHit.collider != null && raycastHit.collider.transform.parent != null)
+                        {
+                            IBlock block = raycastHit.collider.transform.parent.GetComponent<IBlock>();
+                            block.Break();
                         }
                         break;
                     default:

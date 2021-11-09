@@ -7,6 +7,8 @@ using Gaboom.Util;
 using System;
 using Object = UnityEngine.Object;
 using System.IO;
+using System.Reflection;
+using System.ComponentModel;
 
 namespace Gaboom.IO
 {
@@ -25,19 +27,48 @@ namespace Gaboom.IO
             xml.AppendChild(xml.CreateXmlDeclaration("1.0", "utf-8", "yes"));
 
             XmlElement parent = xml.CreateElement("PhysicCore");
-            parent.SetAttribute("position", core.transform.position.ToString());
-            parent.SetAttribute("rotation", core.transform.rotation.ToString());
-            parent.SetAttribute("velocity", core.GetComponent<Rigidbody>().velocity.ToString());
+            parent.SetAttribute("position", core.transform.position.ToString("r"));
+            parent.SetAttribute("rotation", core.transform.rotation.ToString("r"));
+            parent.SetAttribute("velocity", core.GetComponent<Rigidbody>().velocity.ToString("r"));
             XmlNode root = xml.CreateElement("Blocks");
             foreach (IBlock block in core.GetBlocks())
             {
                 XmlElement ele = xml.CreateElement("Block");
                 ele.SetAttribute("InstanceID", block.GetInstanceID().ToString());
                 ele.SetAttribute("type", BuildFunction.Instance.prefabs.IndexOf(BuildFunction.Instance.prefabs.First((x) => { return block.name.Contains(x.name); })).ToString());
-                ele.SetAttribute("position", block.position.ToString());
-                ele.SetAttribute("rotation", block.rotation.ToString());
-                ele.SetAttribute("scale", block.transform.localScale.ToString());
+                ele.SetAttribute("position", block.position.ToString("r"));
+                ele.SetAttribute("rotation", block.transform.localRotation.ToString("r"));
+                ele.SetAttribute("scale", block.transform.localScale.ToString("r"));
                 ele.SetAttribute("health", block.health.ToString());
+
+                FieldInfo[] fields = block.GetType().GetFields();  //Only retrun public field
+                if (fields.Length > 0)
+                {
+                    XmlElement attr = xml.CreateElement("Attributes");
+                    foreach (FieldInfo item in fields)
+                    {
+                        if (item.GetCustomAttribute<AttributeField>() == null)
+                            continue;
+                        XmlElement a = xml.CreateElement("Attribute");
+                        object obj = item.GetValue(block);
+                        a.SetAttribute(item.Name, obj.ToString());
+                        attr.AppendChild(a);
+                    }
+                    ele.AppendChild(attr);
+                }
+
+                KeyFunction[] funcs = block.GetComponents<KeyFunction>();
+                if(funcs.Length > 0)
+                {
+                    XmlElement attr = xml.CreateElement("KeyFunctions");
+                    foreach (KeyFunction listener in funcs)
+                    {
+                        XmlElement a = xml.CreateElement("KeyListener");
+                        a.SetAttribute("keycode", ((int)listener.keycode).ToString());
+                        attr.AppendChild(a);
+                    }
+                    ele.AppendChild(attr);
+                }
                 root.AppendChild(ele);
             }
             parent.AppendChild(root);
@@ -50,6 +81,7 @@ namespace Gaboom.IO
                     XmlElement ele = xml.CreateElement("Connect");
                     ele.SetAttribute("a", block.GetInstanceID().ToString());
                     ele.SetAttribute("b", connector.GetInstanceID().ToString());
+                    connector.connector.Remove(block);
                     connection.AppendChild(ele);
                 }
             }
@@ -78,6 +110,23 @@ namespace Gaboom.IO
                 block.transform.localScale = GetVec3ByString(xmlElement.GetAttribute("scale"));
                 IBlock iblock = block.GetComponent<IBlock>();
                 iblock.health = int.Parse(xmlElement.GetAttribute("health"));
+
+                XmlNodeList attributeList = xmlElement.GetElementsByTagName("Attribute");
+                foreach (XmlElement ele in attributeList)
+                {
+                    FieldInfo field = iblock.GetType().GetField(ele.Attributes[0].Name);
+                    TypeConverter tc = TypeDescriptor.GetConverter(field.GetCustomAttribute<AttributeField>().type);
+                    field.SetValue(iblock,  tc.ConvertFromString(ele.Attributes[0].Value));
+                }
+
+                XmlNodeList funcs = xmlElement.GetElementsByTagName("KeyListener");
+                KeyFunction[] functions = iblock.GetComponents<KeyFunction>();
+                for(int i = 0; i < funcs.Count;i++)
+                {
+                    XmlElement ele = (XmlElement)funcs[i];
+                    functions[i].keycode = (KeyCode)int.Parse(ele.GetAttribute("keycode"));
+                }
+
                 reflection.Add(xmlElement.GetAttribute("InstanceID"), iblock);
                 content.Add(iblock);
                 foreach (Collider col in block.GetComponentsInChildren<Collider>())
@@ -87,7 +136,7 @@ namespace Gaboom.IO
             }
 
             XmlElement conn = (XmlElement)parent.GetElementsByTagName("Connections")[0];
-            foreach (XmlElement con in conn.GetElementsByTagName("Connection"))
+            foreach (XmlElement con in conn.GetElementsByTagName("Connect"))
             {
                 IBlock a = reflection[con.GetAttribute("a")];
                 IBlock b = reflection[con.GetAttribute("b")];
@@ -106,59 +155,6 @@ namespace Gaboom.IO
             return core;
         }
 
-        /// <summary>
-        /// 反序列化XML到指定位置
-        /// </summary>
-        /// <param name="xmlstr">XML内容</param>
-        /// <param name="position">指定位置</param>
-        /// <param name="rotation">旋转量</param>
-        /// <returns></returns>
-        public static void DeserializeToGameObject(string xmlstr, Vector3 pos, Quaternion rota)
-        {
-            XmlDocument xml = new XmlDocument();
-            xml.LoadXml(xmlstr);
-            XmlElement parent = (XmlElement)xml.GetElementsByTagName("PhysicCore")[0];
-            GameObject core = Object.Instantiate(PhysicCore.emptyGameObject, pos, rota);
-
-            PhysicCore physic = core.GetComponent<PhysicCore>();
-            List<IBlock> content = new List<IBlock>();
-            Dictionary<string, IBlock> reflection = new Dictionary<string, IBlock>();
-
-            foreach (XmlElement xmlElement in ((XmlElement)parent.GetElementsByTagName("Blocks")[0]).GetElementsByTagName("Block"))
-            {
-                GameObject block = Object.Instantiate(BuildFunction.Instance.prefabs[int.Parse(xmlElement.GetAttribute("type"))], core.transform);
-                block.transform.localPosition = GetVec3ByString(xmlElement.GetAttribute("position"));
-                block.transform.localRotation = GetQuaByString(xmlElement.GetAttribute("rotation"));
-                block.transform.localScale = GetVec3ByString(xmlElement.GetAttribute("scale"));
-                IBlock iblock = block.GetComponent<IBlock>();
-                iblock.health = int.Parse(xmlElement.GetAttribute("health"));
-                reflection.Add(xmlElement.GetAttribute("InstanceID"), iblock);
-                content.Add(iblock);
-                foreach (Collider col in block.GetComponentsInChildren<Collider>())
-                {
-                    col.isTrigger = false;
-                }
-            }
-
-            XmlElement conn = (XmlElement)parent.GetElementsByTagName("Connections")[0];
-            foreach (XmlElement con in conn.GetElementsByTagName("Connection"))
-            {
-                IBlock a = reflection[con.GetAttribute("a")];
-                IBlock b = reflection[con.GetAttribute("b")];
-                a.connector.Add(b);
-                b.connector.Add(a);
-            }
-
-            foreach (IBlock iblock in content)
-            {
-                iblock.Load();
-                iblock.OnScale();
-            }
-
-            physic.Load(content);
-            physic.RecalculateRigidbody();
-        }
-
         public static void SaveObjToFile(PhysicCore obj, string filename)
         {
             if (!Directory.Exists(machineFolder))
@@ -175,7 +171,9 @@ namespace Gaboom.IO
 
         public static void LoadObjFromFile(string filename, Vector3 position, Quaternion rotation)
         {
-            DeserializeToGameObject(FileSystem.ReadFile(machineFolder + filename), position, rotation);
+            GameObject gameObject = DeserializeToGameObject(FileSystem.ReadFile(machineFolder + filename));
+            gameObject.transform.position = position;
+            gameObject.transform.rotation = rotation;
         }
 
         /// <summary>
@@ -224,4 +222,9 @@ namespace Gaboom.IO
         }
 
     }
+}
+
+public class AttributeField : Attribute
+{
+    public Type type;
 }

@@ -6,16 +6,20 @@ using UnityEngine;
 
 public class PhysXInterface : IBlock
 {
-    Vector3 connectDirection;
-    Quaternion connectRotation;
+    [HideInInspector]
+    public Vector3 connectDirection;
+    [HideInInspector]
+    public Quaternion connectRotation;
     [HideInInspector]
     public ConfigurableJoint joint;
-    HashSet<IBlock> conblocks = new HashSet<IBlock>();
-    GameObject connectors;
-
-    public bool ResetRotation = false;
+    [HideInInspector]
+    public HashSet<IBlock> conblocks = new HashSet<IBlock>();
+    [HideInInspector]
+    public GameObject connectors;
     [HideInInspector]
     public bool Dispatched = false;
+
+    public bool ResetRotation = false;
 
     public void Dispatch()
     {
@@ -91,17 +95,21 @@ public class PhysXInterface : IBlock
         return true;
     }
 
-    public void Reattached()
+    /*private void Update()
+    {
+        Debug.DrawLine(transform.position,transform.position + transform.forward);
+    }*/
+
+    public virtual void Reattached()
+    {
+        if(ResetRotation) connectors.transform.rotation = core.transform.rotation * Quaternion.Inverse(connectRotation);
+        connectors.transform.position = transform.TransformPoint(connectDirection);
+        Attach();
+    }
+
+    public void Attach()
     {
         Dispatched = false;
-        if (ResetRotation) { connectors.transform.rotation = core.transform.rotation * Quaternion.Inverse(connectRotation); }
-        else
-        {
-            float angle;
-            connectors.transform.rotation.ToAngleAxis(out angle, out _);
-            connectors.transform.rotation = Quaternion.AngleAxis(angle, joint.transform.InverseTransformPoint(transform.position));
-        }
-        connectors.transform.position = transform.TransformPoint(connectDirection);
         foreach (IBlock block in conblocks)
         {
             block.transform.parent = core.transform;
@@ -131,6 +139,7 @@ public class PhysXInterface : IBlock
         rigidbody.centerOfMass /= rigidbody.mass;
         PhysicCore physicCore = newObj.GetComponent<PhysicCore>();
         physicCore.Load(list);
+        physicCore.deriveFrom = this;
         return newObj;
     }
 }

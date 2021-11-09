@@ -6,19 +6,25 @@ using UnityEngine;
 public class IBlock : MonoBehaviour, IRTEditorEventListener
 {
     public Vector3 position;
-    public Quaternion rotation;
+    //public Quaternion rotation;
     public List<IBlock> connector = new List<IBlock>();
     [HideInInspector]
     public List<Vector3> r_pos = new List<Vector3>();
     [HideInInspector]
-    public PhysicCore core;
+    public PhysicCore core
+    {
+        get
+        {
+            return transform.parent.GetComponent<PhysicCore>();
+        }
+    }
 
     public float breakForce = 100f;
     public float toughness = 10f;
     [Range(0, float.PositiveInfinity)]
     public float bouncy = 0.8f;
     public float health = 100f;
-    
+
     public Vector3 centerOfmass;
 
     public float o_mass = 1f;
@@ -32,14 +38,13 @@ public class IBlock : MonoBehaviour, IRTEditorEventListener
     {
         mass = o_mass;
         position = transform.localPosition;
-        rotation = transform.localRotation;
+        //rotation = transform.localRotation;
         foreach (IBlock block in connector)
         {
             //Debug.Log(gameObject.name);
             r_pos.Add(block.transform.localPosition - position);
         }
-        core = transform.parent.GetComponent<PhysicCore>();
-        alias = name.Replace("(Clone)","");
+        alias = name.Replace("(Clone)", "");
     }
 
     public void ReloadRPos()
@@ -54,21 +59,31 @@ public class IBlock : MonoBehaviour, IRTEditorEventListener
     {
         if (health <= 0)
         {
-            foreach (IBlock block in connector)
-            {
-                block.connector.Remove(this);
-            }
+            Break();
+        }
+    }
+
+    public void Break()
+    {
+        foreach (IBlock block in connector)
+        {
+            block.connector.Remove(this);
+        }
+        if (connector.Count < 2)
+        {
+            core.RemoveIBlock(this);
+        }
+        else
+        {
             core.mring.blocks.Remove(this);
             core.setDirty();
-            Destroy(gameObject);
         }
+        Destroy(gameObject);
     }
 
     public void OnScale()
     {
         mass = o_mass * transform.localScale.x * transform.localScale.y * transform.localScale.z;
-        if (core == null)
-            core = transform.parent.GetComponent<PhysicCore>();
         core.RecalculateRigidbody();
         ReloadRPos();
     }

@@ -6,13 +6,25 @@ using UnityEngine;
 
 public class Engine : PhysXInterface
 {
+    [AttributeField(type = typeof(float))]
     public float rotationSpeed = 10f;
-   
-    public void Rotate() {
+    [AttributeField(type = typeof(bool))]
+    public bool reverse = false;
+    public override void Reattached()
+    {
+        float angle;
+        (connectors.transform.rotation * Quaternion.Inverse(transform.rotation)).ToAngleAxis(out angle, out _);
+        connectors.transform.rotation = Quaternion.AngleAxis(angle, transform.forward) * transform.rotation;
+        Attach();
+    }
+
+    public void Rotate()
+    {
         if (!Dispatched)
         {
             Dispatch();
         }
-        joint.GetComponent<Rigidbody>().AddRelativeTorque(joint.transform.InverseTransformPoint(transform.position) * rotationSpeed, ForceMode.Force);
+        if(joint != null)
+        joint.GetComponent<Rigidbody>().AddRelativeTorque((reverse ? 1:-1)*joint.transform.InverseTransformPoint(transform.position) * rotationSpeed, ForceMode.Force);
     }
 }

@@ -36,9 +36,9 @@ public class LoadPanel : MonoBehaviour
                 img.sprite = sprite;
 
                 Text ui = listItem.GetComponentInChildren<Text>();
-                ui.text = filename.Replace(SLMechanic.machineFolder, "").Replace(".gm", "");
+                ui.text = Path.GetFileNameWithoutExtension(filename);
                 string machineName = Path.GetFileName(filename);
-                listItem.GetComponent<Button>().onClick.AddListener(new UnityAction(() => { SLMechanic.LoadObjFromFile(machineName).name = machineName; }));
+                listItem.GetComponent<Button>().onClick.AddListener(new UnityAction(() => { SLMechanic.LoadObjFromFile(machineName).name = Path.GetFileNameWithoutExtension(filename); }));
             }
         }
     }

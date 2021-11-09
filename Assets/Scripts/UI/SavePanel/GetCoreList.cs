@@ -25,6 +25,12 @@ public class GetCoreList : MonoBehaviour
         GameObject[] objs = GameObject.FindGameObjectsWithTag("PhysicCore");
         foreach (GameObject gameObject in objs)
         {
+            ConfigurableJoint cjoint = gameObject.GetComponent<ConfigurableJoint>();
+            if (cjoint != null)
+            {
+                cjoint.connectedBody.GetComponent<PhysXInterface>().Reattached();
+                continue;
+            }
             GameObject listItem = Instantiate(item, list.transform);
             MachineButton mb = listItem.GetComponent<MachineButton>();
             listItem.GetComponent<Button>().onClick.AddListener(new UnityAction(() => { selected = mb; }));

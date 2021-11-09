@@ -1,3 +1,4 @@
+using Gaboom.Util;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -42,6 +43,17 @@ public class KeyPanel : MonoBehaviour
     bool drag = false;
     public RectTransform[] ignore;
     public Text objname;
+
+    private void OnEnable()
+    {
+        GameLogic.inputingKey = true;
+    }
+
+    private void OnDisable()
+    {
+        GameLogic.inputingKey = false;
+    }
+
     // Update is called once per frame
     void Update()
     {
