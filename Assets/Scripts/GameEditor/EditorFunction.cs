@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Gaboom.Util;
+using System;
+
 public class EditorFunction : MonoSingletonBase<EditorFunction>
 {
     public Material preview;
@@ -13,6 +15,8 @@ public class EditorFunction : MonoSingletonBase<EditorFunction>
     public GameObject toolSet;
     GameObject generated;
     public bool align = true;
+    public int brushSize = 5;
+    public int power = 5;
 
     public void Toggle()
     {
@@ -65,58 +69,73 @@ public class EditorFunction : MonoSingletonBase<EditorFunction>
 
     private void Update()
     {
-        if (!GameLogic.IsPointerOverGameObject() && Input.GetMouseButtonDown(0))
+        if (!GameLogic.IsPointerOverGameObject() && Input.GetMouseButton(0))
         {
             Ray ray = GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
             RaycastHit raycastHit;
-            Physics.Raycast(ray, out raycastHit);
-            if (BuildFunction.selectedPrefab > -1)
+            switch (BuildFunction.selectedPrefab)
             {
-                if (raycastHit.collider != null)
-                {
-                    if (!occupied)
+                case -8:
+                    Physics.Raycast(ray, out raycastHit, Mathf.Infinity, 1 << 6);
+                    if (raycastHit.collider != null)
                     {
-                        if (generated != null)
+                        Terrain terrain = raycastHit.collider.GetComponent<Terrain>();
+                        float[,] height = terrain.terrainData.GetHeights(0, 0, terrain.terrainData.heightmapResolution, terrain.terrainData.heightmapResolution);
+                        float ratio = terrain.terrainData.heightmapResolution / terrain.terrainData.size.x;
+                        Vector3 hitpoint = raycastHit.point - terrain.GetPosition();
+                        for (int x = (int)(Math.Max((int)hitpoint.x - brushSize, 0) * ratio); x < Math.Min(((int)hitpoint.x + brushSize) * ratio, terrain.terrainData.heightmapResolution - 1); x++)
                         {
-                            Destroy(generated);
+                            for (int y = (int)(Math.Max((int)hitpoint.z - brushSize, 0) * ratio); y < Math.Min(((int)hitpoint.z + brushSize) * ratio, terrain.terrainData.heightmapResolution - 1); y++)
+                            {
+                                height[y, x] += Mathf.Max(0, (-(Mathf.Pow(x - (int)hitpoint.x * ratio, 2) + Mathf.Pow(y - (int)hitpoint.z * ratio, 2)) * power / Mathf.Pow(brushSize, 2) + power) / 1000);
+                            }
+                        }
+                        terrain.terrainData.SetHeights(0, 0, height);
+                    }
+                    break;
+            }
+
+            if (!GameLogic.IsPointerOverGameObject() && Input.GetMouseButtonDown(0))
+            {
+                Physics.Raycast(ray, out raycastHit);
+                if (BuildFunction.selectedPrefab > -1)
+                {
+                    if (raycastHit.collider != null)
+                    {
+                        if (!occupied)
+                        {
+                            if (generated != null)
+                            {
+                                Destroy(generated);
+                                generated = null;
+                            }
+                            if (align)
+                            {
+                                Collider hitObj = raycastHit.collider;
+                                generated = Instantiate(prefabs[BuildFunction.selectedPrefab], Vector3.zero, Quaternion.identity);
+                                generated.transform.position = Align(generated, raycastHit);
+                                if (hitObj.transform.parent != null)
+                                    generated.transform.rotation = Quaternion.FromToRotation(hitObj.transform.parent.forward, generated.transform.position - hitObj.transform.parent.position) * hitObj.transform.parent.rotation;
+                            }
+                            else
+                            {
+                                generated = Instantiate(prefabs[BuildFunction.selectedPrefab], raycastHit.point + prefabs[BuildFunction.selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
+                            }
                             generated = null;
                         }
-                        if (align)
-                        {
-                            Collider hitObj = raycastHit.collider;
-                            generated = Instantiate(prefabs[BuildFunction.selectedPrefab], Vector3.zero, Quaternion.identity);
-                            generated.transform.position = Align(generated, raycastHit);
-                            if (hitObj.transform.parent != null)
-                                generated.transform.rotation = Quaternion.FromToRotation(hitObj.transform.parent.forward, generated.transform.position - hitObj.transform.parent.position) * hitObj.transform.parent.rotation;
-                        }
-                        else
-                        {
-                            generated = Instantiate(prefabs[BuildFunction.selectedPrefab], raycastHit.point + prefabs[BuildFunction.selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
-                        }
-                        generated = null;
                     }
                 }
-            }
-            else if (raycastHit.collider != null)
-            {
-                switch (BuildFunction.selectedPrefab)
+                else if (raycastHit.collider != null)
                 {
-                    case -7:
-                        if (raycastHit.collider != null && !ignores.Contains(raycastHit.collider.gameObject))
-                        {
-                            Destroy(raycastHit.collider.gameObject);
-                        }
-                        break;
-                    case -8:
-                        Physics.Raycast(ray, out raycastHit, Mathf.Infinity, LayerMask.GetMask("Terrain"));
-                        if (raycastHit.collider != null)
-                        {
-                            Terrain terrain = raycastHit.collider.GetComponent<Terrain>();
-                            float[,] height = terrain.terrainData.GetHeights(0, 0, terrain.terrainData.heightmapResolution, terrain.terrainData.heightmapResolution);
-                            Vector3 hitpoint = raycastHit.point - terrain.transform.position;
-
-                        }
-                        break;
+                    switch (BuildFunction.selectedPrefab)
+                    {
+                        case -7:
+                            if (raycastHit.collider != null && !ignores.Contains(raycastHit.collider.gameObject))
+                            {
+                                Destroy(raycastHit.collider.gameObject);
+                            }
+                            break;
+                    }
                 }
             }
         }

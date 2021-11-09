@@ -5336,6 +5336,8 @@ MonoBehaviour:
   ignores: []
   toolSet: {fileID: 0}
   align: 1
+  brushSize: 25
+  power: 5
 --- !u!1 &672773528
 GameObject:
   m_ObjectHideFlags: 0
@@ -15269,7 +15271,7 @@ GameObject:
   - component: {fileID: 2834078683295573757}
   - component: {fileID: 6806638068826343949}
   - component: {fileID: 2534866582014686873}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: default
   m_TagString: Untagged
   m_Icon: {fileID: 0}
