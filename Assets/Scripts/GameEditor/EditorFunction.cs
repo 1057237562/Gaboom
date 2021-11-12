@@ -19,6 +19,11 @@ public class EditorFunction : MonoSingletonBase<EditorFunction>
     [Range(0, 10)]
     public int power = 5;
 
+    public Terrain terrain;
+    private void Start()
+    {
+        terrain.terrainData.SetHeights(0, 0, new float[terrain.terrainData.heightmapResolution, terrain.terrainData.heightmapResolution]);
+    }
     public void Toggle()
     {
         enabled = !enabled;
@@ -84,9 +89,9 @@ public class EditorFunction : MonoSingletonBase<EditorFunction>
                         float[,] height = terrain.terrainData.GetHeights(0, 0, terrain.terrainData.heightmapResolution, terrain.terrainData.heightmapResolution);
                         float ratio = terrain.terrainData.heightmapResolution / terrain.terrainData.size.x;
                         Vector3 hitpoint = raycastHit.point - terrain.GetPosition();
-                        for (int x = (int)Math.Max(hitpoint.x  * ratio - brushSize, 0); x < Math.Min(hitpoint.x * ratio + brushSize, terrain.terrainData.heightmapResolution - 1); x++)
+                        for (int x = (int)Math.Max(hitpoint.x * ratio - brushSize, 0); x < Math.Min(hitpoint.x * ratio + brushSize, terrain.terrainData.heightmapResolution - 1); x++)
                         {
-                            for (int y = (int)Math.Max(hitpoint.z  * ratio - brushSize, 0); y < Math.Min(hitpoint.z * ratio + brushSize, terrain.terrainData.heightmapResolution - 1); y++)
+                            for (int y = (int)Math.Max(hitpoint.z * ratio - brushSize, 0); y < Math.Min(hitpoint.z * ratio + brushSize, terrain.terrainData.heightmapResolution - 1); y++)
                             {
                                 if (Input.GetKey(KeyCode.LeftShift))
                                 {
@@ -131,7 +136,7 @@ public class EditorFunction : MonoSingletonBase<EditorFunction>
                                 {
                                     for (int j = y - 1; j <= y + 1; j++)
                                     {
-                                       sum += heightmap[Math.Max(Math.Min(j, terrain.terrainData.heightmapResolution - 1),0), Math.Max(Math.Min(i, terrain.terrainData.heightmapResolution - 1), 0)];
+                                        sum += heightmap[Math.Max(Math.Min(j, terrain.terrainData.heightmapResolution - 1), 0), Math.Max(Math.Min(i, terrain.terrainData.heightmapResolution - 1), 0)];
                                     }
                                 }
                                 height[y, x] = sum / 9;
