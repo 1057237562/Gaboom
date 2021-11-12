@@ -131,15 +131,7 @@ public class EditorFunction : MonoSingletonBase<EditorFunction>
                                 {
                                     for (int j = y - 1; j <= y + 1; j++)
                                     {
-                                        try
-                                        {
-                                            sum += heightmap[j, i];
-                                        }
-                                        catch
-                                        {
-                                            Debug.Log(x + ":" + y);
-                                        }
-
+                                       sum += heightmap[Math.Max(Math.Min(j, terrain.terrainData.heightmapResolution - 1),0), Math.Max(Math.Min(i, terrain.terrainData.heightmapResolution - 1), 0)];
                                     }
                                 }
                                 height[y, x] = sum / 9;
