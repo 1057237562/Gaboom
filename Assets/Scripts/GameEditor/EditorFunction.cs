@@ -16,6 +16,7 @@ public class EditorFunction : MonoSingletonBase<EditorFunction>
     GameObject generated;
     public bool align = true;
     public int brushSize = 5;
+    [Range(0, 10)]
     public int power = 5;
 
     public void Toggle()
@@ -83,9 +84,9 @@ public class EditorFunction : MonoSingletonBase<EditorFunction>
                         float[,] height = terrain.terrainData.GetHeights(0, 0, terrain.terrainData.heightmapResolution, terrain.terrainData.heightmapResolution);
                         float ratio = terrain.terrainData.heightmapResolution / terrain.terrainData.size.x;
                         Vector3 hitpoint = raycastHit.point - terrain.GetPosition();
-                        for (int x = (int)(Math.Max((int)hitpoint.x - brushSize, 0) * ratio); x < Math.Min(((int)hitpoint.x + brushSize) * ratio, terrain.terrainData.heightmapResolution - 1); x++)
+                        for (int x = (int)Math.Max(hitpoint.x  * ratio - brushSize, 0); x < Math.Min(hitpoint.x * ratio + brushSize, terrain.terrainData.heightmapResolution - 1); x++)
                         {
-                            for (int y = (int)(Math.Max((int)hitpoint.z - brushSize, 0) * ratio); y < Math.Min(((int)hitpoint.z + brushSize) * ratio, terrain.terrainData.heightmapResolution - 1); y++)
+                            for (int y = (int)Math.Max(hitpoint.z  * ratio - brushSize, 0); y < Math.Min(hitpoint.z * ratio + brushSize, terrain.terrainData.heightmapResolution - 1); y++)
                             {
                                 if (Input.GetKey(KeyCode.LeftShift))
                                 {
@@ -105,27 +106,41 @@ public class EditorFunction : MonoSingletonBase<EditorFunction>
                     if (raycastHit.collider != null)
                     {
                         Terrain terrain = raycastHit.collider.GetComponent<Terrain>();
+                        float[,] heightmap = terrain.terrainData.GetHeights(0, 0, terrain.terrainData.heightmapResolution, terrain.terrainData.heightmapResolution);
                         float[,] height = terrain.terrainData.GetHeights(0, 0, terrain.terrainData.heightmapResolution, terrain.terrainData.heightmapResolution);
                         float ratio = terrain.terrainData.heightmapResolution / terrain.terrainData.size.x;
                         Vector3 hitpoint = raycastHit.point - terrain.GetPosition();
-                        int startx = (int)(Math.Max((int)hitpoint.x - brushSize, 0) * ratio);
-                        int starty = (int)(Math.Max((int)hitpoint.y - brushSize, 0) * ratio);
-                        for (int x = startx; x < Math.Min(((int)hitpoint.x + brushSize) * ratio, terrain.terrainData.heightmapResolution - 1); x++)
+                        int startx = (int)Math.Max(hitpoint.x * ratio - brushSize, 0);
+                        int starty = (int)Math.Max(hitpoint.y * ratio - brushSize, 0);
+                        /*int count = 0;
+                        for (int x = startx; x < Math.Min(((int)hitpoint.x + brushSize/2) * ratio, terrain.terrainData.heightmapResolution - 1); x++)
                         {
-                            float sum = 0;
-                            for (int i = startx - 1; i <= startx + 1; i++)
+                            for (int y = starty; y < Math.Min(((int)hitpoint.z + brushSize/2) * ratio, terrain.terrainData.heightmapResolution - 1); y++)
                             {
-                                for (int j = starty - 1; j <= starty + 1; j++)
-                                {
-                                    sum += height[Math.Max(Math.Min(j, terrain.terrainData.heightmapResolution), 0), Math.Max(Math.Min(i, terrain.terrainData.heightmapResolution), 0)];
-                                }
+                                sum += height[y,x];
+                                ++count;
                             }
-                            for (int y = starty; y < Math.Min(((int)hitpoint.z + brushSize) * ratio, terrain.terrainData.heightmapResolution - 1); y++)
+                        }
+                        sum/=count;*/
+                        for (int x = startx; x < Math.Min(hitpoint.x * ratio + brushSize, terrain.terrainData.heightmapResolution - 1); x++)
+                        {
+                            for (int y = starty; y < Math.Min(hitpoint.z * ratio + brushSize, terrain.terrainData.heightmapResolution - 1); y++)
                             {
-
-                                for (int i = -1; i <= 1; i++)
+                                float sum = 0;
+                                for (int i = x - 1; i <= x + 1; i++)
                                 {
-                                    sum += height[Math.Min(y + 1, terrain.terrainData.heightmapResolution), Math.Max(Math.Min(x + i, terrain.terrainData.heightmapResolution), 0)] - height[Math.Max(y - 1, 0), Math.Max(Math.Min(x + i, terrain.terrainData.heightmapResolution), 0)];
+                                    for (int j = y - 1; j <= y + 1; j++)
+                                    {
+                                        try
+                                        {
+                                            sum += heightmap[j, i];
+                                        }
+                                        catch
+                                        {
+                                            Debug.Log(x + ":" + y);
+                                        }
+
+                                    }
                                 }
                                 height[y, x] = sum / 9;
                             }
