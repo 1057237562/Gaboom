@@ -148,6 +148,7 @@ public class BuildFunction : MonoSingletonBase<BuildFunction>
                             GameObject parent = Instantiate(PhysicCore.emptyGameObject, raycastHit.point, Quaternion.identity);
 
                             PhysicCore core = parent.GetComponent<PhysicCore>();
+                            LifeCycle.gameObjects.Add(parent);
                             List<IBlock> blocks = new List<IBlock>();
 
                             IBlock block = generated.GetComponent<IBlock>();

@@ -202,6 +202,12 @@ public class PhysicCore : MonoBehaviour
     {
         Debug.DrawLine(GetComponent<Rigidbody>().worldCenterOfMass, GetComponent<Rigidbody>().worldCenterOfMass + new Vector3(0, -1, 0));
     }
+
+    private void OnDestroy()
+    {
+        worker.Abort();
+    }
+
     // Update is called once per frame
     void FixedUpdate()
     {
@@ -279,6 +285,10 @@ public class PhysicCore : MonoBehaviour
         }
         rigidbody.centerOfMass /= rigidbody.mass;
         Load(list);
+        if (!LifeCycle.gameStart)
+        {
+            rigidbody.constraints = RigidbodyConstraints.FreezeAll;
+        }
     }
 
     public void RecalculateRigidbody()

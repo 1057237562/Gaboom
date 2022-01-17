@@ -32,6 +32,18 @@ public class UILogic : MonoBehaviour
     {
         Select(selectedIndex + 1 == uiElement.Count ? 0 : selectedIndex + 1);
     }
+
+    public void Switch(int id)
+    {
+        if(id == selectedIndex)
+        {
+            Select(defaultSelect);
+        }
+        else
+        {
+            Select(id);
+        }
+    }
 }
 
 [Serializable]
