@@ -19,13 +19,13 @@ namespace RTEditor
         /// </summary>
         public static bool IsSceneObject(this GameObject gameObject)
         {
-            PrefabType prefabType = PrefabUtility.GetPrefabType(gameObject);
+            PrefabInstanceStatus prefabType = PrefabUtility.GetPrefabInstanceStatus(gameObject);
 
             // Make sure the specified game object is not a prefab. A game object is not a prefab if
             // 'prefabType' is either 'None' or if the value specifies that object is some kind of
             // a prefab instance. If it is an instance it means it exists inside the scene.
-            return prefabType == PrefabType.None || prefabType == PrefabType.PrefabInstance ||
-                   prefabType == PrefabType.DisconnectedPrefabInstance || prefabType == PrefabType.MissingPrefabInstance;
+            return prefabType == PrefabInstanceStatus.NotAPrefab || prefabType == PrefabInstanceStatus.Connected ||
+                   prefabType == PrefabInstanceStatus.Disconnected || prefabType == PrefabInstanceStatus.MissingAsset;
         }
         #endif
 
