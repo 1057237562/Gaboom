@@ -24,17 +24,17 @@ public class LifeCycle : MonoBehaviour
     {
         if (gameStart)
         {
-            UnFreezePhysic();
+            Play();
             foreach (UnityEvent e in startEvent) { e.Invoke(); }
         }
         else
         {
-            FreezePhysic();
+            Pause();
             foreach (UnityEvent e in stopEvent) { e.Invoke(); }
         }
     }
 
-    public void FreezePhysic()
+    public void Pause()
     {
         for(int i =0; i < gameObjects.Count; i++) { 
             Destroy(gameObjects[i]);
@@ -44,7 +44,7 @@ public class LifeCycle : MonoBehaviour
         }
     }
 
-    public void UnFreezePhysic()
+    public void Play()
     {
         physics = new List<string>();
         for(int i = 0; i < gameObjects.Count; i++)
@@ -58,6 +58,6 @@ public class LifeCycle : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        FreezePhysic();
+        Pause();
     }
 }
