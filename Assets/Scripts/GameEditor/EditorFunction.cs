@@ -15,6 +15,7 @@ public class EditorFunction : MonoSingletonBase<EditorFunction>
     List<GameObject> obstacles;
     public GameObject toolSet;
     GameObject generated;
+    
     public bool align = true;
     public int brushSize = 5;
     [Range(0, 10)]
@@ -31,6 +32,8 @@ public class EditorFunction : MonoSingletonBase<EditorFunction>
     }
     bool occupied = true;
 
+    public int selectedPrefab { get; set; }
+
     private void FixedUpdate()
     {
         if (generated != null)
@@ -38,7 +41,7 @@ public class EditorFunction : MonoSingletonBase<EditorFunction>
             occupied = generated.GetComponentInChildren<CollisionProbe>().isIntersect;
             Destroy(generated);
         }
-        if (BuildFunction.selectedPrefab > -1 && !GameLogic.IsPointerOverGameObject())
+        if (selectedPrefab > -1 && !GameLogic.IsPointerOverGameObject())
         {
             Ray ray = GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
             RaycastHit raycastHit;
@@ -49,14 +52,14 @@ public class EditorFunction : MonoSingletonBase<EditorFunction>
                 if (align && !ignores.Contains(raycastHit.collider.gameObject))
                 {
                     Collider hitObj = raycastHit.collider;
-                    generated = Instantiate(prefabs[BuildFunction.selectedPrefab], Vector3.zero, Quaternion.identity);
+                    generated = Instantiate(prefabs[selectedPrefab], Vector3.zero, Quaternion.identity);
                     generated.transform.position = Align(generated, raycastHit);
                     if (raycastHit.collider.transform.parent != null)
                         generated.transform.rotation = Quaternion.FromToRotation(hitObj.transform.parent.forward, generated.transform.position - hitObj.transform.parent.position) * hitObj.transform.parent.rotation;
                 }
                 else
                 {
-                    generated = Instantiate(prefabs[BuildFunction.selectedPrefab], raycastHit.point + prefabs[BuildFunction.selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
+                    generated = Instantiate(prefabs[selectedPrefab], raycastHit.point + prefabs[selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
                 }
                 foreach (MeshRenderer child in generated.GetComponentsInChildren<MeshRenderer>())
                 {
@@ -80,7 +83,7 @@ public class EditorFunction : MonoSingletonBase<EditorFunction>
         {
             Ray ray = GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
             RaycastHit raycastHit;
-            switch (BuildFunction.selectedPrefab)
+            switch (selectedPrefab)
             {
                 case -8:
                     Physics.Raycast(ray, out raycastHit, Mathf.Infinity, 1 << 6);
@@ -151,7 +154,7 @@ public class EditorFunction : MonoSingletonBase<EditorFunction>
             if (!GameLogic.IsPointerOverGameObject() && Input.GetMouseButtonDown(0))
             {
                 Physics.Raycast(ray, out raycastHit);
-                if (BuildFunction.selectedPrefab > -1)
+                if (selectedPrefab > -1)
                 {
                     if (raycastHit.collider != null)
                     {
@@ -165,14 +168,14 @@ public class EditorFunction : MonoSingletonBase<EditorFunction>
                             if (align)
                             {
                                 Collider hitObj = raycastHit.collider;
-                                generated = Instantiate(prefabs[BuildFunction.selectedPrefab], Vector3.zero, Quaternion.identity);
+                                generated = Instantiate(prefabs[selectedPrefab], Vector3.zero, Quaternion.identity);
                                 generated.transform.position = Align(generated, raycastHit);
                                 if (hitObj.transform.parent != null)
                                     generated.transform.rotation = Quaternion.FromToRotation(hitObj.transform.parent.forward, generated.transform.position - hitObj.transform.parent.position) * hitObj.transform.parent.rotation;
                             }
                             else
                             {
-                                generated = Instantiate(prefabs[BuildFunction.selectedPrefab], raycastHit.point + prefabs[BuildFunction.selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
+                                generated = Instantiate(prefabs[selectedPrefab], raycastHit.point + prefabs[selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
                             }
                             generated = null;
                         }
@@ -180,7 +183,7 @@ public class EditorFunction : MonoSingletonBase<EditorFunction>
                 }
                 else if (raycastHit.collider != null)
                 {
-                    switch (BuildFunction.selectedPrefab)
+                    switch (selectedPrefab)
                     {
                         case -7:
                             if (raycastHit.collider != null && !ignores.Contains(raycastHit.collider.gameObject))

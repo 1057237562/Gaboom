@@ -13,6 +13,7 @@ public class UIGenerator : MonoBehaviour
     public int i = 0;
     public GameObject model;
     public bool positive = true;
+    public UnityEvent<int> selection;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,7 +24,7 @@ public class UIGenerator : MonoBehaviour
             obj.GetComponent<Image>().sprite = sprite;
             int tag = i;
             Button btn = obj.GetComponent<Button>();
-            btn.onClick.AddListener(new UnityAction(() => { if (!positive) { events[(-tag - 1) >= events.Count ? 0 : (-tag - 1)].Invoke(); } else { events[tag >= events.Count ? 0 : tag].Invoke(); } BuildFunction.selectedPrefab = tag; }));
+            btn.onClick.AddListener(new UnityAction(() => { if (!positive) { events[(-tag - 1) >= events.Count ? 0 : (-tag - 1)].Invoke(); } else { events[tag >= events.Count ? 0 : tag].Invoke(); } selection.Invoke(tag); }));
             if (positive)
             {
                 i++;

@@ -11,7 +11,7 @@ public class BuildFunction : MonoSingletonBase<BuildFunction>
     public List<GameObject> prefabs;
     public List<GameObject> ignores;
     public GameObject keypanel;
-    public static int selectedPrefab = -1;
+    public int selectedPrefab { get; set; }
     GameObject generated;
     public bool align = true;
     public bool autoConnect = true;

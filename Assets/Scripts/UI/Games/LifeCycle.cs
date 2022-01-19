@@ -65,12 +65,13 @@ public class LifeCycle : MonoBehaviour
             panel.SetActive(false);
         }
         restoreBuildState.Invoke();
-        BuildFunction.selectedPrefab = -1;
+        BuildFunction.Instance.selectedPrefab = -1;
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        BuildFunction.Instance.selectedPrefab = -1;
         Pause();
     }
 }

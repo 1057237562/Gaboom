@@ -1321,6 +1321,21 @@ MonoBehaviour:
   i: 0
   model: {fileID: 188863113}
   positive: 1
+  selection:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 667096302}
+        m_TargetAssemblyTypeName: BuildFunction, Assembly-CSharp
+        m_MethodName: set_selectedPrefab
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &183727833
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5416,6 +5431,18 @@ Camera:
     type: 3}
   m_PrefabInstance: {fileID: 667096300}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &667096302 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4527825600477828412, guid: ae2665bbd1c096d4bb15dc507973adb4,
+    type: 3}
+  m_PrefabInstance: {fileID: 667096300}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c0f27f8752dca8438642e783e481991, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &672773528
 GameObject:
   m_ObjectHideFlags: 0
@@ -14834,6 +14861,21 @@ MonoBehaviour:
   i: -1
   model: {fileID: 199314017}
   positive: 0
+  selection:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 667096302}
+        m_TargetAssemblyTypeName: BuildFunction, Assembly-CSharp
+        m_MethodName: set_selectedPrefab
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2020719323
 GameObject:
   m_ObjectHideFlags: 0
