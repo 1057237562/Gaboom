@@ -15,7 +15,7 @@ public class EditorFunction : MonoSingletonBase<EditorFunction>
 
     public List<GameObject> prefabs;
     public List<GameObject> ignores;
-    List<GameObject> obstacles;
+    List<GameObject> obstacles = new List<GameObject>();
     public GameObject toolSet;
     GameObject generated;
     
@@ -42,11 +42,11 @@ public class EditorFunction : MonoSingletonBase<EditorFunction>
         SaveFileDlg pth = new SaveFileDlg();
         pth.structSize = Marshal.SizeOf(pth);
         pth.filter = "Map files (*.gmap)|*.gmap";
-        /*pth.file = new string(new char[256]);
+        pth.file = new string(new char[1024]);
         pth.maxFile = pth.file.Length;
-        pth.fileTitle = new string(new char[64]);
-        pth.maxFileTitle = pth.fileTitle.Length;*/
-        //pth.initialDir = Application.dataPath; //默认路径
+        pth.fileTitle = new string(new char[256]);
+        pth.maxFileTitle = pth.fileTitle.Length;
+        pth.initialDir = Application.dataPath; //默认路径
         pth.title = "Save";
         pth.defExt = "dat";
         pth.flags = 0x00080000 | 0x00001000 | 0x00000800 | 0x00000200 | 0x00000008;
@@ -56,6 +56,7 @@ public class EditorFunction : MonoSingletonBase<EditorFunction>
             XmlDocument doc = new XmlDocument();
             doc.AppendChild(doc.CreateXmlDeclaration("1.0", "utf-8", "yes"));
             SLMechanic.SerializeTerrainObjects(obstacles, doc, doc);
+            doc.Save(filepath);
         }
     }
 
@@ -64,11 +65,11 @@ public class EditorFunction : MonoSingletonBase<EditorFunction>
         OpenFileDlg pth = new OpenFileDlg();
         pth.structSize = Marshal.SizeOf(pth);
         pth.filter = "Map files (*.gmap)|*.gmap";
-        /*pth.file = new string(new char[256]);
+        pth.file = new string(new char[1024]);
         pth.maxFile = pth.file.Length;
-        pth.fileTitle = new string(new char[64]);
-        pth.maxFileTitle = pth.fileTitle.Length;*/
-        //pth.initialDir = Application.dataPath.Replace("/", "\\") + "\\Resources"; //默认路径
+        pth.fileTitle = new string(new char[256]);
+        pth.maxFileTitle = pth.fileTitle.Length;
+        pth.initialDir = Application.dataPath.Replace("/", "\\") + "\\Resources"; //默认路径
         pth.title = "Open";
         pth.defExt = "dat";
         pth.flags = 0x00080000 | 0x00001000 | 0x00000800 | 0x00000200 | 0x00000008;
@@ -210,7 +211,7 @@ public class EditorFunction : MonoSingletonBase<EditorFunction>
                                 Destroy(generated);
                                 generated = null;
                             }
-                            if (align)
+                            if (align && !ignores.Contains(raycastHit.collider.gameObject))
                             {
                                 Collider hitObj = raycastHit.collider;
                                 generated = Instantiate(prefabs[selectedPrefab], Vector3.zero, Quaternion.identity);
@@ -221,6 +222,7 @@ public class EditorFunction : MonoSingletonBase<EditorFunction>
                             else
                             {
                                 generated = Instantiate(prefabs[selectedPrefab], raycastHit.point + prefabs[selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
+                                obstacles.Add(generated);
                             }
                             generated = null;
                         }

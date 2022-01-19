@@ -3247,9 +3247,10 @@ MonoBehaviour:
   preview: {fileID: 2100000, guid: 3a891a6655067c343be0704d3af9f533, type: 2}
   deny: {fileID: 2100000, guid: b6af50ebaa244b3498a8a5a0658542d4, type: 2}
   prefabs:
-  - {fileID: 919132149155446097, guid: 89ea7cc702521d24d8aa74c0bb89f739, type: 3}
-  - {fileID: 919132149155446097, guid: 1b7f3affb955e024da2dcb88c3d1ebf5, type: 3}
-  ignores: []
+  - {fileID: 3508962585101819158, guid: 53ea5e17bf79a2844931542236c8b77d, type: 3}
+  - {fileID: 1103999600443529079, guid: d63190600886979419f4110b1ceca566, type: 3}
+  ignores:
+  - {fileID: 2534866582014686872}
   toolSet: {fileID: 755246382}
   align: 1
   brushSize: 25
