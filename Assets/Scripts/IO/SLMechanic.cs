@@ -9,6 +9,7 @@ using Object = UnityEngine.Object;
 using System.IO;
 using System.Reflection;
 using System.ComponentModel;
+using Gaboom.Scene;
 
 namespace Gaboom.IO
 {
@@ -21,14 +22,28 @@ namespace Gaboom.IO
             foreach(GameObject obj in objects)
             {
                 XmlElement ele = document.CreateElement("Object");
-                ele.SetAttribute("InstanceID", obj.GetInstanceID().ToString());
-                ele.SetAttribute("type", EditorFunction.Instance.prefabs.IndexOf(EditorFunction.Instance.prefabs.First((x) => { return obj.name.Contains(x.name); })).ToString());
+                ele.SetAttribute("type", SceneMaterial.Instance.prefabs.IndexOf(SceneMaterial.Instance.prefabs.First((x) => { return obj.name.Contains(x.name); })).ToString());
                 ele.SetAttribute("position", obj.transform.position.ToString("r"));
                 ele.SetAttribute("rotation", obj.transform.localRotation.ToString("r"));
                 ele.SetAttribute("scale", obj.transform.localScale.ToString("r"));
                 root.AppendChild(ele);
             }
             node.AppendChild(root);
+        }
+
+        public static List<GameObject> DeserializeToScene(XmlNode xmlNode,bool isStatic = false)
+        {
+            List<GameObject> objects = new List<GameObject>();
+            foreach(XmlElement xmlElement in xmlNode)
+            {
+                GameObject block = Object.Instantiate(SceneMaterial.Instance.prefabs[int.Parse(xmlElement.GetAttribute("type"))]);
+                block.transform.position = GetVec3ByString(xmlElement.GetAttribute("position"));
+                block.transform.rotation = GetQuaByString(xmlElement.GetAttribute("rotation"));
+                block.transform.localScale = GetVec3ByString(xmlElement.GetAttribute("scale"));
+                block.isStatic = isStatic;
+                objects.Add(block);
+            }
+            return objects;
         }
 
         public static string machineFolder = Environment.CurrentDirectory + "/saves/";
