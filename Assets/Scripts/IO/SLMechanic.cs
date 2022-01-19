@@ -15,7 +15,7 @@ namespace Gaboom.IO
     public class SLMechanic
     {
 
-        public static void SerializeObjects(List<GameObject> objects,XmlDocument document,XmlNode node)
+        public static void SerializeTerrainObjects(List<GameObject> objects,XmlDocument document,XmlNode node)
         {
             XmlElement root = document.CreateElement("Objects");
             foreach(GameObject obj in objects)

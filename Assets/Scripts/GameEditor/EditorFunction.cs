@@ -3,7 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Gaboom.Util;
+using System.Runtime.InteropServices;
 using System;
+using System.Xml;
+using Gaboom.IO;
 
 public class EditorFunction : MonoSingletonBase<EditorFunction>
 {
@@ -33,6 +36,48 @@ public class EditorFunction : MonoSingletonBase<EditorFunction>
     bool occupied = true;
 
     public int selectedPrefab { get; set; }
+
+    public void SaveToFile()
+    {
+        SaveFileDlg pth = new SaveFileDlg();
+        pth.structSize = Marshal.SizeOf(pth);
+        pth.filter = "Map files (*.gmap)|*.gmap";
+        /*pth.file = new string(new char[256]);
+        pth.maxFile = pth.file.Length;
+        pth.fileTitle = new string(new char[64]);
+        pth.maxFileTitle = pth.fileTitle.Length;*/
+        //pth.initialDir = Application.dataPath; //默认路径
+        pth.title = "Save";
+        pth.defExt = "dat";
+        pth.flags = 0x00080000 | 0x00001000 | 0x00000800 | 0x00000200 | 0x00000008;
+        if (SaveFileDialog.GetSaveFileName(pth))
+        {
+            string filepath = pth.file; //选择的文件路径;  
+            XmlDocument doc = new XmlDocument();
+            doc.AppendChild(doc.CreateXmlDeclaration("1.0", "utf-8", "yes"));
+            SLMechanic.SerializeTerrainObjects(obstacles, doc, doc);
+        }
+    }
+
+    public void OpenFromFile()
+    {
+        OpenFileDlg pth = new OpenFileDlg();
+        pth.structSize = Marshal.SizeOf(pth);
+        pth.filter = "Map files (*.gmap)|*.gmap";
+        /*pth.file = new string(new char[256]);
+        pth.maxFile = pth.file.Length;
+        pth.fileTitle = new string(new char[64]);
+        pth.maxFileTitle = pth.fileTitle.Length;*/
+        //pth.initialDir = Application.dataPath.Replace("/", "\\") + "\\Resources"; //默认路径
+        pth.title = "Open";
+        pth.defExt = "dat";
+        pth.flags = 0x00080000 | 0x00001000 | 0x00000800 | 0x00000200 | 0x00000008;
+        if (OpenFileDialog.GetOpenFileName(pth))
+        {
+            string filepath = pth.file; //选择的文件路径;  
+            Debug.Log(filepath);
+        }
+    }
 
     private void FixedUpdate()
     {
