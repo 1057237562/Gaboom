@@ -11,6 +11,8 @@ public class LifeCycle : MonoBehaviour
     public static List<GameObject> gameObjects = new List<GameObject>();
 
     public List<string> physics = new List<string>();
+    public List<GameObject> buildingPanel = new List<GameObject>();
+    public UnityEvent restoreBuildState;
 
     public List<UnityEvent> startEvent;
     public List<UnityEvent> stopEvent;
@@ -42,17 +44,28 @@ public class LifeCycle : MonoBehaviour
             physic.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
             gameObjects[i] = physic;
         }
+        foreach(GameObject panel in buildingPanel)
+        {
+            panel.SetActive(true);
+        }
     }
 
     public void Play()
     {
         physics = new List<string>();
+        gameObjects.RemoveAll(x => x == null);
         for(int i = 0; i < gameObjects.Count; i++)
         {
             GameObject physic = gameObjects[i];
             physics.Add(SLMechanic.SerializeToXml(physic.GetComponent<PhysicCore>()));
             physic.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
         }
+        foreach(GameObject panel in buildingPanel)
+        {
+            panel.SetActive(false);
+        }
+        restoreBuildState.Invoke();
+        BuildFunction.selectedPrefab = -1;
     }
 
     // Start is called before the first frame update

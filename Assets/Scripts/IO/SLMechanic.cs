@@ -15,6 +15,22 @@ namespace Gaboom.IO
     public class SLMechanic
     {
 
+        public static void SerializeObjects(List<GameObject> objects,XmlDocument document,XmlNode node)
+        {
+            XmlElement root = document.CreateElement("Objects");
+            foreach(GameObject obj in objects)
+            {
+                XmlElement ele = document.CreateElement("Object");
+                ele.SetAttribute("InstanceID", obj.GetInstanceID().ToString());
+                ele.SetAttribute("type", EditorFunction.Instance.prefabs.IndexOf(EditorFunction.Instance.prefabs.First((x) => { return obj.name.Contains(x.name); })).ToString());
+                ele.SetAttribute("position", obj.transform.position.ToString("r"));
+                ele.SetAttribute("rotation", obj.transform.localRotation.ToString("r"));
+                ele.SetAttribute("scale", obj.transform.localScale.ToString("r"));
+                root.AppendChild(ele);
+            }
+            node.AppendChild(root);
+        }
+
         public static string machineFolder = Environment.CurrentDirectory + "/saves/";
         /// <summary>
         /// 将游戏物体序列化成为XML

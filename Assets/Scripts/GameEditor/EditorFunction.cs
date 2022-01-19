@@ -12,6 +12,7 @@ public class EditorFunction : MonoSingletonBase<EditorFunction>
 
     public List<GameObject> prefabs;
     public List<GameObject> ignores;
+    List<GameObject> obstacles;
     public GameObject toolSet;
     GameObject generated;
     public bool align = true;
