@@ -43,14 +43,14 @@ namespace Gaboom.Scene
         {
             SaveFileDlg pth = new SaveFileDlg();
             pth.structSize = Marshal.SizeOf(pth);
-            pth.filter = "Map files (*.gmap) | *.gmap";
+            pth.filter = "Map files (*.gmap)\0*.gmap";
             pth.file = new string(new char[1024]);
             pth.maxFile = pth.file.Length;
             pth.fileTitle = new string(new char[256]);
             pth.maxFileTitle = pth.fileTitle.Length;
             pth.initialDir = Application.dataPath; //默认路径
             pth.title = "Save";
-            pth.defExt = "dat";
+            pth.defExt = "gmap";
             pth.flags = 0x00080000 | 0x00001000 | 0x00000800 | 0x00000200 | 0x00000008;
             if (SaveFileDialog.GetSaveFileName(pth))
             {
@@ -66,14 +66,14 @@ namespace Gaboom.Scene
         {
             OpenFileDlg pth = new OpenFileDlg();
             pth.structSize = Marshal.SizeOf(pth);
-            pth.filter = "Map files(*.gmap) | *.gmap";
+            pth.filter = "Map files(*.gmap)\0*.gmap";
             pth.file = new string(new char[1024]);
             pth.maxFile = pth.file.Length;
             pth.fileTitle = new string(new char[256]);
             pth.maxFileTitle = pth.fileTitle.Length;
-            pth.initialDir = Application.dataPath.Replace("/", "\\") + "\\Resources"; //默认路径
+            pth.initialDir = Application.dataPath; //默认路径
             pth.title = "Open";
-            pth.defExt = "dat";
+            pth.defExt = "gmap";
             pth.flags = 0x00080000 | 0x00001000 | 0x00000800 | 0x00000200 | 0x00000008;
             if (OpenFileDialog.GetOpenFileName(pth))
             {
