@@ -75,7 +75,8 @@ public class RenderPreviewImage
         Graphics.Blit(texture, tex);
 
         Object.DestroyImmediate(canvas_obj);
-        //Object.DestroyImmediate(cameraObj);
+        Object.DestroyImmediate(cameraObj);
+        Object.DestroyImmediate(clone);
         return tex;
     }
 

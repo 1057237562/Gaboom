@@ -68,6 +68,9 @@ namespace Gaboom.Scene
         {
             string dataPath = Application.dataPath + "/Workspace";
             preloadObj = ObjLoader.LoadObjFile(dataPath + "/" + modelImported[selection] + ".obj");
+            preloadObj.tag = "ImportedModel";
+            preloadObj.name = modelImported[selection];
+            preloadObj.SetActive(false);
         }
 
         public void SaveToFile()
@@ -233,18 +236,24 @@ namespace Gaboom.Scene
                     if (align && !ignores.Contains(raycastHit.collider.gameObject))
                     {
                         Collider hitObj = raycastHit.collider;
-                        if(isCustomModel)
+                        if (isCustomModel)
+                        {
                             generated = Instantiate(preloadObj, Vector3.zero, Quaternion.identity);
+                            generated.SetActive(true);
+                        }
                         else
-                        generated = Instantiate(SceneMaterial.Instance.prefabs[selectedPrefab], Vector3.zero, Quaternion.identity);
+                            generated = Instantiate(SceneMaterial.Instance.prefabs[selectedPrefab], Vector3.zero, Quaternion.identity);
                         generated.transform.position = Align(generated, raycastHit);
                         if (raycastHit.collider.transform.parent != null)
                             generated.transform.rotation = Quaternion.FromToRotation(hitObj.transform.parent.forward, generated.transform.position - hitObj.transform.parent.position) * hitObj.transform.parent.rotation;
                     }
                     else
                     {
-                        if(isCustomModel)
+                        if (isCustomModel)
+                        {
                             generated = Instantiate(preloadObj, Vector3.zero, Quaternion.identity);
+                            generated.SetActive(true);
+                        }
                         else
                             generated = Instantiate(SceneMaterial.Instance.prefabs[selectedPrefab], raycastHit.point + SceneMaterial.Instance.prefabs[selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
                     }
@@ -363,7 +372,10 @@ namespace Gaboom.Scene
                                 {
                                     Collider hitObj = raycastHit.collider;
                                     if (isCustomModel)
+                                    {
                                         generated = Instantiate(preloadObj, Vector3.zero, Quaternion.identity);
+                                        generated.SetActive(true);
+                                    }
                                     else
                                         generated = Instantiate(SceneMaterial.Instance.prefabs[selectedPrefab], Vector3.zero, Quaternion.identity);
                                     generated.transform.position = Align(generated, raycastHit);
@@ -373,7 +385,10 @@ namespace Gaboom.Scene
                                 else
                                 {
                                     if (isCustomModel)
+                                    {
                                         generated = Instantiate(preloadObj, Vector3.zero, Quaternion.identity);
+                                        generated.SetActive(true);
+                                    }
                                     else
                                         generated = Instantiate(SceneMaterial.Instance.prefabs[selectedPrefab], raycastHit.point + SceneMaterial.Instance.prefabs[selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
                                 }
