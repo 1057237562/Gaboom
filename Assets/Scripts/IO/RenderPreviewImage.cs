@@ -35,15 +35,16 @@ public class RenderPreviewImage
         Vector3 Min = bounds.min;
         Vector3 Max = bounds.max;
         GameObject cameraObj = Object.Instantiate(VariableInitializer.Instance.camPrefab);
-
+        cameraObj.layer = 21;
         Camera renderCamera = cameraObj.GetComponent<Camera>();
 
-        renderCamera.backgroundColor = new Color(1f, 1f, 1f, 0f);
+        renderCamera.backgroundColor = new Color(255f, 255f, 255f, 0f);
         renderCamera.clearFlags = CameraClearFlags.SolidColor;
         if (cameraObj.GetComponent<HDAdditionalCameraData>() != null)
         {
-            cameraObj.GetComponent<HDAdditionalCameraData>().backgroundColorHDR = new Color(1f, 1f, 1f, 0f);
+            cameraObj.GetComponent<HDAdditionalCameraData>().backgroundColorHDR = new Color(255f, 255f, 255f, 0f);
             cameraObj.GetComponent<HDAdditionalCameraData>().clearColorMode = HDAdditionalCameraData.ClearColorMode.Color;
+            cameraObj.GetComponent<HDAdditionalCameraData>().volumeLayerMask = 1 << 21;
         }
         renderCamera.cullingMask = 1 << 21;
         if (isUINode)
@@ -51,7 +52,6 @@ public class RenderPreviewImage
             cameraObj.transform.position = new Vector3((Max.x + Min.x) / 2f, (Max.y + Min.y) / 2f, cloneTransform.position.z - 100);
             Vector3 center = new Vector3(cloneTransform.position.x, (Max.y + Min.y) / 2f, cloneTransform.position.z);
             cameraObj.transform.LookAt(center);
-
             renderCamera.orthographic = true;
             float width = Max.x - Min.x;
             float height = Max.y - Min.y;
@@ -67,16 +67,16 @@ public class RenderPreviewImage
             //int angle = (int)(Mathf.Atan2((Max.y - Min.y) / 2, (Max.z - Min.z)) * 180 / 3.1415f * 2);
             renderCamera.fieldOfView = 60;
         }
-        RenderTexture texture = new RenderTexture(512, 512, 0, RenderTextureFormat.DefaultHDR);
+        RenderTexture texture = new RenderTexture(512, 512, 32, RenderTextureFormat.ARGB32);
         renderCamera.targetTexture = texture;
-
+        
         renderCamera.RenderDontRestore();
-        RenderTexture tex = new RenderTexture(512, 512, 0, RenderTextureFormat.DefaultHDR);
+        RenderTexture tex = new RenderTexture(512, 512, 32, RenderTextureFormat.ARGB32);
         Graphics.Blit(texture, tex);
 
         Object.DestroyImmediate(canvas_obj);
-        Object.DestroyImmediate(cameraObj);
-        Object.DestroyImmediate(clone);
+        //Object.DestroyImmediate(cameraObj);
+        //Object.DestroyImmediate(clone);
         return tex;
     }
 
@@ -155,7 +155,7 @@ public class RenderPreviewImage
         BinaryWriter writer = new BinaryWriter(file);
         writer.Write(bytes);
         file.Close();
-        Texture2D.DestroyImmediate(png);
+        Object.DestroyImmediate(png);
         png = null;
         RenderTexture.active = prev;
         return true;
