@@ -161,6 +161,7 @@ namespace Gaboom.Scene
                         string mtlFile = ObjLoader.ObjGetFilePath(data, ObjFileInfo.Directory.FullName + Path.DirectorySeparatorChar, Path.GetFileNameWithoutExtension(filepath));
                         if (mtlFile != null)
                             File.Copy(mtlFile, dataPath + "/" + Path.GetFileNameWithoutExtension(filepath) + ".mtl", true);
+                        RenderPreviewImage.SaveTextureToPNG(RenderPreviewImage.GetAssetPreview(ObjLoader.LoadObjFile(filepath)), dataPath + "/" + Path.GetFileNameWithoutExtension(filepath) + "_thumbnail.png");
                     }
                 }
             }
