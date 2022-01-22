@@ -1,9 +1,4 @@
-﻿/*
-(C) 2015 AARO4130
-DO NOT USE PARTS OF, OR THE ENTIRE SCRIPT, AND CLAIM AS YOUR OWN WORK
-*/
-
-using System;
+﻿using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,9 +6,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 public class ObjLoader
 {
@@ -26,24 +18,6 @@ public class ObjLoader
         public string meshName;
         public int[] indexes;
     }
-
-
-    //functions
-#if UNITY_EDITOR
-    [MenuItem("GameObject/Import From Obj")]
-    static void ObjLoadMenu()
-    {
-        string pth = UnityEditor.EditorUtility.OpenFilePanel("Import Obj", "", "obj");
-        if (!string.IsNullOrEmpty(pth))
-        {
-            System.Diagnostics.Stopwatch s = new System.Diagnostics.Stopwatch();
-            s.Start();
-            LoadObjFile(pth);
-            Debug.Log("Obj load took " + s.ElapsedMilliseconds + "ms");
-            s.Stop();
-        }
-        }
-#endif
 
     public static Vector3 ParseVectorFromCMPS(string[] cmps)
     {
@@ -199,7 +173,7 @@ public class ObjLoader
         return matlList.ToArray();
     }
 
-    public static GameObject LoadObjFile(string fn)
+    public static GameObject LoadObjFile(string fn,bool hdr = true)
     {
 
         string meshName = Path.GetFileNameWithoutExtension(fn);
@@ -462,14 +436,20 @@ public class ObjLoader
                 
                 if (materialCache == null)
                 {
-                    processedMaterials[i] = new Material(Shader.Find("Standard (Specular setup)"));
+                    if (hdr)
+                        processedMaterials[i] = new Material(Shader.Find("HDRP/Lit"));
+                    else
+                        processedMaterials[i] = new Material(Shader.Find("Standard (Specular setup)"));
                 }
                 else
                 {
                     Material mfn = Array.Find(materialCache, x => x.name == meshMaterialNames[i]); ;
                     if (mfn == null)
                     {
-                        processedMaterials[i] = new Material(Shader.Find("Standard (Specular setup)"));
+                        if (hdr)
+                            processedMaterials[i] = new Material(Shader.Find("HDRP/Lit"));
+                        else
+                            processedMaterials[i] = new Material(Shader.Find("Standard (Specular setup)"));
                     }
                     else
                     {

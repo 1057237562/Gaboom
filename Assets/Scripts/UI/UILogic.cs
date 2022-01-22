@@ -25,7 +25,7 @@ public class UILogic : MonoBehaviour
         }
         uiElement[index].SetActive(true);
         selectedIndex = index;
-        OnChange.Invoke();
+        OnChange.Invoke(selectedIndex);
     }
 
     public void Next()
@@ -47,7 +47,7 @@ public class UILogic : MonoBehaviour
 }
 
 [Serializable]
-public class UIEvent : UnityEvent
+public class UIEvent : UnityEvent<int>
 {
 
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 namespace Gaboom.Util
@@ -51,6 +52,18 @@ namespace Gaboom.Util
             {
                 values = vs;
                 filename = fn;
+            }
+        }
+
+        public static void SerializeToFile(object content, string filename)
+        {
+            using (FileStream stream = new FileStream(filename, FileMode.OpenOrCreate))
+            {
+                BinaryFormatter formatter = new BinaryFormatter();
+                using (var zipStream = new GZipStream(stream, CompressionMode.Compress))
+                {
+                    formatter.Serialize(zipStream, content);
+                }
             }
         }
 
