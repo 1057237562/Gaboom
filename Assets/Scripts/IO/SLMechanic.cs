@@ -22,7 +22,13 @@ namespace Gaboom.IO
             foreach(GameObject obj in objects)
             {
                 XmlElement ele = document.CreateElement("Object");
-                ele.SetAttribute("type", SceneMaterial.Instance.prefabs.IndexOf(SceneMaterial.Instance.prefabs.First((x) => { return obj.name.Contains(x.name); })).ToString());
+                if (obj.tag == "ImportedModel")
+                {
+                    ele.SetAttribute("name", obj.name);
+                    ele.SetAttribute("type", "ImportedModel");
+                }
+                else
+                    ele.SetAttribute("type", SceneMaterial.Instance.prefabs.IndexOf(SceneMaterial.Instance.prefabs.First((x) => { return obj.name.Contains(x.name); })).ToString());
                 ele.SetAttribute("position", obj.transform.position.ToString("r"));
                 ele.SetAttribute("rotation", obj.transform.localRotation.ToString("r"));
                 ele.SetAttribute("scale", obj.transform.localScale.ToString("r"));
@@ -36,7 +42,20 @@ namespace Gaboom.IO
             List<GameObject> objects = new List<GameObject>();
             foreach(XmlElement xmlElement in xmlNode)
             {
-                GameObject block = Object.Instantiate(SceneMaterial.Instance.prefabs[int.Parse(xmlElement.GetAttribute("type"))]);
+                GameObject block;
+                if(xmlElement.GetAttribute("type") == "ImportedModel")
+                {
+                    string dataPath = Application.dataPath + "/Workspace";
+                    block = new GameObject();
+                    //preloadObj.AddComponent<CollisionProbe>();
+                    ObjLoader.LoadObjFile(dataPath + "/" + xmlElement.GetAttribute("name") + ".obj").transform.parent = block.transform;
+                    block.tag = "ImportedModel";
+                    block.name = xmlElement.GetAttribute("name");
+                    block.SetActive(false);
+                    EditorFunction.AddCollider(block);
+                }
+                else
+                block= Object.Instantiate(SceneMaterial.Instance.prefabs[int.Parse(xmlElement.GetAttribute("type"))]);
                 block.transform.position = GetVec3ByString(xmlElement.GetAttribute("position"));
                 block.transform.rotation = GetQuaByString(xmlElement.GetAttribute("rotation"));
                 block.transform.localScale = GetVec3ByString(xmlElement.GetAttribute("scale"));

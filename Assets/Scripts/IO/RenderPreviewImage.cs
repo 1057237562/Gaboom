@@ -112,6 +112,19 @@ public class RenderPreviewImage
         return texture2D;
     }
 
+    public static Texture2D GetTexrture2DFromPath(string imgPath)
+    {
+        FileStream fs = new FileStream(imgPath, FileMode.Open, FileAccess.Read);
+        int byteLength = (int)fs.Length;
+        byte[] imgBytes = new byte[byteLength];
+        fs.Read(imgBytes, 0, byteLength);
+        fs.Close();
+        fs.Dispose();
+        Texture2D t2d = new Texture2D(512, 512);
+        t2d.LoadImage(imgBytes);
+        t2d.Apply();
+        return t2d;
+    }
 
     public static Bounds GetBounds(GameObject obj)
     {

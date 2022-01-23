@@ -66,7 +66,6 @@ namespace Gaboom.Scene
 
         public void LoadObj(int selection)
         {
-            Debug.Log(selection);
             if(preloadObj != null)
                 Destroy(preloadObj);
             string dataPath = Application.dataPath + "/Workspace";
@@ -80,7 +79,7 @@ namespace Gaboom.Scene
             AddCollider(preloadObj);
         }
 
-        void AddCollider(GameObject target)
+        public static void AddCollider(GameObject target)
         {
             MeshFilter filter = target.GetComponent<MeshFilter>();
             if (filter != null)
@@ -229,15 +228,19 @@ namespace Gaboom.Scene
                 Thread thread = new Thread(new ThreadStart(() => {
                     LZMAHelper.DeCompress(filepath, filepath + ".upk", m_CodeProgress);
                     UPKExtra.ExtraUPK(filepath + ".upk", dataPath, m_CodeProgress);
+                    File.Delete(filepath + ".upk");
+                    modelImported = DeserializeFromFile<List<string>>(dataPath + "/import.dat");
+                    modelPanel.ui.Clear();
+                    foreach(string item in modelImported)
+                    {
+                        modelPanel.ui.Add(Sprite.Create(RenderPreviewImage.GetTexrture2DFromPath(dataPath + "/" + item + "_thumbnail.png"), new Rect(0, 0, 512, 512), new Vector2(0.5f, 0.5f)));
+                    }
                     action = new UnityAction(() => {
                         terrain.terrainData.SetHeights(0,0,DeserializeFromFile<float[,]>(dataPath+"/Terrain.tr"));
-                        modelImported = DeserializeFromFile<List<string>>(dataPath + "/import.dat");
-                        modelPanel.ui.Clear();
                         modelPanel.ReloadUI();
                         XmlDocument doc = new XmlDocument();
                         doc.Load(Application.dataPath + "/Workspace/" + slider.name);
                         obstacles = SLMechanic.DeserializeToScene(doc.GetElementsByTagName("Objects")[0]);
-                        File.Delete(filepath + ".upk");
                         slider.gameObject.SetActive(false);
                     });
                 }));
