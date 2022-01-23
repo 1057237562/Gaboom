@@ -38,7 +38,6 @@ namespace Gaboom.Scene
         {
             enabled = !enabled;
         }
-        bool occupied = true;
         CodeProgress m_CodeProgress = null;
 
         public Slider slider;
@@ -67,15 +66,34 @@ namespace Gaboom.Scene
 
         public void LoadObj(int selection)
         {
+            Debug.Log(selection);
             if(preloadObj != null)
                 Destroy(preloadObj);
             string dataPath = Application.dataPath + "/Workspace";
             preloadObj = new GameObject();
+            //preloadObj.AddComponent<CollisionProbe>();
             ObjLoader.LoadObjFile(dataPath + "/" + modelImported[selection] + ".obj").transform.parent = preloadObj.transform;
             preloadObj.tag = "ImportedModel";
             preloadObj.name = modelImported[selection];
             preloadObj.SetActive(false);
             selectedPrefab = selection;
+            AddCollider(preloadObj);
+        }
+
+        void AddCollider(GameObject target)
+        {
+            MeshFilter filter = target.GetComponent<MeshFilter>();
+            if (filter != null)
+            {
+                MeshCollider mc = target.AddComponent<MeshCollider>();
+                mc.sharedMesh = filter.mesh;
+                mc.convex = true;
+                mc.isTrigger = true;
+            }
+            foreach(Transform child in target.transform)
+            {
+                AddCollider(child.gameObject);
+            }
         }
 
         public void SaveToFile()
@@ -126,6 +144,8 @@ namespace Gaboom.Scene
                 Destroy(obj);
             obstacles.Clear();
             modelImported.Clear();
+            modelPanel.ui.Clear();
+            modelPanel.ReloadUI();
             terrain.terrainData.SetHeights(0, 0, new float[terrain.terrainData.heightmapResolution,terrain.terrainData.heightmapResolution]);
             string dataPath = Application.dataPath + "/Workspace";
             if (Directory.Exists(dataPath))
@@ -172,7 +192,6 @@ namespace Gaboom.Scene
                         RenderTexture texture = RenderPreviewImage.GetAssetPreview(ObjLoader.LoadObjFile(filepath));
                         RenderPreviewImage.SaveTextureToPNG(texture, dataPath + "/" + Path.GetFileNameWithoutExtension(filepath) + "_thumbnail.png");
                         modelPanel.ui.Add(Sprite.Create(RenderPreviewImage.RenderTextureToTexture2D(texture), new Rect(0, 0, 512, 512), new Vector2(0.5f, 0.5f)));
-                        modelPanel.events.Add(null);
                         modelPanel.ReloadUI();
                     }
                 }
@@ -213,6 +232,8 @@ namespace Gaboom.Scene
                     action = new UnityAction(() => {
                         terrain.terrainData.SetHeights(0,0,DeserializeFromFile<float[,]>(dataPath+"/Terrain.tr"));
                         modelImported = DeserializeFromFile<List<string>>(dataPath + "/import.dat");
+                        modelPanel.ui.Clear();
+                        modelPanel.ReloadUI();
                         XmlDocument doc = new XmlDocument();
                         doc.Load(Application.dataPath + "/Workspace/" + slider.name);
                         obstacles = SLMechanic.DeserializeToScene(doc.GetElementsByTagName("Objects")[0]);
@@ -231,7 +252,7 @@ namespace Gaboom.Scene
         {
             if (generated != null)
             {
-                occupied = generated.GetComponentInChildren<CollisionProbe>().isIntersect;
+                //occupied = generated.GetComponentInChildren<CollisionProbe>().isIntersect;
                 Destroy(generated);
             }
             if (selectedPrefab > -1 && !GameLogic.IsPointerOverGameObject())
@@ -260,7 +281,7 @@ namespace Gaboom.Scene
                     {
                         if (isCustomModel)
                         {
-                            generated = Instantiate(preloadObj, Vector3.zero, Quaternion.identity);
+                            generated = Instantiate(preloadObj,raycastHit.point + SceneMaterial.Instance.prefabs[selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
                             generated.SetActive(true);
                         }
                         else
@@ -268,16 +289,16 @@ namespace Gaboom.Scene
                     }
                     foreach (MeshRenderer child in generated.GetComponentsInChildren<MeshRenderer>())
                     {
-                        child.material = occupied ? deny : preview;
+                        child.material = preview;
                     }
                     generated.layer = LayerMask.NameToLayer("Ignore Raycast");
-                    foreach (Transform child in generated.transform)
+                    foreach (GameObject child in generated.GetAllChildren())
                     {
-                        child.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+                        child.layer = LayerMask.NameToLayer("Ignore Raycast");
                     }
                     if (generated.GetComponent<MeshRenderer>() != null)
                         generated.GetComponent<MeshRenderer>().material = preview;
-                    generated.GetComponentInChildren<Collider>().gameObject.AddComponent<CollisionProbe>();
+                    //generated.GetComponentInChildren<Collider>().gameObject.AddComponent<CollisionProbe>();
                 }
             }
         }
@@ -370,40 +391,45 @@ namespace Gaboom.Scene
                     {
                         if (raycastHit.collider != null)
                         {
-                            if (!occupied)
+                            if (generated != null)
                             {
-                                if (generated != null)
-                                {
-                                    Destroy(generated);
-                                    generated = null;
-                                }
-                                if (align && !ignores.Contains(raycastHit.collider.gameObject))
-                                {
-                                    Collider hitObj = raycastHit.collider;
-                                    if (isCustomModel)
-                                    {
-                                        generated = Instantiate(preloadObj, Vector3.zero, Quaternion.identity);
-                                        generated.SetActive(true);
-                                    }
-                                    else
-                                        generated = Instantiate(SceneMaterial.Instance.prefabs[selectedPrefab], Vector3.zero, Quaternion.identity);
-                                    generated.transform.position = Align(generated, raycastHit);
-                                    if (hitObj.transform.parent != null)
-                                        generated.transform.rotation = Quaternion.FromToRotation(hitObj.transform.parent.forward, generated.transform.position - hitObj.transform.parent.position) * hitObj.transform.parent.rotation;
-                                }
-                                else
-                                {
-                                    if (isCustomModel)
-                                    {
-                                        generated = Instantiate(preloadObj, Vector3.zero, Quaternion.identity);
-                                        generated.SetActive(true);
-                                    }
-                                    else
-                                        generated = Instantiate(SceneMaterial.Instance.prefabs[selectedPrefab], raycastHit.point + SceneMaterial.Instance.prefabs[selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
-                                }
-                                obstacles.Add(generated);
+                                Destroy(generated);
                                 generated = null;
                             }
+                            if (align && !ignores.Contains(raycastHit.collider.gameObject))
+                            {
+                                Collider hitObj = raycastHit.collider;
+                                if (isCustomModel)
+                                {
+                                    generated = Instantiate(preloadObj, Vector3.zero, Quaternion.identity);
+                                    generated.SetActive(true);
+                                }
+                                else
+                                    generated = Instantiate(SceneMaterial.Instance.prefabs[selectedPrefab], Vector3.zero, Quaternion.identity);
+                                generated.transform.position = Align(generated, raycastHit);
+                                if (hitObj.transform.parent != null)
+                                    generated.transform.rotation = Quaternion.FromToRotation(hitObj.transform.parent.forward, generated.transform.position - hitObj.transform.parent.position) * hitObj.transform.parent.rotation;
+                            }
+                            else
+                            {
+                                if (isCustomModel)
+                                {
+                                    generated = Instantiate(preloadObj, raycastHit.point + SceneMaterial.Instance.prefabs[selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
+                                    generated.SetActive(true);
+                                }
+                                else
+                                    generated = Instantiate(SceneMaterial.Instance.prefabs[selectedPrefab], raycastHit.point + SceneMaterial.Instance.prefabs[selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
+                            }
+                            obstacles.Add(generated);
+
+                            foreach (Collider child in generated.GetComponentsInChildren<Collider>())
+                            {
+                                child.isTrigger = false;
+                            }
+                            if (generated.GetComponent<Collider>() != null)
+                                generated.GetComponent<Collider>().isTrigger = false;
+
+                            generated = null;
                         }
                     }
                     else if (raycastHit.collider != null)

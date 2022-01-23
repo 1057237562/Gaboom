@@ -24,9 +24,10 @@ public class UIGenerator : MonoBehaviour
 
     public void ReloadUI()
     {
-        foreach(GameObject obj in transform)
+        i = 0;
+        foreach(Transform obj in transform)
         {
-            Destroy(obj);
+            Destroy(obj.gameObject);
         }
         foreach (Sprite sprite in ui)
         {
@@ -34,7 +35,20 @@ public class UIGenerator : MonoBehaviour
             obj.GetComponent<Image>().sprite = sprite;
             int tag = i;
             Button btn = obj.GetComponent<Button>();
-            btn.onClick.AddListener(new UnityAction(() => { if (!positive) { events[(-tag - 1) >= events.Count ? 0 : (-tag - 1)].Invoke(); } else { events[tag >= events.Count ? 0 : tag].Invoke(); } selection.Invoke(tag); }));
+            btn.onClick.AddListener(new UnityAction(() =>
+            {
+                if (events.Count != 0)
+                    if (positive)
+                    {
+                        events[tag >= events.Count ? 0 : tag].Invoke();
+                        selection.Invoke(tag);
+                    }
+                    else
+                    {
+                        events[(-tag) >= events.Count ? 0 : (-tag)].Invoke();
+                        selection.Invoke(tag - 1);
+                    }
+            }));
             if (positive)
             {
                 i++;
