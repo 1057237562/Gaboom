@@ -40,12 +40,6 @@ public class RenderPreviewImage
 
         renderCamera.backgroundColor = new Color(255f, 255f, 255f, 0f);
         renderCamera.clearFlags = CameraClearFlags.SolidColor;
-        if (cameraObj.GetComponent<HDAdditionalCameraData>() != null)
-        {
-            cameraObj.GetComponent<HDAdditionalCameraData>().backgroundColorHDR = new Color(255f, 255f, 255f, 0f);
-            cameraObj.GetComponent<HDAdditionalCameraData>().clearColorMode = HDAdditionalCameraData.ClearColorMode.Color;
-            cameraObj.GetComponent<HDAdditionalCameraData>().volumeLayerMask = 1 << 21;
-        }
         renderCamera.cullingMask = 1 << 21;
         if (isUINode)
         {
@@ -67,7 +61,15 @@ public class RenderPreviewImage
             //int angle = (int)(Mathf.Atan2((Max.y - Min.y) / 2, (Max.z - Min.z)) * 180 / 3.1415f * 2);
             renderCamera.fieldOfView = 60;
         }
+
+        if (cameraObj.GetComponent<HDAdditionalCameraData>() != null)
+        {
+            cameraObj.GetComponent<HDAdditionalCameraData>().backgroundColorHDR = new Color(1, 1, 1, 0f);
+            cameraObj.GetComponent<HDAdditionalCameraData>().clearColorMode = HDAdditionalCameraData.ClearColorMode.Color;
+            cameraObj.GetComponent<HDAdditionalCameraData>().volumeLayerMask = 1 << 21;
+        }
         RenderTexture texture = new RenderTexture(512, 512, 32, RenderTextureFormat.ARGB32);
+        texture.antiAliasing = 4;
         renderCamera.targetTexture = texture;
         
         renderCamera.RenderDontRestore();
@@ -75,8 +77,8 @@ public class RenderPreviewImage
         Graphics.Blit(texture, tex);
 
         Object.DestroyImmediate(canvas_obj);
-        //Object.DestroyImmediate(cameraObj);
-        //Object.DestroyImmediate(clone);
+        Object.DestroyImmediate(cameraObj);
+        Object.DestroyImmediate(clone);
         return tex;
     }
 
