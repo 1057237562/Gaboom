@@ -18,6 +18,16 @@ public class UIGenerator : MonoBehaviour
     void Start()
     {
         //Run the logic
+        ReloadUI();
+        enabled = false;
+    }
+
+    public void ReloadUI()
+    {
+        foreach(GameObject obj in transform)
+        {
+            Destroy(obj);
+        }
         foreach (Sprite sprite in ui)
         {
             GameObject obj = Instantiate(model, transform);
@@ -35,7 +45,6 @@ public class UIGenerator : MonoBehaviour
             }
             obj.SetActive(true);
         }
-        enabled = false;
     }
 }
 

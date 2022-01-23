@@ -23,6 +23,7 @@ namespace Gaboom.Scene
         public List<GameObject> ignores;
         List<GameObject> obstacles = new List<GameObject>();
         List<string> modelImported = new List<string> ();
+        public UIGenerator modelPanel;
         public GameObject toolSet;
         GameObject generated;
 
@@ -66,11 +67,15 @@ namespace Gaboom.Scene
 
         public void LoadObj(int selection)
         {
+            if(preloadObj != null)
+                Destroy(preloadObj);
             string dataPath = Application.dataPath + "/Workspace";
-            preloadObj = ObjLoader.LoadObjFile(dataPath + "/" + modelImported[selection] + ".obj");
+            preloadObj = new GameObject();
+            ObjLoader.LoadObjFile(dataPath + "/" + modelImported[selection] + ".obj").transform.parent = preloadObj.transform;
             preloadObj.tag = "ImportedModel";
             preloadObj.name = modelImported[selection];
             preloadObj.SetActive(false);
+            selectedPrefab = selection;
         }
 
         public void SaveToFile()
@@ -164,7 +169,11 @@ namespace Gaboom.Scene
                         string mtlFile = ObjLoader.ObjGetFilePath(data, ObjFileInfo.Directory.FullName + Path.DirectorySeparatorChar, Path.GetFileNameWithoutExtension(filepath));
                         if (mtlFile != null)
                             File.Copy(mtlFile, dataPath + "/" + Path.GetFileNameWithoutExtension(filepath) + ".mtl", true);
-                        RenderPreviewImage.SaveTextureToPNG(RenderPreviewImage.GetAssetPreview(ObjLoader.LoadObjFile(filepath)), dataPath + "/" + Path.GetFileNameWithoutExtension(filepath) + "_thumbnail.png");
+                        RenderTexture texture = RenderPreviewImage.GetAssetPreview(ObjLoader.LoadObjFile(filepath));
+                        RenderPreviewImage.SaveTextureToPNG(texture, dataPath + "/" + Path.GetFileNameWithoutExtension(filepath) + "_thumbnail.png");
+                        modelPanel.ui.Add(Sprite.Create(RenderPreviewImage.RenderTextureToTexture2D(texture), new Rect(0, 0, 512, 512), new Vector2(0.5f, 0.5f)));
+                        modelPanel.events.Add(null);
+                        modelPanel.ReloadUI();
                     }
                 }
             }

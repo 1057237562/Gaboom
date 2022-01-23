@@ -6,7 +6,7 @@ using UnityEngine.Rendering.HighDefinition;
 
 public class RenderPreviewImage
 {
-    public static Texture GetAssetPreview(GameObject clone)
+    public static RenderTexture GetAssetPreview(GameObject clone)
     {
         GameObject canvas_obj = null;
         Transform cloneTransform = clone.transform;
@@ -81,6 +81,37 @@ public class RenderPreviewImage
         Object.DestroyImmediate(clone);
         return tex;
     }
+
+    public static Texture2D TextureToTexture2D(Texture texture)
+    {
+        Texture2D texture2D = new Texture2D(texture.width, texture.height, TextureFormat.RGBA32, false);
+        RenderTexture currentRT = RenderTexture.active;
+        RenderTexture renderTexture = RenderTexture.GetTemporary(texture.width, texture.height, 32);
+        Graphics.Blit(texture, renderTexture);
+
+        RenderTexture.active = renderTexture;
+        texture2D.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
+        texture2D.Apply();
+
+        RenderTexture.active = currentRT;
+        RenderTexture.ReleaseTemporary(renderTexture);
+
+        return texture2D;
+    }
+
+    public static Texture2D RenderTextureToTexture2D(RenderTexture renderTexture)
+    {
+        Texture2D texture2D = new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.RGBA32, false);
+        RenderTexture currentRT = RenderTexture.active;
+
+        RenderTexture.active = renderTexture;
+        texture2D.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
+        texture2D.Apply();
+        RenderTexture.active = currentRT;
+
+        return texture2D;
+    }
+
 
     public static Bounds GetBounds(GameObject obj)
     {
