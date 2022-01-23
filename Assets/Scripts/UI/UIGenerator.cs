@@ -18,13 +18,43 @@ public class UIGenerator : MonoBehaviour
     void Start()
     {
         //Run the logic
+        ReloadUI();
+        enabled = false;
+    }
+
+    public void ReloadUI()
+    {
+        i = 0;
+        foreach(Transform obj in transform)
+        {
+            Destroy(obj.gameObject);
+        }
         foreach (Sprite sprite in ui)
         {
             GameObject obj = Instantiate(model, transform);
             obj.GetComponent<Image>().sprite = sprite;
             int tag = i;
             Button btn = obj.GetComponent<Button>();
-            btn.onClick.AddListener(new UnityAction(() => { if (!positive) { events[(-tag - 1) >= events.Count ? 0 : (-tag - 1)].Invoke(); } else { events[tag >= events.Count ? 0 : tag].Invoke(); } selection.Invoke(tag); }));
+            btn.onClick.AddListener(new UnityAction(() =>
+            {
+                if (events.Count != 0)
+                {
+                    if (positive)
+                    {
+                        events[tag >= events.Count ? 0 : tag].Invoke();
+                        selection.Invoke(tag);
+                    }
+                    else
+                    {
+                        events[(-tag) >= events.Count ? 0 : (-tag)].Invoke();
+                        selection.Invoke(tag - 1);
+                    }
+                }
+                else
+                {
+                    selection.Invoke(tag);
+                }
+            }));
             if (positive)
             {
                 i++;
@@ -35,7 +65,6 @@ public class UIGenerator : MonoBehaviour
             }
             obj.SetActive(true);
         }
-        enabled = false;
     }
 }
 

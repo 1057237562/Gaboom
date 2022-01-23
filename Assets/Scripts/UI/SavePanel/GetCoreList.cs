@@ -53,7 +53,7 @@ public class GetCoreList : MonoBehaviour
             }
             machinName.text = "Untitled" + (i != 0 ? "(" + i + ")" : "");
         }
-        CameraShotIO.Save(SLMechanic.machineFolder + machinName.text + ".gsp", CameraShotIO.CreateFrom(render));
+        RenderPreviewImage.SaveRenderTextureToPNG(render, SLMechanic.machineFolder + machinName.text + ".gsp");
         SLMechanic.SaveObjToFile(selected.target, machinName.text);
     }
 }
