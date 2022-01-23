@@ -24,7 +24,7 @@ namespace Gaboom.IO
                 XmlElement ele = document.CreateElement("Object");
                 if (obj.tag == "ImportedModel")
                 {
-                    ele.SetAttribute("name", obj.name);
+                    ele.SetAttribute("name", obj.name.Replace("(Clone)", ""));
                     ele.SetAttribute("type", "ImportedModel");
                 }
                 else
@@ -51,7 +51,6 @@ namespace Gaboom.IO
                     ObjLoader.LoadObjFile(dataPath + "/" + xmlElement.GetAttribute("name") + ".obj").transform.parent = block.transform;
                     block.tag = "ImportedModel";
                     block.name = xmlElement.GetAttribute("name");
-                    block.SetActive(false);
                     EditorFunction.AddCollider(block);
                 }
                 else
