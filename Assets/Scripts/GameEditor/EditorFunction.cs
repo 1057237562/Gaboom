@@ -66,6 +66,7 @@ namespace Gaboom.Scene
 
         public void LoadObj(int selection)
         {
+            Debug.Log(selection);
             if(preloadObj != null)
                 Destroy(preloadObj);
             string dataPath = Application.dataPath + "/Workspace";
@@ -121,8 +122,9 @@ namespace Gaboom.Scene
                 }
                 doc.Save(dataPath+"/"+pth.fileTitle);
                 slider.gameObject.SetActive(true);
+                float[,] heightmap = terrain.terrainData.GetHeights(0, 0, terrain.terrainData.heightmapResolution, terrain.terrainData.heightmapResolution);
                 Thread streamThread = new Thread(new ThreadStart(() =>{
-                    SerializeToFile(terrain.terrainData.GetHeights(0, 0, terrain.terrainData.heightmapResolution, terrain.terrainData.heightmapResolution), dataPath + "/Terrain.tr");
+                    SerializeToFile(heightmap, dataPath + "/Terrain.tr");
                     SerializeToFile(modelImported, dataPath + "/import.dat");
                     PackRes.PackFolder(dataPath, filepath + ".upk", m_CodeProgress);
                     LZMAHelper.Compress(filepath + ".upk", filepath, m_CodeProgress);
@@ -231,12 +233,12 @@ namespace Gaboom.Scene
                     File.Delete(filepath + ".upk");
                     modelImported = DeserializeFromFile<List<string>>(dataPath + "/import.dat");
                     modelPanel.ui.Clear();
-                    foreach(string item in modelImported)
-                    {
-                        modelPanel.ui.Add(Sprite.Create(RenderPreviewImage.GetTexrture2DFromPath(dataPath + "/" + item + "_thumbnail.png"), new Rect(0, 0, 512, 512), new Vector2(0.5f, 0.5f)));
-                    }
                     action = new UnityAction(() => {
                         terrain.terrainData.SetHeights(0,0,DeserializeFromFile<float[,]>(dataPath+"/Terrain.tr"));
+                        foreach (string item in modelImported)
+                        {
+                            modelPanel.ui.Add(Sprite.Create(RenderPreviewImage.GetTexrture2DFromPath(dataPath + "/" + item + "_thumbnail.png"), new Rect(0, 0, 512, 512), new Vector2(0.5f, 0.5f)));
+                        }
                         modelPanel.ReloadUI();
                         XmlDocument doc = new XmlDocument();
                         doc.Load(Application.dataPath + "/Workspace/" + slider.name);

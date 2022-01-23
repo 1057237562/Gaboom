@@ -38,6 +38,7 @@ public class UIGenerator : MonoBehaviour
             btn.onClick.AddListener(new UnityAction(() =>
             {
                 if (events.Count != 0)
+                {
                     if (positive)
                     {
                         events[tag >= events.Count ? 0 : tag].Invoke();
@@ -48,6 +49,11 @@ public class UIGenerator : MonoBehaviour
                         events[(-tag) >= events.Count ? 0 : (-tag)].Invoke();
                         selection.Invoke(tag - 1);
                     }
+                }
+                else
+                {
+                    selection.Invoke(tag);
+                }
             }));
             if (positive)
             {
