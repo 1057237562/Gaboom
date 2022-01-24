@@ -131,7 +131,8 @@ public class UPKExtra
 				processSize+=tmpfiledata.Length;
 				totalprocesssize+=tmpfiledata.Length;
 				
-				progress.SetProgressPercent((long)totalsize,(long)totalprocesssize);
+				if(progress != null)
+					progress.SetProgressPercent((long)totalsize,(long)totalprocesssize);
 			}
 			fileStream.Flush();
 			fileStream.Close();
