@@ -62,11 +62,11 @@ namespace Gaboom.Scene
         public void ChangeSelect(int selection)
         {
             isCustomModel = selection == 1;
+            selectedPrefab = -1;
         }
 
         public void LoadObj(int selection)
         {
-            Debug.Log(selection);
             if(preloadObj != null)
                 Destroy(preloadObj);
             string dataPath = Application.dataPath + "/Workspace";
