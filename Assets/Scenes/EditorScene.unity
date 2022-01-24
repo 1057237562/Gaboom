@@ -723,8 +723,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1a0377a98a88f047aa504916ea46a12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: []
-  events: []
+  ui:
+  - {fileID: 21300000, guid: 0238a2bcf7379e243805cc5144de1d1c, type: 3}
+  - {fileID: 21300000, guid: 7b8ec686deb689c49a1f6e05bb080a9d, type: 3}
+  events:
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 672773530}
+        m_TargetAssemblyTypeName: RTEditor.EditorGizmoSystem, Assembly-CSharp
+        m_MethodName: DeactivateAllGizmoObjects
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 672773530}
+        m_TargetAssemblyTypeName: RTEditor.EditorGizmoSystem, Assembly-CSharp
+        m_MethodName: DeactivateAllGizmoObjects
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   i: 0
   model: {fileID: 2943100479199051130, guid: 3019c67d44de25040b6d992f19e5b84e, type: 3}
   positive: 1
@@ -3010,6 +3040,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b60a188753808cd458fd9646390789b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  terrain: {fileID: 0}
   prefabs:
   - {fileID: 3508962585101819158, guid: 53ea5e17bf79a2844931542236c8b77d, type: 3}
   - {fileID: 1103999600443529079, guid: d63190600886979419f4110b1ceca566, type: 3}
