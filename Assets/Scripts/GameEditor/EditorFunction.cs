@@ -25,6 +25,7 @@ namespace Gaboom.Scene
         List<string> modelImported = new List<string> ();
         public UIGenerator modelPanel;
         public GameObject toolSet;
+        public Camera previewCamera;
         GameObject generated;
 
         public bool align = true;
@@ -123,6 +124,14 @@ namespace Gaboom.Scene
                 doc.Save(dataPath+"/"+pth.fileTitle);
                 slider.gameObject.SetActive(true);
                 float[,] heightmap = terrain.terrainData.GetHeights(0, 0, terrain.terrainData.heightmapResolution, terrain.terrainData.heightmapResolution);
+
+                previewCamera.gameObject.SetActive(true);
+                RenderTexture rt = new RenderTexture(512, 512,32, RenderTextureFormat.ARGB32);
+                previewCamera.targetTexture = rt;
+                previewCamera.RenderDontRestore();
+                RenderPreviewImage.SaveRenderTextureToPNG(rt, dataPath + "/thumbnail.png");
+                previewCamera.gameObject.SetActive(false);
+
                 Thread streamThread = new Thread(new ThreadStart(() =>{
                     SerializeToFile(heightmap, dataPath + "/Terrain.tr");
                     SerializeToFile(modelImported, dataPath + "/import.dat");

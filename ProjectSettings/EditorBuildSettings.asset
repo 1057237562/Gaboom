@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MapSelectScene.unity
     guid: 0a3fa2b8968904846a5234317dcd274c
+  - enabled: 1
+    path: Assets/Scenes/MultiRoom.unity
+    guid: fc08a3760819182468023efed7f84582
   m_configObjects: {}
