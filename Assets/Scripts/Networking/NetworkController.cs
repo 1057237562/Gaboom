@@ -15,6 +15,8 @@ public class NetworkController : MonoBehaviour
     NetworkManager networkManager;
     UNetTransport transport;
 
+    public string mapname;
+
     private void Start()
     {
         networkManager = GetComponent<NetworkManager>();
