@@ -1,3 +1,4 @@
+using Gaboom.Scene;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -76,6 +77,7 @@ public class NetworkController : MonoBehaviour
 
     public void OnMapChanged()
     {
+        SceneMaterial.filepath = Application.dataPath + "/maps/" + mapname +".gmap";
         using FastBufferWriter writer = new FastBufferWriter(0, Allocator.Temp, int.MaxValue);
         writer.WriteValueSafe(mapname);
         networkManager.CustomMessagingManager.SendNamedMessageToAll("MapNameSync", writer, NetworkDelivery.Reliable);
@@ -106,7 +108,8 @@ public class NetworkController : MonoBehaviour
         {
             reader.ReadValueSafe(out mapname);
             string mapPath = Application.dataPath + "/maps";
-            if(!File.Exists(mapPath + "/" + mapname))
+            SceneMaterial.filepath = mapPath + "/" + mapname + ".gmap";
+            if (!File.Exists(mapPath + "/" + mapname))
             {
                 networkManager.CustomMessagingManager.SendNamedMessage("RequireMap",senderClientId,new FastBufferWriter(0,Allocator.Temp),NetworkDelivery.Reliable);
             }
