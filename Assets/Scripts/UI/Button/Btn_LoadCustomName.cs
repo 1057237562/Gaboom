@@ -1,6 +1,7 @@
 using Gaboom.Scene;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -22,8 +23,9 @@ public class Btn_LoadCustomName : MonoBehaviour
         pth.flags = 0x00080000 | 0x00001000 | 0x00000800 | 0x00000200 | 0x00000008;
         if (OpenFileDialog.GetOpenFileName(pth))
         {
-            SceneMaterial.filepath = pth.file;
+            string mapPath = Application.dataPath + "/maps";
+            File.Copy(pth.file, mapPath + "/" + Path.GetFileName(pth.file));
         }
-        SceneManager.LoadSceneAsync("GameScene");
+        //SceneManager.LoadSceneAsync("GameScene");
     }
 }
