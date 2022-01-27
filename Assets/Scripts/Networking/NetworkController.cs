@@ -37,6 +37,11 @@ public class NetworkController : MonoBehaviour
         transport = GetComponent<UNetTransport>();
     }
 
+    private void OnDestroy()
+    {
+        networkManager.Shutdown();
+    }
+
     public void StartHost()
     {
         transport.ConnectAddress = address_hfield.text;
@@ -61,13 +66,15 @@ public class NetworkController : MonoBehaviour
         networkManager.StartHost();
 
         networkManager.CustomMessagingManager.RegisterNamedMessageHandler("RequireMap", (senderClientId, reader) => {
-            using (FileStream fs = new FileStream(Application.dataPath + "/maps/" + mapname, FileMode.Open, FileAccess.Read))
+            using (FileStream fs = new FileStream(Application.dataPath + "/maps/" + mapname + ".gmap", FileMode.Open, FileAccess.Read))
             {
                 byte[] buffer = new byte[fs.Length];
                 fs.Read(buffer, 0, buffer.Length);
-                FastBufferWriter fastBufferWriter = new FastBufferWriter(FastBufferWriter.GetWriteSize(buffer), Allocator.Temp);
-                //fastBufferWriter.WriteValueSafe(buffer.Length);
+                FastBufferWriter fastBufferWriter = new FastBufferWriter(FastBufferWriter.GetWriteSize(buffer)*2, Allocator.Temp);
+                Debug.Log(FastBufferWriter.GetWriteSize(buffer) + ":" + buffer.Length);
+                Debug.Log(fastBufferWriter.TryBeginWrite(FastBufferWriter.GetWriteSize(buffer)));
                 fastBufferWriter.WriteBytes(buffer);
+                Debug.Log(fastBufferWriter.Length);
                 networkManager.CustomMessagingManager.SendNamedMessage("MapData", senderClientId, fastBufferWriter);
             }
         });
@@ -147,14 +154,14 @@ public class NetworkController : MonoBehaviour
                 Directory.CreateDirectory(mapPath);
             }
             SceneMaterial.filepath = mapPath + "/" + mapname + ".gmap";
-            if (!File.Exists(mapPath + "/" + mapname))
+            if (!File.Exists(mapPath + "/" + mapname + ".gmap"))
             {
                 networkManager.CustomMessagingManager.SendNamedMessage("RequireMap",senderClientId,new FastBufferWriter(0,Allocator.Temp),NetworkDelivery.Reliable);
             }
         });
 
         networkManager.CustomMessagingManager.RegisterNamedMessageHandler("MapData", (senderClientId, reader) => { 
-            using (FileStream fs = new FileStream(Application.dataPath + "/maps/" + mapname, FileMode.Create))
+            using (FileStream fs = new FileStream(Application.dataPath + "/maps/" + mapname + ".gmap", FileMode.Create))
             {
                 byte[] buffer = new byte[reader.Length];
                 reader.ReadBytesSafe(ref buffer,reader.Length);
