@@ -23,6 +23,8 @@ public class NetworkController : MonoBehaviour
     public Text port_cfield;
     public Text password_cfield;
 
+    public List<ulong> players;
+
     NetworkManager networkManager;
     UNetTransport transport;
 
@@ -70,9 +72,14 @@ public class NetworkController : MonoBehaviour
         networkManager.CustomMessagingManager.SendNamedMessage("MapNameSync", clientId, writer, NetworkDelivery.Reliable);
 
         if (gameStarted)
+        {
             callback(false, null, false, null, null);
+        }
         else
+        {
+            players.Add(clientId);
             callback(false, null, true, null, null);
+        }
     }
 
     public void OnMapChanged()
