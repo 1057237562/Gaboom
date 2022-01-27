@@ -44,20 +44,34 @@ public class NetworkController : MonoBehaviour
         ushort.TryParse(port_hfield.text, out port);
         transport.ConnectPort = port;
 
-        networkManager.CustomMessagingManager.RegisterNamedMessageHandler("RequireMap", (senderClientId,reader) => {
-            using(FileStream fs = new FileStream(Application.dataPath + "/maps/" + mapname,FileMode.Open, FileAccess.Read))
-            {
-                byte[] buffer = new byte[fs.Length];
-                fs.Read(buffer, 0, buffer.Length);
-                FastBufferWriter fastBufferWriter = new FastBufferWriter(buffer.Length, Allocator.Temp);
-                //fastBufferWriter.WriteValueSafe(buffer.Length);
-                fastBufferWriter.WriteBytes(buffer);
-                networkManager.CustomMessagingManager.SendNamedMessage("MapData",senderClientId,fastBufferWriter);
-            }
-        });
+        XmlDocument doc = new XmlDocument();
+
+        doc.AppendChild(doc.CreateXmlDeclaration("1.0", "utf-8", "yes"));
+        XmlElement root = doc.CreateElement("Root");
+        doc.AppendChild(root);
+
+        StringWriter writer = new StringWriter();
+        XmlTextWriter xw = new XmlTextWriter(writer);
+
+        doc.WriteTo(xw);
+
+        networkManager.NetworkConfig.ConnectionData = Encoding.UTF8.GetBytes(writer.ToString());
 
         networkManager.ConnectionApprovalCallback += ApprovalCheck;
         networkManager.StartHost();
+        Debug.Log(networkManager.CustomMessagingManager == null);
+
+        networkManager.CustomMessagingManager.RegisterNamedMessageHandler("RequireMap", (senderClientId, reader) => {
+            using (FileStream fs = new FileStream(Application.dataPath + "/maps/" + mapname, FileMode.Open, FileAccess.Read))
+            {
+                byte[] buffer = new byte[fs.Length];
+                fs.Read(buffer, 0, buffer.Length);
+                FastBufferWriter fastBufferWriter = new FastBufferWriter(FastBufferWriter.GetWriteSize(buffer), Allocator.Temp);
+                //fastBufferWriter.WriteValueSafe(buffer.Length);
+                fastBufferWriter.WriteBytes(buffer);
+                networkManager.CustomMessagingManager.SendNamedMessage("MapData", senderClientId, fastBufferWriter);
+            }
+        });
     }
 
     private void ApprovalCheck(byte[] connectionData, ulong clientId, ConnectionApprovedDelegate callback)
@@ -67,7 +81,7 @@ public class NetworkController : MonoBehaviour
         XmlDocument doc = new XmlDocument();
         doc.Load(reader);
 
-        using FastBufferWriter writer = new FastBufferWriter(0, Allocator.Temp, int.MaxValue);
+        using FastBufferWriter writer = new FastBufferWriter(FastBufferWriter.GetWriteSize(mapname), Allocator.Temp);
         writer.WriteValueSafe(mapname);
         networkManager.CustomMessagingManager.SendNamedMessage("MapNameSync", clientId, writer, NetworkDelivery.Reliable);
 
@@ -85,9 +99,13 @@ public class NetworkController : MonoBehaviour
     public void OnMapChanged()
     {
         SceneMaterial.filepath = Application.dataPath + "/maps/" + mapname +".gmap";
-        using FastBufferWriter writer = new FastBufferWriter(0, Allocator.Temp, int.MaxValue);
-        writer.WriteValueSafe(mapname);
-        networkManager.CustomMessagingManager.SendNamedMessageToAll("MapNameSync", writer, NetworkDelivery.Reliable);
+        using (FastBufferWriter writer = new FastBufferWriter(FastBufferWriter.GetWriteSize(mapname), Allocator.Temp)) { 
+            writer.WriteValueSafe(mapname);
+            if (networkManager.ConnectedClients.Count > 0)
+            {
+                networkManager.CustomMessagingManager.SendNamedMessageToAll("MapNameSync", writer, NetworkDelivery.Reliable);
+            }
+        }
     }
 
     public void StartGame()
@@ -106,10 +124,17 @@ public class NetworkController : MonoBehaviour
 
         XmlDocument doc = new XmlDocument();
 
+        doc.AppendChild(doc.CreateXmlDeclaration("1.0", "utf-8", "yes"));
+        XmlElement root = doc.CreateElement("Root");
+        doc.AppendChild(root);
+
         StringWriter writer = new StringWriter();
         XmlTextWriter xw = new XmlTextWriter(writer);
 
         doc.WriteTo(xw);
+
+        networkManager.NetworkConfig.ConnectionData = Encoding.UTF8.GetBytes(writer.ToString());
+        networkManager.StartClient();
 
         networkManager.CustomMessagingManager.RegisterNamedMessageHandler("MapNameSync", (senderClientId, reader) =>
         {
@@ -134,7 +159,5 @@ public class NetworkController : MonoBehaviour
                 fs.Write(buffer,0,buffer.Length);
             }
         });
-        networkManager.NetworkConfig.ConnectionData = Encoding.UTF8.GetBytes(writer.ToString());
-        networkManager.StartClient();
     }
 }

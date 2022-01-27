@@ -20,7 +20,7 @@ public class MapList : MonoBehaviour
         foreach (string filename in Directory.GetFiles(mapPath,"*.gmap")){
             GameObject n_item = Instantiate(listItem,viewport.transform);
             n_item.SetActive(true);
-            n_item.GetComponentInChildren<Text>().text = filename.Substring(0,filename.LastIndexOf("."));
+            n_item.GetComponentInChildren<Text>().text = Path.GetFileNameWithoutExtension(filename);
         }
     }
 }
