@@ -48,7 +48,7 @@ public class NetworkController : MonoBehaviour,INetworkUpdateSystem
     }
 
     const int messageSize = 1024;
-    const int maxiumSize = 60000;
+    //const int maxiumSize = 60000;
 
     public void StartHost()
     {
