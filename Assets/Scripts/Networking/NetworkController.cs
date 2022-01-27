@@ -1,8 +1,10 @@
 using Gaboom.Scene;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Xml;
 using Unity.Collections;
 using Unity.Netcode;
@@ -14,7 +16,7 @@ using static Unity.Netcode.NetworkManager;
 
 [RequireComponent(typeof(NetworkManager))]
 [RequireComponent(typeof(UNetTransport))]
-public class NetworkController : MonoBehaviour
+public class NetworkController : MonoBehaviour,INetworkUpdateSystem
 {
     public Text address_hfield;
     public Text port_hfield;
@@ -31,9 +33,12 @@ public class NetworkController : MonoBehaviour
     public string mapname;
     public static bool gameStarted = false;
 
+    Queue<Action> pendingPackage = new Queue<Action>();
+
     private void Start()
     {
         networkManager = GetComponent<NetworkManager>();
+        this.RegisterNetworkUpdate(NetworkUpdateStage.PreLateUpdate);
         transport = GetComponent<UNetTransport>();
     }
 
@@ -41,6 +46,9 @@ public class NetworkController : MonoBehaviour
     {
         networkManager.Shutdown();
     }
+
+    const int messageSize = 1024;
+    const int maxiumSize = 60000;
 
     public void StartHost()
     {
@@ -65,17 +73,56 @@ public class NetworkController : MonoBehaviour
         networkManager.ConnectionApprovalCallback += ApprovalCheck;
         networkManager.StartHost();
 
-        networkManager.CustomMessagingManager.RegisterNamedMessageHandler("RequireMap", (senderClientId, reader) => {
-            using (FileStream fs = new FileStream(Application.dataPath + "/maps/" + mapname + ".gmap", FileMode.Open, FileAccess.Read))
+        networkManager.CustomMessagingManager.RegisterNamedMessageHandler("RequireMap", (senderClientId, reader) =>
+        {
+            string filename = Application.dataPath + "/maps/" + mapname + ".gmap";
+            FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
+            if (fs.Length < messageSize)
             {
                 byte[] buffer = new byte[fs.Length];
                 fs.Read(buffer, 0, buffer.Length);
-                FastBufferWriter fastBufferWriter = new FastBufferWriter(FastBufferWriter.GetWriteSize(buffer)*2, Allocator.Temp);
-                Debug.Log(FastBufferWriter.GetWriteSize(buffer) + ":" + buffer.Length);
-                Debug.Log(fastBufferWriter.TryBeginWrite(FastBufferWriter.GetWriteSize(buffer)));
-                fastBufferWriter.WriteBytes(buffer);
-                Debug.Log(fastBufferWriter.Length);
-                networkManager.CustomMessagingManager.SendNamedMessage("MapData", senderClientId, fastBufferWriter);
+                using (FastBufferWriter fastBufferWriter = new FastBufferWriter(FastBufferWriter.GetWriteSize(buffer), Allocator.Temp))
+                {
+                    fastBufferWriter.TryBeginWrite(FastBufferWriter.GetWriteSize(buffer));
+                    fastBufferWriter.WriteValueSafe(buffer.Length);
+                    fastBufferWriter.WriteBytes(buffer);
+                    networkManager.CustomMessagingManager.SendNamedMessage("MapData", senderClientId, fastBufferWriter, NetworkDelivery.Reliable);
+                }
+                fs.Close();
+                fs.Dispose();
+            }
+            else
+            {
+                int i = 0;
+                for (; i < fs.Length / messageSize; i++)
+                {
+                    pendingPackage.Enqueue(new Action(() =>
+                    {
+                        byte[] buffer = new byte[messageSize];
+                        fs.Read(buffer, 0, messageSize);
+                        using (FastBufferWriter fastBufferWriter = new FastBufferWriter(FastBufferWriter.GetWriteSize(buffer), Allocator.Temp))
+                        {
+                            fastBufferWriter.TryBeginWrite(FastBufferWriter.GetWriteSize(buffer));
+                            fastBufferWriter.WriteValueSafe(buffer.Length);
+                            fastBufferWriter.WriteBytes(buffer);
+                            networkManager.CustomMessagingManager.SendNamedMessage("MapData", senderClientId, fastBufferWriter, NetworkDelivery.Reliable);
+                        }
+                    }));
+                }
+                pendingPackage.Enqueue(new Action(() =>
+                {
+                    byte[] buffer = new byte[fs.Length - messageSize * i];
+                    fs.Read(buffer, 0, buffer.Length);
+                    using (FastBufferWriter fastBufferWriter = new FastBufferWriter(FastBufferWriter.GetWriteSize(buffer), Allocator.Temp))
+                    {
+                        fastBufferWriter.TryBeginWrite(FastBufferWriter.GetWriteSize(buffer));
+                        fastBufferWriter.WriteValueSafe(buffer.Length);
+                        fastBufferWriter.WriteBytes(buffer);
+                        networkManager.CustomMessagingManager.SendNamedMessage("MapData", senderClientId, fastBufferWriter, NetworkDelivery.Reliable);
+                    }
+                    fs.Close();
+                    fs.Dispose();
+                }));
             }
         });
     }
@@ -160,13 +207,22 @@ public class NetworkController : MonoBehaviour
             }
         });
 
-        networkManager.CustomMessagingManager.RegisterNamedMessageHandler("MapData", (senderClientId, reader) => { 
-            using (FileStream fs = new FileStream(Application.dataPath + "/maps/" + mapname + ".gmap", FileMode.Create))
+        networkManager.CustomMessagingManager.RegisterNamedMessageHandler("MapData", (senderClientId, reader) => {
+            using (FileStream fs = new FileStream(Application.dataPath + "/maps/" + mapname + ".gmap", FileMode.Append))
             {
-                byte[] buffer = new byte[reader.Length];
-                reader.ReadBytesSafe(ref buffer,reader.Length);
+                reader.ReadValueSafe(out int size);
+                byte[] buffer = new byte[size];
+                reader.ReadBytesSafe(ref buffer, size);
                 fs.Write(buffer,0,buffer.Length);
             }
         });
+    }
+
+    public void NetworkUpdate(NetworkUpdateStage updateStage)
+    {
+        if(pendingPackage.Count >0)
+        {
+            pendingPackage.Dequeue().Invoke();
+        }
     }
 }
