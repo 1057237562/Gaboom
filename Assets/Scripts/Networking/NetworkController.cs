@@ -59,7 +59,6 @@ public class NetworkController : MonoBehaviour
 
         networkManager.ConnectionApprovalCallback += ApprovalCheck;
         networkManager.StartHost();
-        Debug.Log(networkManager.CustomMessagingManager == null);
 
         networkManager.CustomMessagingManager.RegisterNamedMessageHandler("RequireMap", (senderClientId, reader) => {
             using (FileStream fs = new FileStream(Application.dataPath + "/maps/" + mapname, FileMode.Open, FileAccess.Read))
@@ -81,9 +80,11 @@ public class NetworkController : MonoBehaviour
         XmlDocument doc = new XmlDocument();
         doc.Load(reader);
 
-        using FastBufferWriter writer = new FastBufferWriter(FastBufferWriter.GetWriteSize(mapname), Allocator.Temp);
-        writer.WriteValueSafe(mapname);
-        networkManager.CustomMessagingManager.SendNamedMessage("MapNameSync", clientId, writer, NetworkDelivery.Reliable);
+        using (FastBufferWriter writer = new FastBufferWriter(FastBufferWriter.GetWriteSize(mapname), Allocator.Temp))
+        {
+            writer.WriteValueSafe(mapname);
+            networkManager.CustomMessagingManager.SendNamedMessage("MapNameSync", clientId, writer, NetworkDelivery.Reliable);
+        }
 
         if (gameStarted)
         {
@@ -98,11 +99,12 @@ public class NetworkController : MonoBehaviour
 
     public void OnMapChanged()
     {
-        SceneMaterial.filepath = Application.dataPath + "/maps/" + mapname +".gmap";
-        using (FastBufferWriter writer = new FastBufferWriter(FastBufferWriter.GetWriteSize(mapname), Allocator.Temp)) { 
-            writer.WriteValueSafe(mapname);
-            if (networkManager.ConnectedClients.Count > 0)
+        SceneMaterial.filepath = Application.dataPath + "/maps/" + mapname + ".gmap";
+        if (networkManager.IsHost)
+        {
+            using (FastBufferWriter writer = new FastBufferWriter(FastBufferWriter.GetWriteSize(mapname), Allocator.Temp))
             {
+                writer.WriteValueSafe(mapname);
                 networkManager.CustomMessagingManager.SendNamedMessageToAll("MapNameSync", writer, NetworkDelivery.Reliable);
             }
         }

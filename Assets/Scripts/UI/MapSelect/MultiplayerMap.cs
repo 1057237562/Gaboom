@@ -13,7 +13,7 @@ public class MultiplayerMap : MonoBehaviour
     public void OnClick()
     {
         networkController.mapname = mapname.text;
-        //networkController.OnMapChanged();
+        networkController.OnMapChanged();
         display.text = mapname.text;
     }
 }
