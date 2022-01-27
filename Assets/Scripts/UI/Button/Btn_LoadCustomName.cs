@@ -24,6 +24,10 @@ public class Btn_LoadCustomName : MonoBehaviour
         if (OpenFileDialog.GetOpenFileName(pth))
         {
             string mapPath = Application.dataPath + "/maps";
+            if (!Directory.Exists(mapPath))
+            {
+                Directory.CreateDirectory(mapPath);
+            }
             File.Copy(pth.file, mapPath + "/" + Path.GetFileName(pth.file));
         }
         //SceneManager.LoadSceneAsync("GameScene");

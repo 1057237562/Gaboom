@@ -115,6 +115,10 @@ public class NetworkController : MonoBehaviour
         {
             reader.ReadValueSafe(out mapname);
             string mapPath = Application.dataPath + "/maps";
+            if (!Directory.Exists(mapPath))
+            {
+                Directory.CreateDirectory(mapPath);
+            }
             SceneMaterial.filepath = mapPath + "/" + mapname + ".gmap";
             if (!File.Exists(mapPath + "/" + mapname))
             {
