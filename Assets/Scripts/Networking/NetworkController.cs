@@ -42,16 +42,12 @@ public class NetworkController : MonoBehaviour,INetworkUpdateSystem
         transport = GetComponent<UNetTransport>();
     }
 
-    private void OnDestroy()
-    {
-        networkManager.Shutdown();
-    }
-
     const int messageSize = 1024;
     //const int maxiumSize = 60000;
 
     public void StartHost()
     {
+        if (networkManager.IsHost) return;
         transport.ConnectAddress = address_hfield.text;
         ushort port = 25565;
         ushort.TryParse(port_hfield.text, out port);
@@ -166,6 +162,8 @@ public class NetworkController : MonoBehaviour,INetworkUpdateSystem
 
     public void StartGame()
     {
+        if (!networkManager.IsHost) return;
+        networkManager.SceneManager.SetClientSynchronizationMode(LoadSceneMode.Single);
         networkManager.SceneManager.LoadScene("GameScene",LoadSceneMode.Single);
         gameStarted = true;
         Destroy(this);
@@ -173,6 +171,7 @@ public class NetworkController : MonoBehaviour,INetworkUpdateSystem
 
     public void StartClient()
     {
+        if (networkManager.IsClient) return;
         transport.ConnectAddress = address_cfield.text;
         ushort port = 25565;
         ushort.TryParse(port_cfield.text,out port);
