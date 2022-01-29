@@ -28,7 +28,7 @@ namespace Gaboom.IO
                     ele.SetAttribute("type", "ImportedModel");
                 }
                 else
-                    ele.SetAttribute("type", SceneMaterial.Instance.prefabs.IndexOf(SceneMaterial.Instance.prefabs.First((x) => { return obj.name.Contains(x.name); })).ToString());
+                    ele.SetAttribute("type", SceneMaterial.Instance.TerrainPrefabs.IndexOf(SceneMaterial.Instance.TerrainPrefabs.First((x) => { return obj.name.Contains(x.name); })).ToString());
                 ele.SetAttribute("position", obj.transform.position.ToString("r"));
                 ele.SetAttribute("rotation", obj.transform.localRotation.ToString("r"));
                 ele.SetAttribute("scale", obj.transform.localScale.ToString("r"));
@@ -54,7 +54,7 @@ namespace Gaboom.IO
                     EditorFunction.AddCollider(block);
                 }
                 else
-                block= Object.Instantiate(SceneMaterial.Instance.prefabs[int.Parse(xmlElement.GetAttribute("type"))]);
+                block= Object.Instantiate(SceneMaterial.Instance.TerrainPrefabs[int.Parse(xmlElement.GetAttribute("type"))]);
                 block.transform.position = GetVec3ByString(xmlElement.GetAttribute("position"));
                 block.transform.rotation = GetQuaByString(xmlElement.GetAttribute("rotation"));
                 block.transform.localScale = GetVec3ByString(xmlElement.GetAttribute("scale"));
@@ -84,7 +84,7 @@ namespace Gaboom.IO
             {
                 XmlElement ele = xml.CreateElement("Block");
                 ele.SetAttribute("InstanceID", block.GetInstanceID().ToString());
-                ele.SetAttribute("type", BuildFunction.Instance.prefabs.IndexOf(BuildFunction.Instance.prefabs.First((x) => { return block.name.Contains(x.name); })).ToString());
+                ele.SetAttribute("type", SceneMaterial.Instance.BuildingPrefabs.IndexOf(SceneMaterial.Instance.BuildingPrefabs.First((x) => { return block.name.Contains(x.name); })).ToString());
                 ele.SetAttribute("position", block.position.ToString("r"));
                 ele.SetAttribute("rotation", block.transform.localRotation.ToString("r"));
                 ele.SetAttribute("scale", block.transform.localScale.ToString("r"));
@@ -153,7 +153,7 @@ namespace Gaboom.IO
 
             foreach (XmlElement xmlElement in ((XmlElement)parent.GetElementsByTagName("Blocks")[0]).GetElementsByTagName("Block"))
             {
-                GameObject block = Object.Instantiate(BuildFunction.Instance.prefabs[int.Parse(xmlElement.GetAttribute("type"))], core.transform);
+                GameObject block = Object.Instantiate(SceneMaterial.Instance.BuildingPrefabs[int.Parse(xmlElement.GetAttribute("type"))], core.transform);
                 block.transform.localPosition = GetVec3ByString(xmlElement.GetAttribute("position"));
                 block.transform.localRotation = GetQuaByString(xmlElement.GetAttribute("rotation"));
                 block.transform.localScale = GetVec3ByString(xmlElement.GetAttribute("scale"));

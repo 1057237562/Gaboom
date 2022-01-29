@@ -17,13 +17,22 @@ namespace Gaboom.Scene
         public static string filepath;
 
         public Terrain terrain;
+        public Camera cameraPrefab;
 
-        public List<GameObject> prefabs = new List<GameObject>();
+        public List<GameObject> ignores;
+        public GameObject keypanel;
+
+        public List<GameObject> TerrainPrefabs;
+        public List<GameObject> BuildingPrefabs;
+
+        public BuildFunction mainController;
 
         // Start is called before the first frame update
         void Start()
         {
             Instance = this;
+            if (GameObject.FindGameObjectsWithTag("MainCamera").Length == 0)
+                Instantiate(cameraPrefab);
             if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("GameScene") && filepath != null)
             {
                 string dataPath = Application.dataPath + "/Workspace";

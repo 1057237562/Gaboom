@@ -19,8 +19,6 @@ namespace Gaboom.Scene
         public Material preview;
         public Material deny;
 
-        //public List<GameObject> prefabs;
-        public List<GameObject> ignores;
         List<GameObject> obstacles = new List<GameObject>();
         List<string> modelImported = new List<string> ();
         public UIGenerator modelPanel;
@@ -277,7 +275,7 @@ namespace Gaboom.Scene
 
                 if (raycastHit.collider != null)
                 {
-                    if (align && !ignores.Contains(raycastHit.collider.gameObject))
+                    if (align && !SceneMaterial.Instance.ignores.Contains(raycastHit.collider.gameObject))
                     {
                         Collider hitObj = raycastHit.collider;
                         if (isCustomModel)
@@ -286,7 +284,7 @@ namespace Gaboom.Scene
                             generated.SetActive(true);
                         }
                         else
-                            generated = Instantiate(SceneMaterial.Instance.prefabs[selectedPrefab], Vector3.zero, Quaternion.identity);
+                            generated = Instantiate(SceneMaterial.Instance.TerrainPrefabs[selectedPrefab], Vector3.zero, Quaternion.identity);
                         generated.transform.position = Align(generated, raycastHit);
                         if (raycastHit.collider.transform.parent != null)
                             generated.transform.rotation = Quaternion.FromToRotation(hitObj.transform.parent.forward, generated.transform.position - hitObj.transform.parent.position) * hitObj.transform.parent.rotation;
@@ -295,11 +293,11 @@ namespace Gaboom.Scene
                     {
                         if (isCustomModel)
                         {
-                            generated = Instantiate(preloadObj,raycastHit.point + SceneMaterial.Instance.prefabs[selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
+                            generated = Instantiate(preloadObj,raycastHit.point + SceneMaterial.Instance.TerrainPrefabs[selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
                             generated.SetActive(true);
                         }
                         else
-                            generated = Instantiate(SceneMaterial.Instance.prefabs[selectedPrefab], raycastHit.point + SceneMaterial.Instance.prefabs[selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
+                            generated = Instantiate(SceneMaterial.Instance.TerrainPrefabs[selectedPrefab], raycastHit.point + SceneMaterial.Instance.TerrainPrefabs[selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
                     }
                     foreach (MeshRenderer child in generated.GetComponentsInChildren<MeshRenderer>())
                     {
@@ -410,7 +408,7 @@ namespace Gaboom.Scene
                                 Destroy(generated);
                                 generated = null;
                             }
-                            if (align && !ignores.Contains(raycastHit.collider.gameObject))
+                            if (align && !SceneMaterial.Instance.ignores.Contains(raycastHit.collider.gameObject))
                             {
                                 Collider hitObj = raycastHit.collider;
                                 if (isCustomModel)
@@ -419,7 +417,7 @@ namespace Gaboom.Scene
                                     generated.SetActive(true);
                                 }
                                 else
-                                    generated = Instantiate(SceneMaterial.Instance.prefabs[selectedPrefab], Vector3.zero, Quaternion.identity);
+                                    generated = Instantiate(SceneMaterial.Instance.TerrainPrefabs[selectedPrefab], Vector3.zero, Quaternion.identity);
                                 generated.transform.position = Align(generated, raycastHit);
                                 if (hitObj.transform.parent != null)
                                     generated.transform.rotation = Quaternion.FromToRotation(hitObj.transform.parent.forward, generated.transform.position - hitObj.transform.parent.position) * hitObj.transform.parent.rotation;
@@ -428,11 +426,11 @@ namespace Gaboom.Scene
                             {
                                 if (isCustomModel)
                                 {
-                                    generated = Instantiate(preloadObj, raycastHit.point + SceneMaterial.Instance.prefabs[selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
+                                    generated = Instantiate(preloadObj, raycastHit.point + SceneMaterial.Instance.TerrainPrefabs[selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
                                     generated.SetActive(true);
                                 }
                                 else
-                                    generated = Instantiate(SceneMaterial.Instance.prefabs[selectedPrefab], raycastHit.point + SceneMaterial.Instance.prefabs[selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
+                                    generated = Instantiate(SceneMaterial.Instance.TerrainPrefabs[selectedPrefab], raycastHit.point + SceneMaterial.Instance.TerrainPrefabs[selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
                             }
                             obstacles.Add(generated);
 
@@ -451,7 +449,7 @@ namespace Gaboom.Scene
                         switch (selectedPrefab)
                         {
                             case -7:
-                                if (raycastHit.collider != null && !ignores.Contains(raycastHit.collider.gameObject))
+                                if (raycastHit.collider != null && !SceneMaterial.Instance.ignores.Contains(raycastHit.collider.gameObject))
                                 {
                                     Destroy(raycastHit.collider.gameObject);
                                 }

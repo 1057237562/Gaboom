@@ -1,4 +1,5 @@
 using Gaboom.IO;
+using Gaboom.Scene;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,7 +8,6 @@ using UnityEngine.Events;
 public class LifeCycle : MonoBehaviour
 {
     public static bool gameStart = false;
-
     public static List<GameObject> gameObjects = new List<GameObject>();
 
     public List<string> physics = new List<string>();
@@ -65,13 +65,13 @@ public class LifeCycle : MonoBehaviour
             panel.SetActive(false);
         }
         restoreBuildState.Invoke();
-        BuildFunction.Instance.selectedPrefab = -1;
+        SceneMaterial.Instance.mainController.selectedPrefab = -1;
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        BuildFunction.Instance.selectedPrefab = -1;
+        SceneMaterial.Instance.mainController.selectedPrefab = -1;
         Pause();
     }
 }
