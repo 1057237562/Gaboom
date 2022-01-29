@@ -1,5 +1,6 @@
 using Gaboom.IO;
 using Gaboom.Util;
+using RTEditor;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -26,13 +27,22 @@ namespace Gaboom.Scene
         public List<GameObject> BuildingPrefabs;
 
         public BuildFunction mainController;
+        public RuntimeEditorApplication runtimeEditor;
+
+        private void Awake()
+        {
+            if (GameObject.FindGameObjectsWithTag("MainCamera").Length == 0)
+            {
+                Instantiate(cameraPrefab);
+                runtimeEditor.CustomCamera = cameraPrefab.GetComponent<Camera>();
+                mainController = cameraPrefab.GetComponent<BuildFunction>();
+            }
+        }
 
         // Start is called before the first frame update
         void Start()
         {
             Instance = this;
-            if (GameObject.FindGameObjectsWithTag("MainCamera").Length == 0)
-                Instantiate(cameraPrefab);
             if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("GameScene") && filepath != null)
             {
                 string dataPath = Application.dataPath + "/Workspace";

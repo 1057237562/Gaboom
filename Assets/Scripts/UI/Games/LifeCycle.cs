@@ -71,7 +71,6 @@ public class LifeCycle : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        SceneMaterial.Instance.mainController.selectedPrefab = -1;
         Pause();
     }
 }

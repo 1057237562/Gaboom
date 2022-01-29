@@ -49,17 +49,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   preview: {fileID: 2100000, guid: 3a891a6655067c343be0704d3af9f533, type: 2}
   deny: {fileID: 2100000, guid: b6af50ebaa244b3498a8a5a0658542d4, type: 2}
-  prefabs:
-  - {fileID: 5341572649704942880, guid: bfcea66073a4d904686ced598a134526, type: 3}
-  - {fileID: 3578436326011583956, guid: a31be67c00f1e2b408bb8f80aef8fb89, type: 3}
-  - {fileID: 8261906837377023327, guid: e1114fa85bb9ac14fa10c90ff0ff91a4, type: 3}
-  - {fileID: 1561112167246741998, guid: cd53eeb34d062be4aa71e7aeebaf11b6, type: 3}
-  - {fileID: 3457983648773227700, guid: 55a0f651fd41899489a79e85a71d880d, type: 3}
-  - {fileID: 7833078999981710132, guid: e857c98de3c06344fb0153d24f81ee7e, type: 3}
-  - {fileID: 2747325105205835016, guid: c13521711c5a78746b32ef3e4848cdbc, type: 3}
-  ignores:
-  - {fileID: 0}
-  keypanel: {fileID: 0}
   align: 1
   autoConnect: 1
 --- !u!20 &4717491339675267755
@@ -90,7 +79,7 @@ Camera:
   field of view: 67.380135
   orthographic: 0
   orthographic size: 5
-  m_Depth: -1
+  m_Depth: 1
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
