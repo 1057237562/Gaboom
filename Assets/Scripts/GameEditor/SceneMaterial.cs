@@ -32,7 +32,7 @@ namespace Gaboom.Scene
 
         private void Awake()
         {
-            if (GameObject.FindGameObjectsWithTag("MainCamera").Length == 0)
+            if (GameObject.FindGameObjectsWithTag("MainCamera").Length == 0 && SceneManager.GetActiveScene().name == "GameScene")
             {
                 GameObject cam = Instantiate(cameraPrefab);
                 runtimeEditor.CustomCamera = cam.GetComponent<Camera>();
