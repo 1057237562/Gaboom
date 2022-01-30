@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Xml;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -18,7 +19,7 @@ namespace Gaboom.Scene
         public static string filepath;
 
         public Terrain terrain;
-        public Camera cameraPrefab;
+        public GameObject cameraPrefab;
 
         public List<GameObject> ignores;
         public GameObject keypanel;
@@ -33,10 +34,15 @@ namespace Gaboom.Scene
         {
             if (GameObject.FindGameObjectsWithTag("MainCamera").Length == 0)
             {
-                Instantiate(cameraPrefab);
-                runtimeEditor.CustomCamera = cameraPrefab.GetComponent<Camera>();
-                mainController = cameraPrefab.GetComponent<BuildFunction>();
+                GameObject cam = Instantiate(cameraPrefab);
+                runtimeEditor.CustomCamera = cam.GetComponent<Camera>();
+                mainController = cam.GetComponent<BuildFunction>();
             }
+        }
+
+        public void DelegateChangeSelected(int index)
+        {
+            mainController.selectedPrefab = index;
         }
 
         // Start is called before the first frame update
