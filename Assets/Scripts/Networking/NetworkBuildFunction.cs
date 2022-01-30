@@ -1,9 +1,8 @@
-using RTEditor;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Gaboom.Util;
 using Unity.Netcode;
+using Gaboom.Scene;
 
 public class NetworkBuildFunction : NetworkBehaviour
 {
@@ -11,8 +10,6 @@ public class NetworkBuildFunction : NetworkBehaviour
     public Material deny;
 
     public List<GameObject> prefabs;
-    public List<GameObject> ignores;
-    public GameObject keypanel;
     public int selectedPrefab { get; set; }
     GameObject generated;
     public bool align = true;
@@ -53,7 +50,7 @@ public class NetworkBuildFunction : NetworkBehaviour
 
             if (raycastHit.collider != null)
             {
-                if (align && !ignores.Contains(raycastHit.collider.gameObject))
+                if (align && !SceneMaterial.Instance.ignores.Contains(raycastHit.collider.gameObject))
                 {
                     Collider hitObj = raycastHit.collider;
                     generated = Instantiate(prefabs[selectedPrefab], Vector3.zero, Quaternion.identity);
@@ -99,7 +96,7 @@ public class NetworkBuildFunction : NetworkBehaviour
                             Destroy(generated);
                             generated = null;
                         }
-                        if (align && !ignores.Contains(raycastHit.collider.gameObject))
+                        if (align && !SceneMaterial.Instance.ignores.Contains(raycastHit.collider.gameObject))
                         {
                             Collider hitObj = raycastHit.collider;
                             generated = Instantiate(prefabs[selectedPrefab], Vector3.zero, Quaternion.identity);
@@ -180,8 +177,8 @@ public class NetworkBuildFunction : NetworkBehaviour
                             KeyFunction[] keyFunction = raycastHit.collider.transform.parent.GetComponents<KeyFunction>();
                             if (keyFunction.Length > 0)
                             {
-                                keypanel.SetActive(true);
-                                KeyPanel kp = keypanel.GetComponent<KeyPanel>();
+                                SceneMaterial.Instance.keypanel.SetActive(true);
+                                KeyPanel kp = SceneMaterial.Instance.keypanel.GetComponent<KeyPanel>();
                                 kp.objname.text = raycastHit.collider.transform.parent.name;
                                 kp.CreateItem(keyFunction);
                             }
@@ -200,8 +197,8 @@ public class NetworkBuildFunction : NetworkBehaviour
                             KeyFunction[] keyFunction = raycastHit.collider.transform.parent.GetComponents<KeyFunction>();
                             if (keyFunction.Length > 0)
                             {
-                                keypanel.SetActive(true);
-                                KeyPanel kp = keypanel.GetComponent<KeyPanel>();
+                                SceneMaterial.Instance.keypanel.SetActive(true);
+                                KeyPanel kp = SceneMaterial.Instance.keypanel.GetComponent<KeyPanel>();
                                 kp.objname.text = raycastHit.collider.transform.parent.name;
                                 kp.CreateItem(keyFunction);
                             }

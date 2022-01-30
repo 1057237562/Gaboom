@@ -1,5 +1,6 @@
 using Gaboom.IO;
 using Gaboom.Util;
+using RTEditor;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -17,8 +18,26 @@ namespace Gaboom.Scene
         public static string filepath;
 
         public Terrain terrain;
+        public Camera cameraPrefab;
 
-        public List<GameObject> prefabs = new List<GameObject>();
+        public List<GameObject> ignores;
+        public GameObject keypanel;
+
+        public List<GameObject> TerrainPrefabs;
+        public List<GameObject> BuildingPrefabs;
+
+        public BuildFunction mainController;
+        public RuntimeEditorApplication runtimeEditor;
+
+        private void Awake()
+        {
+            if (GameObject.FindGameObjectsWithTag("MainCamera").Length == 0)
+            {
+                Instantiate(cameraPrefab);
+                runtimeEditor.CustomCamera = cameraPrefab.GetComponent<Camera>();
+                mainController = cameraPrefab.GetComponent<BuildFunction>();
+            }
+        }
 
         // Start is called before the first frame update
         void Start()

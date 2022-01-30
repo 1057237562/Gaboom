@@ -3,14 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Gaboom.Util;
-public class BuildFunction : MonoSingletonBase<BuildFunction>
+using Gaboom.Scene;
+
+public class BuildFunction : MonoBehaviour//MonoSingletonBase<BuildFunction>
 {
     public Material preview;
     public Material deny;
 
-    public List<GameObject> prefabs;
-    public List<GameObject> ignores;
-    public GameObject keypanel;
+    //public List<GameObject> prefabs;
     public int selectedPrefab { get; set; }
     GameObject generated;
     public bool align = true;
@@ -51,17 +51,17 @@ public class BuildFunction : MonoSingletonBase<BuildFunction>
 
             if (raycastHit.collider != null)
             {
-                if (align && !ignores.Contains(raycastHit.collider.gameObject))
+                if (align && !SceneMaterial.Instance.ignores.Contains(raycastHit.collider.gameObject))
                 {
                     Collider hitObj = raycastHit.collider;
-                    generated = Instantiate(prefabs[selectedPrefab], Vector3.zero, Quaternion.identity);
+                    generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[selectedPrefab], Vector3.zero, Quaternion.identity);
                     generated.transform.position = Align(generated, raycastHit);
                     if (raycastHit.collider.transform.parent != null)
                         generated.transform.rotation = Quaternion.FromToRotation(hitObj.transform.parent.forward, generated.transform.position - hitObj.transform.parent.position) * hitObj.transform.parent.rotation;
                 }
                 else
                 {
-                    generated = Instantiate(prefabs[selectedPrefab], raycastHit.point + prefabs[selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x,transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
+                    generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[selectedPrefab], raycastHit.point + SceneMaterial.Instance.BuildingPrefabs[selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x,transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
                 }
                 foreach (MeshRenderer child in generated.GetComponentsInChildren<MeshRenderer>())
                 {
@@ -97,17 +97,17 @@ public class BuildFunction : MonoSingletonBase<BuildFunction>
                             Destroy(generated);
                             generated = null;
                         }
-                        if (align && !ignores.Contains(raycastHit.collider.gameObject))
+                        if (align && !SceneMaterial.Instance.ignores.Contains(raycastHit.collider.gameObject))
                         {
                             Collider hitObj = raycastHit.collider;
-                            generated = Instantiate(prefabs[selectedPrefab], Vector3.zero, Quaternion.identity);
+                            generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[selectedPrefab], Vector3.zero, Quaternion.identity);
                             generated.transform.position = Align(generated, raycastHit);
                             if(hitObj.transform.parent != null)
                                 generated.transform.rotation = Quaternion.FromToRotation(hitObj.transform.parent.forward, generated.transform.position - hitObj.transform.parent.position) * hitObj.transform.parent.rotation;
                         }
                         else
                         {
-                            generated = Instantiate(prefabs[selectedPrefab], raycastHit.point + prefabs[selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
+                            generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[selectedPrefab], raycastHit.point + SceneMaterial.Instance.BuildingPrefabs[selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
                         }
 
                         if (raycastHit.collider.transform.parent != null)
@@ -178,8 +178,8 @@ public class BuildFunction : MonoSingletonBase<BuildFunction>
                             KeyFunction[] keyFunction = raycastHit.collider.transform.parent.GetComponents<KeyFunction>();
                             if (keyFunction.Length > 0)
                             {
-                                keypanel.SetActive(true);
-                                KeyPanel kp = keypanel.GetComponent<KeyPanel>();
+                                SceneMaterial.Instance.keypanel.SetActive(true);
+                                KeyPanel kp = SceneMaterial.Instance.keypanel.GetComponent<KeyPanel>();
                                 kp.objname.text = raycastHit.collider.transform.parent.name;
                                 kp.CreateItem(keyFunction);
                             }
@@ -198,8 +198,8 @@ public class BuildFunction : MonoSingletonBase<BuildFunction>
                             KeyFunction[] keyFunction = raycastHit.collider.transform.parent.GetComponents<KeyFunction>();
                             if (keyFunction.Length > 0)
                             {
-                                keypanel.SetActive(true);
-                                KeyPanel kp = keypanel.GetComponent<KeyPanel>();
+                                SceneMaterial.Instance.keypanel.SetActive(true);
+                                KeyPanel kp = SceneMaterial.Instance.keypanel.GetComponent<KeyPanel>();
                                 kp.objname.text = raycastHit.collider.transform.parent.name;
                                 kp.CreateItem(keyFunction);
                             }
