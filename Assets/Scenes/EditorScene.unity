@@ -3042,6 +3042,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   terrain: {fileID: 0}
   cameraPrefab: {fileID: 0}
+  networkcameraPrefab: {fileID: 0}
   ignores:
   - {fileID: 2534866582014686872}
   keypanel: {fileID: 0}
@@ -3050,6 +3051,7 @@ MonoBehaviour:
   - {fileID: 1103999600443529079, guid: d63190600886979419f4110b1ceca566, type: 3}
   BuildingPrefabs: []
   mainController: {fileID: 0}
+  runtimeEditor: {fileID: 0}
 --- !u!1 &657733926
 GameObject:
   m_ObjectHideFlags: 0

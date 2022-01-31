@@ -3,13 +3,13 @@ using UnityEngine;
 using Gaboom.Util;
 using Unity.Netcode;
 using Gaboom.Scene;
+using UnityTemplateProjects;
 
 public class NetworkBuildFunction : NetworkBehaviour
 {
     public Material preview;
     public Material deny;
 
-    public List<GameObject> prefabs;
     public int selectedPrefab { get; set; }
     GameObject generated;
     public bool align = true;
@@ -21,6 +21,16 @@ public class NetworkBuildFunction : NetworkBehaviour
     }
     bool occupied = true;
 
+    private void Start()
+    {
+        if (!GetComponent<NetworkObject>().IsOwner)
+        {
+            Destroy(GetComponent<Camera>());
+            Destroy(GetComponent<AudioListener>());
+            Destroy(GetComponent<SimpleCameraController>());
+            Destroy(this);
+        }
+    }
     public PhysicCore Reattach(PhysicCore core)
     {
         if(core.deriveFrom != null)
@@ -53,14 +63,14 @@ public class NetworkBuildFunction : NetworkBehaviour
                 if (align && !SceneMaterial.Instance.ignores.Contains(raycastHit.collider.gameObject))
                 {
                     Collider hitObj = raycastHit.collider;
-                    generated = Instantiate(prefabs[selectedPrefab], Vector3.zero, Quaternion.identity);
+                    generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[selectedPrefab], Vector3.zero, Quaternion.identity);
                     generated.transform.position = Align(generated, raycastHit);
                     if (raycastHit.collider.transform.parent != null)
                         generated.transform.rotation = Quaternion.FromToRotation(hitObj.transform.parent.forward, generated.transform.position - hitObj.transform.parent.position) * hitObj.transform.parent.rotation;
                 }
                 else
                 {
-                    generated = Instantiate(prefabs[selectedPrefab], raycastHit.point + prefabs[selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x,transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
+                    generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[selectedPrefab], raycastHit.point + SceneMaterial.Instance.BuildingPrefabs[selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x,transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
                 }
                 foreach (MeshRenderer child in generated.GetComponentsInChildren<MeshRenderer>())
                 {
@@ -99,14 +109,14 @@ public class NetworkBuildFunction : NetworkBehaviour
                         if (align && !SceneMaterial.Instance.ignores.Contains(raycastHit.collider.gameObject))
                         {
                             Collider hitObj = raycastHit.collider;
-                            generated = Instantiate(prefabs[selectedPrefab], Vector3.zero, Quaternion.identity);
+                            generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[selectedPrefab], Vector3.zero, Quaternion.identity);
                             generated.transform.position = Align(generated, raycastHit);
                             if(hitObj.transform.parent != null)
                                 generated.transform.rotation = Quaternion.FromToRotation(hitObj.transform.parent.forward, generated.transform.position - hitObj.transform.parent.position) * hitObj.transform.parent.rotation;
                         }
                         else
                         {
-                            generated = Instantiate(prefabs[selectedPrefab], raycastHit.point + prefabs[selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
+                            generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[selectedPrefab], raycastHit.point + SceneMaterial.Instance.BuildingPrefabs[selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
                         }
 
                         if (raycastHit.collider.transform.parent != null)

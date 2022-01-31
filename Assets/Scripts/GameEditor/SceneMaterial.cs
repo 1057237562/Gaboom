@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Xml;
+using Unity.Netcode;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -20,6 +21,7 @@ namespace Gaboom.Scene
 
         public Terrain terrain;
         public GameObject cameraPrefab;
+        public GameObject networkcameraPrefab;
 
         public List<GameObject> ignores;
         public GameObject keypanel;
@@ -34,9 +36,19 @@ namespace Gaboom.Scene
         {
             if (GameObject.FindGameObjectsWithTag("MainCamera").Length == 0 && SceneManager.GetActiveScene().name == "GameScene")
             {
-                GameObject cam = Instantiate(cameraPrefab);
-                runtimeEditor.CustomCamera = cam.GetComponent<Camera>();
-                mainController = cam.GetComponent<BuildFunction>();
+                if (NetworkManager.Singleton == null)
+                {
+                    GameObject cam = Instantiate(cameraPrefab);
+                    runtimeEditor.CustomCamera = cam.GetComponent<Camera>();
+                    mainController = cam.GetComponent<BuildFunction>();
+                }
+                else
+                {
+                    GameObject cam = Instantiate(networkcameraPrefab);
+                    runtimeEditor.CustomCamera = cam.GetComponent<Camera>();
+                    cam.GetComponent<NetworkObject>().SpawnAsPlayerObject(NetworkManager.Singleton.LocalClientId);
+                    mainController = cam.GetComponent<BuildFunction>();
+                }
             }
         }
 
