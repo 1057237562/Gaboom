@@ -75,7 +75,7 @@ public class IBlock : MonoBehaviour, IRTEditorEventListener
         }
         else
         {
-            core.mring.blocks.Remove(this);
+            core.mring.GetBlocks().Remove(this);
             core.setDirty();
         }
         Destroy(gameObject);

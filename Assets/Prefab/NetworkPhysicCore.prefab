@@ -446,10 +446,11 @@ GameObject:
   m_Component:
   - component: {fileID: 6307324326080874166}
   - component: {fileID: 6307324326080874164}
-  - component: {fileID: 6307324326080874163}
   - component: {fileID: 6307324326080874162}
   - component: {fileID: 6307324326080874167}
   - component: {fileID: 6307324326080874165}
+  - component: {fileID: 1803117338807101713}
+  - component: {fileID: 2320180190278176397}
   m_Layer: 0
   m_Name: NetworkPhysicCore
   m_TagString: PhysicCore
@@ -488,22 +489,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 2
---- !u!114 &6307324326080874163
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6307324326080874161}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1c9e2034e7f159b4088b23615f4c1d93, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  acceleration: {x: 0, y: 0, z: 0}
-  angular: {x: 0, y: 0, z: 0}
-  sensitive: 5
-  deriveFrom: {fileID: 0}
 --- !u!114 &6307324326080874162
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -538,9 +523,9 @@ MonoBehaviour:
   SyncRotAngleX: 1
   SyncRotAngleY: 1
   SyncRotAngleZ: 1
-  SyncScaleX: 1
-  SyncScaleY: 1
-  SyncScaleZ: 1
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
   PositionThreshold: 0.001
   RotAngleThreshold: 0.01
   ScaleThreshold: 0.01
@@ -557,5 +542,33 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f6c0be61502bb534f922ebb746851216, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1803117338807101713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6307324326080874161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b216dcd9c298ff4787ca6001e0c1f8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  acceleration: {x: 0, y: 0, z: 0}
+  angular: {x: 0, y: 0, z: 0}
+  sensitive: 5
+  deriveFrom: {fileID: 0}
+--- !u!114 &2320180190278176397
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6307324326080874161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c9e2034e7f159b4088b23615f4c1d93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

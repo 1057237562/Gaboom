@@ -12,12 +12,12 @@ public class PhysicCore : MonoBehaviour
 
     public List<IBlock> GetBlocks()
     {
-        return mring.blocks;
+        return mring.GetBlocks();
     }
 
     public void Load(List<IBlock> list)
     {
-        mring.blocks = list;
+        mring.SetBlocks(list);
         if (!worker.IsAlive)
         {
             worker.Start(this);
@@ -119,7 +119,7 @@ public class PhysicCore : MonoBehaviour
         Vector3 axis;
         float angle;
         rotation.ToAngleAxis(out angle, out axis);
-        foreach (IBlock block in mring.blocks)
+        foreach (IBlock block in mring.GetBlocks())
         {
             Vector3 vecProj;
             float radius = DisPoint2Line(block.transform.position, transform.TransformPoint(GetComponent<Rigidbody>().centerOfMass), transform.TransformPoint(GetComponent<Rigidbody>().centerOfMass) + axis, out vecProj);
@@ -132,7 +132,7 @@ public class PhysicCore : MonoBehaviour
 
     public void AppendIBlock(IBlock iblock)
     {
-        if (mring.blocks.Contains(iblock)) return;
+        if (mring.GetBlocks().Contains(iblock)) return;
         Rigidbody rigidbody = GetComponent<Rigidbody>();
         float mass = rigidbody.mass + iblock.mass;
         rigidbody.centerOfMass *= rigidbody.mass;
@@ -140,7 +140,7 @@ public class PhysicCore : MonoBehaviour
         rigidbody.centerOfMass /= mass;
         rigidbody.mass = mass;
 
-        mring.blocks.Add(iblock);
+        mring.GetBlocks().Add(iblock);
     }
 
     public void AppendRigidBody(GameObject gameObject)
@@ -156,7 +156,7 @@ public class PhysicCore : MonoBehaviour
 
         Destroy(appendRigidbody);
 
-        mring.blocks.Add(gameObject.GetComponent<IBlock>());
+        mring.GetBlocks().Add(gameObject.GetComponent<IBlock>());
     }
 
     public void RemoveIBlock(IBlock iblock)
@@ -169,8 +169,8 @@ public class PhysicCore : MonoBehaviour
         rigidbody.centerOfMass /= mass;
         rigidbody.mass = mass;
 
-        mring.blocks.Remove(iblock);
-        if(mring.blocks.Count == 0)
+        mring.GetBlocks().Remove(iblock);
+        if(mring.GetBlocks().Count == 0)
         {
             Destroy(gameObject);
         }
@@ -227,7 +227,7 @@ public class PhysicCore : MonoBehaviour
         {
             foreach (Ring ring in rings)
             {
-                ReCombind(ring.blocks);
+                ReCombind(ring.GetBlocks());
             }
             rings.Clear();
             Destroy(gameObject);
@@ -239,7 +239,7 @@ public class PhysicCore : MonoBehaviour
     {
         rings.Clear();
         HashSet<IBlock> ol = new HashSet<IBlock>();
-        foreach (IBlock block in mring.blocks)
+        foreach (IBlock block in mring.GetBlocks())
         {
             if (!ol.Contains(block))
             {
@@ -248,7 +248,7 @@ public class PhysicCore : MonoBehaviour
                 blocks.Add(block);
                 ol.Add(block);
                 dfs(block, ref blocks,ref ol);
-                rings[rings.Count - 1].blocks = blocks.ToList();
+                rings[rings.Count - 1].SetBlocks(blocks.ToList());
             }
         }
     }
@@ -296,7 +296,7 @@ public class PhysicCore : MonoBehaviour
         Rigidbody rigidbody = GetComponent<Rigidbody>();
         rigidbody.mass = 0;
         rigidbody.centerOfMass = Vector3.zero;
-        foreach (IBlock block in mring.blocks)
+        foreach (IBlock block in mring.GetBlocks())
         {
             block.transform.parent = transform;
             rigidbody.mass += block.mass;
@@ -341,5 +341,20 @@ public class PhysicCore : MonoBehaviour
 
 public class Ring
 {
-    public List<IBlock> blocks = new List<IBlock>();
+    private List<IBlock> blocks = new List<IBlock>();
+    public Action data_m;
+
+    public List<IBlock> GetBlocks()
+    {
+        if(data_m != null)
+            data_m.Invoke();
+        return blocks;
+    }
+
+    public void SetBlocks(List<IBlock> blocks)
+    {
+        if (data_m != null)
+            data_m.Invoke();
+        this.blocks = blocks;
+    }
 }
