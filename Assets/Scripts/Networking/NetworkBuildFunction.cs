@@ -9,7 +9,7 @@ public class NetworkBuildFunction : NetworkBehaviour
 {
     public Material preview;
     public Material deny;
-
+    public GameObject emptyGameObject;
     public int selectedPrefab { get; set; }
     GameObject generated;
     public bool align = true;
@@ -29,7 +29,9 @@ public class NetworkBuildFunction : NetworkBehaviour
             Destroy(GetComponent<AudioListener>());
             Destroy(GetComponent<SimpleCameraController>());
             Destroy(this);
+            return;
         }
+        PhysicCore.emptyGameObject = emptyGameObject;
     }
     public PhysicCore Reattach(PhysicCore core)
     {
@@ -154,9 +156,10 @@ public class NetworkBuildFunction : NetworkBehaviour
                         }
                         else
                         {
-                            GameObject parent = Instantiate(PhysicCore.emptyGameObject, raycastHit.point, Quaternion.identity);
+                            GameObject parent = Instantiate(emptyGameObject, raycastHit.point, Quaternion.identity);
 
                             PhysicCore core = parent.GetComponent<PhysicCore>();
+                            parent.GetComponent<NetworkObject>().Spawn();
                             LifeCycle.gameObjects.Add(parent);
                             List<IBlock> blocks = new List<IBlock>();
 

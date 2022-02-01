@@ -9,12 +9,17 @@ public class BuildFunction : MonoBehaviour//MonoSingletonBase<BuildFunction>
 {
     public Material preview;
     public Material deny;
-
+    public GameObject emptyGameObject;
     //public List<GameObject> prefabs;
     public int selectedPrefab { get; set; }
     GameObject generated;
     public bool align = true;
     public bool autoConnect = true;
+
+    private void Start()
+    {
+        PhysicCore.emptyGameObject = emptyGameObject;
+    }
 
     public void Toggle()
     {
@@ -145,7 +150,7 @@ public class BuildFunction : MonoBehaviour//MonoSingletonBase<BuildFunction>
                         }
                         else
                         {
-                            GameObject parent = Instantiate(PhysicCore.emptyGameObject, raycastHit.point, Quaternion.identity);
+                            GameObject parent = Instantiate(emptyGameObject, raycastHit.point, Quaternion.identity);
 
                             PhysicCore core = parent.GetComponent<PhysicCore>();
                             LifeCycle.gameObjects.Add(parent);
