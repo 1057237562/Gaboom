@@ -2759,7 +2759,7 @@ MonoBehaviour:
       SourceHashToOverride: 0
       OverridingTargetPrefab: {fileID: 0}
     - Override: 0
-      Prefab: {fileID: 7261817291829730145, guid: 58a76adc7b339344bb65359e0efdbdae,
+      Prefab: {fileID: 6307324326080874161, guid: 41dabf607127fbc4d929dfc8f95493ce,
         type: 3}
       SourcePrefabToOverride: {fileID: 0}
       SourceHashToOverride: 0
@@ -5251,7 +5251,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1316870465}
   m_Direction: 0
   m_Value: 0
-  m_Size: 0.99999994
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -8286,7 +8286,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 821952112}
   m_Direction: 0
   m_Value: 0
-  m_Size: 0.99999994
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
