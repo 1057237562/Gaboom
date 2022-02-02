@@ -18,13 +18,18 @@ public class PhysicCore : MonoBehaviour
     public void Load(List<IBlock> list)
     {
         mring.SetBlocks(list);
-        if (!worker.IsAlive)
-        {
-            worker.Start(this);
-        }
         if (list.Count == 1)
         {
             enabled = false;
+        }
+        StartCheck();
+    }
+
+    public void StartCheck()
+    {
+        if (!worker.IsAlive)
+        {
+            worker.Start(this);
         }
     }
 

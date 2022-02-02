@@ -25,7 +25,7 @@ public class NetworkPhysicCore : NetworkBehaviour
             // Case sync
             if (IsServer || IsHost)
             {
-
+                SyncDataClientRpc(SLMechanic.SerializeToXml(physicCore));
             }
             else
             {
@@ -100,7 +100,15 @@ public class NetworkPhysicCore : NetworkBehaviour
             iblock.OnScale();
         }
 
-        physic.Load(content);
+        Ring ring = new Ring();
+        ring.SetBlocks(content);
+        ring.data_m = DataListener;
+        physic.mring = ring;
+        if(content.Count == 1)
+        {
+            physic.enabled = false;
+        }
+        physic.StartCheck();
         physic.RecalculateRigidbody();
     }
 
