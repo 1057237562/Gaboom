@@ -6,6 +6,7 @@ TagManager:
   tags:
   - PhysicCore
   - ImportedModel
+  - Terrain
   layers:
   - Default
   - TransparentFX

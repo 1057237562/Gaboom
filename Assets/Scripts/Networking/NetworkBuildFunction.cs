@@ -25,6 +25,7 @@ public class NetworkBuildFunction : NetworkBehaviour
     {
         if (!GetComponent<NetworkObject>().IsOwner)
         {
+            gameObject.tag = "Untagged";
             Destroy(GetComponent<Camera>());
             Destroy(GetComponent<AudioListener>());
             Destroy(GetComponent<SimpleCameraController>());
@@ -62,7 +63,7 @@ public class NetworkBuildFunction : NetworkBehaviour
 
             if (raycastHit.collider != null)
             {
-                if (align && !SceneMaterial.Instance.ignores.Contains(raycastHit.collider.gameObject))
+                if (align && !raycastHit.collider.gameObject.isStatic)
                 {
                     Collider hitObj = raycastHit.collider;
                     generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[selectedPrefab], Vector3.zero, Quaternion.identity);
@@ -108,7 +109,7 @@ public class NetworkBuildFunction : NetworkBehaviour
                             Destroy(generated);
                             generated = null;
                         }
-                        if (align && !SceneMaterial.Instance.ignores.Contains(raycastHit.collider.gameObject))
+                        if (align && !raycastHit.collider.gameObject.isStatic)
                         {
                             Collider hitObj = raycastHit.collider;
                             generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[selectedPrefab], Vector3.zero, Quaternion.identity);

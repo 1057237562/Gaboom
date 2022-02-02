@@ -2996,8 +2996,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27afeed57464eae45966ba3968cd71e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  physicCore: {fileID: 7261817291829730145, guid: 58a76adc7b339344bb65359e0efdbdae,
-    type: 3}
   camPrefab: {fileID: 8323039755458967466, guid: 84d17f6cf3fa0524c8aa4da127290beb,
     type: 3}
 --- !u!4 &646863813
@@ -3043,8 +3041,6 @@ MonoBehaviour:
   terrain: {fileID: 0}
   cameraPrefab: {fileID: 0}
   networkcameraPrefab: {fileID: 0}
-  ignores:
-  - {fileID: 2534866582014686872}
   keypanel: {fileID: 0}
   TerrainPrefabs:
   - {fileID: 3508962585101819158, guid: 53ea5e17bf79a2844931542236c8b77d, type: 3}
@@ -12454,7 +12450,7 @@ GameObject:
   - component: {fileID: 2534866582014686873}
   m_Layer: 0
   m_Name: default
-  m_TagString: Untagged
+  m_TagString: Terrain
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647

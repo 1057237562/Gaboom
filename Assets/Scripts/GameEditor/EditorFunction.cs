@@ -275,7 +275,7 @@ namespace Gaboom.Scene
 
                 if (raycastHit.collider != null)
                 {
-                    if (align && !SceneMaterial.Instance.ignores.Contains(raycastHit.collider.gameObject))
+                    if (align && !raycastHit.collider.gameObject.isStatic)
                     {
                         Collider hitObj = raycastHit.collider;
                         if (isCustomModel)
@@ -408,7 +408,7 @@ namespace Gaboom.Scene
                                 Destroy(generated);
                                 generated = null;
                             }
-                            if (align && !SceneMaterial.Instance.ignores.Contains(raycastHit.collider.gameObject))
+                            if (align && !raycastHit.collider.gameObject.isStatic)
                             {
                                 Collider hitObj = raycastHit.collider;
                                 if (isCustomModel)
@@ -449,7 +449,7 @@ namespace Gaboom.Scene
                         switch (selectedPrefab)
                         {
                             case -7:
-                                if (raycastHit.collider != null && !SceneMaterial.Instance.ignores.Contains(raycastHit.collider.gameObject))
+                                if (raycastHit.collider != null && !raycastHit.collider.gameObject.isStatic)
                                 {
                                     Destroy(raycastHit.collider.gameObject);
                                 }
