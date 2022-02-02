@@ -3433,6 +3433,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapname: {fileID: 530793399}
   display: {fileID: 1689474}
+  thumbnail: {fileID: 1832726773}
   networkController: {fileID: 614554748}
 --- !u!114 &761977424
 MonoBehaviour:
