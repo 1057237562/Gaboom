@@ -76,6 +76,7 @@ namespace Gaboom.Scene
                 XmlDocument doc = new XmlDocument();
                 doc.Load(Application.dataPath + "/Workspace/" + Path.GetFileName(filepath));
                 SLMechanic.DeserializeToScene(doc.GetElementsByTagName("Objects")[0]);
+                File.Copy(dataPath + "/thumbnail.png", Application.dataPath + "/maps/" + Path.GetFileNameWithoutExtension(filepath) + "_thumbnail.png", true);
             }
         }
     }
