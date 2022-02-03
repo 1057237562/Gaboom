@@ -25,6 +25,8 @@ public class NetworkController : MonoBehaviour,INetworkUpdateSystem
     public Text port_cfield;
     public Text password_cfield;
 
+    public Slider progressbar;
+
     public List<ulong> players;
 
     NetworkManager networkManager;
@@ -34,6 +36,7 @@ public class NetworkController : MonoBehaviour,INetworkUpdateSystem
     public static bool gameStarted = false;
 
     Queue<Action> pendingPackage = new Queue<Action>();
+    public GameObject networkCamera;
 
     private void Start()
     {
@@ -103,6 +106,8 @@ public class NetworkController : MonoBehaviour,INetworkUpdateSystem
                             fastBufferWriter.WriteBytes(buffer);
                             networkManager.CustomMessagingManager.SendNamedMessage("MapData", senderClientId, fastBufferWriter, NetworkDelivery.Reliable);
                         }
+                        progressbar.gameObject.SetActive(true);
+                        progressbar.value = (float)i / (fs.Length / messageSize);
                     }));
                 }
                 pendingPackage.Enqueue(new Action(() =>
@@ -118,8 +123,15 @@ public class NetworkController : MonoBehaviour,INetworkUpdateSystem
                     }
                     fs.Close();
                     fs.Dispose();
+                    progressbar.gameObject.SetActive(false);
                 }));
             }
+        });
+
+        networkManager.CustomMessagingManager.RegisterNamedMessageHandler("SummonCamera", (senderClientId, reader) =>
+        {
+            GameObject cam = Instantiate(networkCamera);
+            cam.GetComponent<NetworkObject>().SpawnAsPlayerObject(senderClientId);
         });
     }
 
@@ -130,9 +142,10 @@ public class NetworkController : MonoBehaviour,INetworkUpdateSystem
         XmlDocument doc = new XmlDocument();
         doc.Load(reader);
 
-        using (FastBufferWriter writer = new FastBufferWriter(FastBufferWriter.GetWriteSize(mapname), Allocator.Temp))
+        using (FastBufferWriter writer = new FastBufferWriter(FastBufferWriter.GetWriteSize(mapname) + FastBufferWriter.GetWriteSize(fileLength), Allocator.Temp))
         {
             writer.WriteValueSafe(mapname);
+            writer.WriteValueSafe(fileLength);
             networkManager.CustomMessagingManager.SendNamedMessage("MapNameSync", clientId, writer, NetworkDelivery.Reliable);
         }
 
@@ -150,11 +163,13 @@ public class NetworkController : MonoBehaviour,INetworkUpdateSystem
     public void OnMapChanged()
     {
         SceneMaterial.filepath = Application.dataPath + "/maps/" + mapname + ".gmap";
+        fileLength = new FileInfo(SceneMaterial.filepath).Length;
         if (networkManager.IsHost)
         {
-            using (FastBufferWriter writer = new FastBufferWriter(FastBufferWriter.GetWriteSize(mapname), Allocator.Temp))
+            using (FastBufferWriter writer = new FastBufferWriter(FastBufferWriter.GetWriteSize(mapname) + FastBufferWriter.GetWriteSize(fileLength), Allocator.Temp))
             {
                 writer.WriteValueSafe(mapname);
+                writer.WriteValueSafe(fileLength);
                 networkManager.CustomMessagingManager.SendNamedMessageToAll("MapNameSync", writer, NetworkDelivery.Reliable);
             }
         }
@@ -169,6 +184,7 @@ public class NetworkController : MonoBehaviour,INetworkUpdateSystem
         Destroy(this);
     }
 
+    long fileLength;
     public void StartClient()
     {
         if (networkManager.IsClient) return;
@@ -194,25 +210,37 @@ public class NetworkController : MonoBehaviour,INetworkUpdateSystem
         networkManager.CustomMessagingManager.RegisterNamedMessageHandler("MapNameSync", (senderClientId, reader) =>
         {
             reader.ReadValueSafe(out mapname);
+            reader.ReadValueSafe(out fileLength);
             string mapPath = Application.dataPath + "/maps";
             if (!Directory.Exists(mapPath))
             {
                 Directory.CreateDirectory(mapPath);
             }
             SceneMaterial.filepath = mapPath + "/" + mapname + ".gmap";
-            if (!File.Exists(mapPath + "/" + mapname + ".gmap"))
+            if (!File.Exists(mapPath + "/" + mapname + ".gmap") || new FileInfo(SceneMaterial.filepath).Length != fileLength)
             {
                 networkManager.CustomMessagingManager.SendNamedMessage("RequireMap",senderClientId,new FastBufferWriter(0,Allocator.Temp),NetworkDelivery.Reliable);
             }
         });
 
         networkManager.CustomMessagingManager.RegisterNamedMessageHandler("MapData", (senderClientId, reader) => {
-            using (FileStream fs = new FileStream(Application.dataPath + "/maps/" + mapname + ".gmap", FileMode.Append))
+            string filepath = Application.dataPath + "/maps/" + mapname + ".gmap";
+            using (FileStream fs = new FileStream(filepath, FileMode.Append))
             {
                 reader.ReadValueSafe(out int size);
                 byte[] buffer = new byte[size];
                 reader.ReadBytesSafe(ref buffer, size);
                 fs.Write(buffer,0,buffer.Length);
+            }
+            FileInfo info = new FileInfo(filepath);
+            if(info.Length != fileLength)
+            {
+                progressbar.gameObject.SetActive(true);
+                progressbar.value = (float)info.Length/fileLength;
+            }
+            else
+            {
+                progressbar.gameObject.SetActive(false);
             }
         });
     }
@@ -223,5 +251,11 @@ public class NetworkController : MonoBehaviour,INetworkUpdateSystem
         {
             pendingPackage.Dequeue().Invoke();
         }
+    }
+
+    public void SpawnNetworkCamera()
+    {
+        if (networkManager.IsServer || networkManager.IsHost) return;
+        networkManager.CustomMessagingManager.SendNamedMessage("SummonCamera", networkManager.LocalClientId, new FastBufferWriter(0, Allocator.Temp), NetworkDelivery.Reliable);
     }
 }

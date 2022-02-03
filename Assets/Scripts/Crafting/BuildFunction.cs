@@ -1,17 +1,16 @@
-using RTEditor;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Gaboom.Util;
 using Gaboom.Scene;
 
+[RequireComponent(typeof(Camera))]
 public class BuildFunction : MonoBehaviour//MonoSingletonBase<BuildFunction>
 {
     public Material preview;
     public Material deny;
     public GameObject emptyGameObject;
     //public List<GameObject> prefabs;
-    public int selectedPrefab { get; set; }
+    
     GameObject generated;
     public bool align = true;
     public bool autoConnect = true;
@@ -19,6 +18,8 @@ public class BuildFunction : MonoBehaviour//MonoSingletonBase<BuildFunction>
     private void Start()
     {
         PhysicCore.emptyGameObject = emptyGameObject;
+        SceneMaterial.Instance.runtimeEditor.CustomCamera = GetComponent<Camera>();
+        SceneMaterial.Instance.runtimeEditor.gameObject.SetActive(true);
     }
 
     public void Toggle()
@@ -48,7 +49,7 @@ public class BuildFunction : MonoBehaviour//MonoSingletonBase<BuildFunction>
             occupied = generated.GetComponentInChildren<CollisionProbe>().isIntersect;
             Destroy(generated);
         }
-        if (selectedPrefab > -1 && !GameLogic.IsPointerOverGameObject())
+        if (SceneMaterial.Instance.selectedPrefab > -1 && !GameLogic.IsPointerOverGameObject())
         {
             Ray ray = GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
             RaycastHit raycastHit;
@@ -59,14 +60,14 @@ public class BuildFunction : MonoBehaviour//MonoSingletonBase<BuildFunction>
                 if (align && !raycastHit.collider.gameObject.isStatic)
                 {
                     Collider hitObj = raycastHit.collider;
-                    generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[selectedPrefab], Vector3.zero, Quaternion.identity);
+                    generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[SceneMaterial.Instance.selectedPrefab], Vector3.zero, Quaternion.identity);
                     generated.transform.position = Align(generated, raycastHit);
                     if (raycastHit.collider.transform.parent != null)
                         generated.transform.rotation = Quaternion.FromToRotation(hitObj.transform.parent.forward, generated.transform.position - hitObj.transform.parent.position) * hitObj.transform.parent.rotation;
                 }
                 else
                 {
-                    generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[selectedPrefab], raycastHit.point + SceneMaterial.Instance.BuildingPrefabs[selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x,transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
+                    generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[SceneMaterial.Instance.selectedPrefab], raycastHit.point + SceneMaterial.Instance.BuildingPrefabs[SceneMaterial.Instance.selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x,transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
                 }
                 foreach (MeshRenderer child in generated.GetComponentsInChildren<MeshRenderer>())
                 {
@@ -91,7 +92,7 @@ public class BuildFunction : MonoBehaviour//MonoSingletonBase<BuildFunction>
             Ray ray = GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
             RaycastHit raycastHit;
             Physics.Raycast(ray, out raycastHit);
-            if (selectedPrefab > -1)
+            if (SceneMaterial.Instance.selectedPrefab > -1)
             {
                 if (raycastHit.collider != null)
                 {
@@ -105,14 +106,14 @@ public class BuildFunction : MonoBehaviour//MonoSingletonBase<BuildFunction>
                         if (align && !raycastHit.collider.gameObject.isStatic)
                         {
                             Collider hitObj = raycastHit.collider;
-                            generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[selectedPrefab], Vector3.zero, Quaternion.identity);
+                            generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[SceneMaterial.Instance.selectedPrefab], Vector3.zero, Quaternion.identity);
                             generated.transform.position = Align(generated, raycastHit);
                             if(hitObj.transform.parent != null)
                                 generated.transform.rotation = Quaternion.FromToRotation(hitObj.transform.parent.forward, generated.transform.position - hitObj.transform.parent.position) * hitObj.transform.parent.rotation;
                         }
                         else
                         {
-                            generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[selectedPrefab], raycastHit.point + SceneMaterial.Instance.BuildingPrefabs[selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
+                            generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[SceneMaterial.Instance.selectedPrefab], raycastHit.point + SceneMaterial.Instance.BuildingPrefabs[SceneMaterial.Instance.selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
                         }
 
                         if (raycastHit.collider.transform.parent != null)
@@ -174,7 +175,7 @@ public class BuildFunction : MonoBehaviour//MonoSingletonBase<BuildFunction>
                 }
             }else if (raycastHit.collider != null)
             {
-                switch (selectedPrefab)
+                switch (SceneMaterial.Instance.selectedPrefab)
                 {
                     case -1:
                         if (raycastHit.collider != null && raycastHit.collider.transform.parent != null)

@@ -4,10 +4,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 public class Btn_LoadCustomName : MonoBehaviour
 {
+    public UnityEvent reloadEvent;
+
     public void LoadMap()
     {
         OpenFileDlg pth = new OpenFileDlg();
@@ -30,6 +33,6 @@ public class Btn_LoadCustomName : MonoBehaviour
             }
             File.Copy(pth.file, mapPath + "/" + Path.GetFileName(pth.file));
         }
-        //SceneManager.LoadSceneAsync("GameScene");
+        reloadEvent.Invoke();
     }
 }

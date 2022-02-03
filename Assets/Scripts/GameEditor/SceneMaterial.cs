@@ -29,38 +29,41 @@ namespace Gaboom.Scene
         public List<GameObject> TerrainPrefabs;
         public List<GameObject> BuildingPrefabs;
 
-        public BuildFunction mainController;
+        public int selectedPrefab { get; set; }
         public RuntimeEditorApplication runtimeEditor;
-
-        private void Awake()
-        {
-            if (GameObject.FindGameObjectsWithTag("MainCamera").Length == 0 && SceneManager.GetActiveScene().name == "GameScene")
-            {
-                if (NetworkManager.Singleton == null)
-                {
-                    GameObject cam = Instantiate(cameraPrefab);
-                    runtimeEditor.CustomCamera = cam.GetComponent<Camera>();
-                    mainController = cam.GetComponent<BuildFunction>();
-                }
-                else
-                {
-                    GameObject cam = Instantiate(networkcameraPrefab);
-                    runtimeEditor.CustomCamera = cam.GetComponent<Camera>();
-                    cam.GetComponent<NetworkObject>().SpawnAsPlayerObject(NetworkManager.Singleton.LocalClientId);
-                    mainController = cam.GetComponent<BuildFunction>();
-                }
-            }
-        }
 
         public void DelegateChangeSelected(int index)
         {
-            mainController.selectedPrefab = index;
+            selectedPrefab = index;
         }
 
         // Start is called before the first frame update
         void Start()
         {
             Instance = this;
+            if (GameObject.FindGameObjectsWithTag("MainCamera").Length == 0 && SceneManager.GetActiveScene().name == "GameScene")
+            {
+                if (NetworkManager.Singleton == null)
+                {
+                    GameObject cam = Instantiate(cameraPrefab);
+                    runtimeEditor.CustomCamera = cam.GetComponent<Camera>();
+                    //mainController = cam.GetComponent<BuildFunction>();
+                }
+                else
+                {
+                    if (NetworkManager.Singleton.IsServer || NetworkManager.Singleton.IsHost)
+                    {
+                        GameObject cam = Instantiate(networkcameraPrefab);
+                        runtimeEditor.CustomCamera = cam.GetComponent<Camera>();
+                        cam.GetComponent<NetworkObject>().SpawnAsPlayerObject(NetworkManager.Singleton.LocalClientId);
+                        //mainController = cam.GetComponent<BuildFunction>();
+                    }
+                    else
+                    {
+                        NetworkManager.Singleton.GetComponent<NetworkController>().SpawnNetworkCamera();
+                    }
+                }
+            }
             if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("GameScene") && filepath != null)
             {
                 string dataPath = Application.dataPath + "/Workspace";

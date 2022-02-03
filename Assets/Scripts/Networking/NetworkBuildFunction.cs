@@ -4,13 +4,14 @@ using Gaboom.Util;
 using Unity.Netcode;
 using Gaboom.Scene;
 using UnityTemplateProjects;
+using UnityEngine.Rendering.HighDefinition;
 
 public class NetworkBuildFunction : NetworkBehaviour
 {
     public Material preview;
     public Material deny;
     public GameObject emptyGameObject;
-    public int selectedPrefab { get; set; }
+
     GameObject generated;
     public bool align = true;
     public bool autoConnect = true;
@@ -26,6 +27,7 @@ public class NetworkBuildFunction : NetworkBehaviour
         if (!GetComponent<NetworkObject>().IsOwner)
         {
             gameObject.tag = "Untagged";
+            Destroy(GetComponent<HDAdditionalCameraData>());
             Destroy(GetComponent<Camera>());
             Destroy(GetComponent<AudioListener>());
             Destroy(GetComponent<SimpleCameraController>());
@@ -33,6 +35,8 @@ public class NetworkBuildFunction : NetworkBehaviour
             return;
         }
         PhysicCore.emptyGameObject = emptyGameObject;
+        SceneMaterial.Instance.runtimeEditor.CustomCamera = GetComponent<Camera>();
+        SceneMaterial.Instance.runtimeEditor.gameObject.SetActive(true);
     }
     public PhysicCore Reattach(PhysicCore core)
     {
@@ -55,7 +59,7 @@ public class NetworkBuildFunction : NetworkBehaviour
             occupied = generated.GetComponentInChildren<CollisionProbe>().isIntersect;
             Destroy(generated);
         }
-        if (selectedPrefab > -1 && !GameLogic.IsPointerOverGameObject())
+        if (SceneMaterial.Instance.selectedPrefab > -1 && !GameLogic.IsPointerOverGameObject())
         {
             Ray ray = GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
             RaycastHit raycastHit;
@@ -66,14 +70,14 @@ public class NetworkBuildFunction : NetworkBehaviour
                 if (align && !raycastHit.collider.gameObject.isStatic)
                 {
                     Collider hitObj = raycastHit.collider;
-                    generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[selectedPrefab], Vector3.zero, Quaternion.identity);
+                    generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[SceneMaterial.Instance.selectedPrefab], Vector3.zero, Quaternion.identity);
                     generated.transform.position = Align(generated, raycastHit);
                     if (raycastHit.collider.transform.parent != null)
                         generated.transform.rotation = Quaternion.FromToRotation(hitObj.transform.parent.forward, generated.transform.position - hitObj.transform.parent.position) * hitObj.transform.parent.rotation;
                 }
                 else
                 {
-                    generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[selectedPrefab], raycastHit.point + SceneMaterial.Instance.BuildingPrefabs[selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x,transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
+                    generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[SceneMaterial.Instance.selectedPrefab], raycastHit.point + SceneMaterial.Instance.BuildingPrefabs[SceneMaterial.Instance.selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x,transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
                 }
                 foreach (MeshRenderer child in generated.GetComponentsInChildren<MeshRenderer>())
                 {
@@ -98,7 +102,7 @@ public class NetworkBuildFunction : NetworkBehaviour
             Ray ray = GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
             RaycastHit raycastHit;
             Physics.Raycast(ray, out raycastHit);
-            if (selectedPrefab > -1)
+            if (SceneMaterial.Instance.selectedPrefab > -1)
             {
                 if (raycastHit.collider != null)
                 {
@@ -112,14 +116,14 @@ public class NetworkBuildFunction : NetworkBehaviour
                         if (align && !raycastHit.collider.gameObject.isStatic)
                         {
                             Collider hitObj = raycastHit.collider;
-                            generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[selectedPrefab], Vector3.zero, Quaternion.identity);
+                            generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[SceneMaterial.Instance.selectedPrefab], Vector3.zero, Quaternion.identity);
                             generated.transform.position = Align(generated, raycastHit);
                             if(hitObj.transform.parent != null)
                                 generated.transform.rotation = Quaternion.FromToRotation(hitObj.transform.parent.forward, generated.transform.position - hitObj.transform.parent.position) * hitObj.transform.parent.rotation;
                         }
                         else
                         {
-                            generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[selectedPrefab], raycastHit.point + SceneMaterial.Instance.BuildingPrefabs[selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
+                            generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[SceneMaterial.Instance.selectedPrefab], raycastHit.point + SceneMaterial.Instance.BuildingPrefabs[SceneMaterial.Instance.selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
                         }
 
                         if (raycastHit.collider.transform.parent != null)
@@ -185,7 +189,7 @@ public class NetworkBuildFunction : NetworkBehaviour
                 }
             }else if (raycastHit.collider != null)
             {
-                switch (selectedPrefab)
+                switch (SceneMaterial.Instance.selectedPrefab)
                 {
                     case -1:
                         if (raycastHit.collider != null && raycastHit.collider.transform.parent != null)

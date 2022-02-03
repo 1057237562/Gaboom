@@ -4092,7 +4092,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &563495567
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5006,7 +5006,8 @@ MonoBehaviour:
   terrain: {fileID: 941674864}
   cameraPrefab: {fileID: 4717491339675267752, guid: 2cfd9303936bd444ea189d1ca98a1ba5,
     type: 3}
-  networkcameraPrefab: {fileID: 0}
+  networkcameraPrefab: {fileID: 6713683420702928218, guid: ccedb2236447035489d1ad7efd09b841,
+    type: 3}
   keypanel: {fileID: 755246382}
   TerrainPrefabs:
   - {fileID: 3508962585101819158, guid: 53ea5e17bf79a2844931542236c8b77d, type: 3}
@@ -5019,7 +5020,6 @@ MonoBehaviour:
   - {fileID: 3457983648773227700, guid: 55a0f651fd41899489a79e85a71d880d, type: 3}
   - {fileID: 7833078999981710132, guid: e857c98de3c06344fb0153d24f81ee7e, type: 3}
   - {fileID: 2747325105205835016, guid: c13521711c5a78746b32ef3e4848cdbc, type: 3}
-  mainController: {fileID: 0}
   runtimeEditor: {fileID: 563495567}
 --- !u!1 &657733926
 GameObject:

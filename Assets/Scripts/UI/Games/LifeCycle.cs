@@ -65,7 +65,7 @@ public class LifeCycle : MonoBehaviour
             panel.SetActive(false);
         }
         restoreBuildState.Invoke();
-        SceneMaterial.Instance.mainController.selectedPrefab = -1;
+        SceneMaterial.Instance.selectedPrefab = -1;
     }
 
     // Start is called before the first frame update
