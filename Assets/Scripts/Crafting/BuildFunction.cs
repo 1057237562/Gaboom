@@ -119,8 +119,6 @@ public class BuildFunction : MonoBehaviour//MonoSingletonBase<BuildFunction>
                         {
                             IBlock block = generated.GetComponent<IBlock>();
                             PhysicCore parent = raycastHit.collider.transform.parent.parent.GetComponent<PhysicCore>();
-                            if(!parent.enabled)
-                                parent.enabled = true;
                             //Building logic
                             if (block.GetType() == typeof(Engine))
                             {

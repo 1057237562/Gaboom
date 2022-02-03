@@ -126,35 +126,36 @@ public class NetworkBuildFunction : NetworkBehaviour
                         {
                             IBlock block = generated.GetComponent<IBlock>();
                             PhysicCore parent = raycastHit.collider.transform.parent.parent.GetComponent<PhysicCore>();
-                            if(!parent.enabled)
-                                parent.enabled = true;
-                            //Building logic
-                            if (block.GetType() == typeof(Engine))
+                            if (parent.GetComponent<NetworkObject>() != null && parent.GetComponent<NetworkObject>().IsOwner)
                             {
-                                Vector3 rpos = parent.transform.InverseTransformPoint(generated.transform.position);
-                                if (rpos.x < 0)
+                                //Building logic
+                                if (block.GetType() == typeof(Engine))
                                 {
-                                    ((Engine)block).reverse = true;
+                                    Vector3 rpos = parent.transform.InverseTransformPoint(generated.transform.position);
+                                    if (rpos.x < 0)
+                                    {
+                                        ((Engine)block).reverse = true;
+                                    }
                                 }
-                            }
 
-                            parent = Reattach(parent);
-                            generated.transform.parent = parent.transform;
-                            IBlock relativeBlock = raycastHit.collider.transform.parent.GetComponent<IBlock>();
-                            relativeBlock.connector.Add(block);
-                            block.connector.Add(raycastHit.collider.transform.parent.GetComponent<IBlock>());
-                            //block.mass = generated.GetComponent<Rigidbody>().mass;
-                            //block.centerOfmass = generated.GetComponent<Rigidbody>().centerOfMass;
-                            block.Load();
-                            relativeBlock.ReloadRPos();
-                            block.core.AppendIBlock(block);
+                                parent = Reattach(parent);
+                                generated.transform.parent = parent.transform;
+                                IBlock relativeBlock = raycastHit.collider.transform.parent.GetComponent<IBlock>();
+                                relativeBlock.connector.Add(block);
+                                block.connector.Add(raycastHit.collider.transform.parent.GetComponent<IBlock>());
+                                //block.mass = generated.GetComponent<Rigidbody>().mass;
+                                //block.centerOfmass = generated.GetComponent<Rigidbody>().centerOfMass;
+                                block.Load();
+                                relativeBlock.ReloadRPos();
+                                block.core.AppendIBlock(block);
 
-                            foreach (Collider child in generated.GetComponentsInChildren<Collider>())
-                            {
-                                child.isTrigger = false;
+                                foreach (Collider child in generated.GetComponentsInChildren<Collider>())
+                                {
+                                    child.isTrigger = false;
+                                }
+                                if (generated.GetComponent<Collider>() != null)
+                                    generated.GetComponent<Collider>().isTrigger = false;
                             }
-                            if (generated.GetComponent<Collider>() != null)
-                                generated.GetComponent<Collider>().isTrigger = false;
                         }
                         else
                         {
