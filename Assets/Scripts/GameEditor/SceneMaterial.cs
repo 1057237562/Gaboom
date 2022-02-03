@@ -78,7 +78,7 @@ namespace Gaboom.Scene
                 terrain.terrainData.SetHeights(0, 0, FileSystem.DeserializeFromFile<float[,]>(dataPath + "/Terrain.tr"));
                 XmlDocument doc = new XmlDocument();
                 doc.Load(Application.dataPath + "/Workspace/" + Path.GetFileName(filepath));
-                SLMechanic.DeserializeToScene(doc.GetElementsByTagName("Objects")[0],true);
+                SLMechanic.DeserializeToScene(doc.GetElementsByTagName("Objects")[0], true).ForEach((x) => { x.GetComponentInChildren<Collider>().tag = "Terrain"; });
                 File.Copy(dataPath + "/thumbnail.png", Application.dataPath + "/maps/" + Path.GetFileNameWithoutExtension(filepath) + "_thumbnail.png", true);
             }
         }

@@ -67,7 +67,7 @@ public class NetworkBuildFunction : NetworkBehaviour
 
             if (raycastHit.collider != null)
             {
-                if (align && !raycastHit.collider.gameObject.isStatic)
+                if (align && raycastHit.collider.gameObject.tag != "Terrain")
                 {
                     Collider hitObj = raycastHit.collider;
                     generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[SceneMaterial.Instance.selectedPrefab], Vector3.zero, Quaternion.identity);
@@ -113,7 +113,7 @@ public class NetworkBuildFunction : NetworkBehaviour
                             Destroy(generated);
                             generated = null;
                         }
-                        if (align && !raycastHit.collider.gameObject.isStatic)
+                        if (align && raycastHit.collider.gameObject.tag != "Terrain")
                         {
                             Collider hitObj = raycastHit.collider;
                             generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[SceneMaterial.Instance.selectedPrefab], Vector3.zero, Quaternion.identity);

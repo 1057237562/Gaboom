@@ -95,22 +95,24 @@ namespace RTEditor
             get { return _customCamera; }
             set
             {
-                #if UNITY_EDITOR
+#if UNITY_EDITOR
                 if (value != null && !value.gameObject.IsSceneObject())
                 {
                     Debug.LogWarning("Only scene camera objects are allowed.");
                 }
                 else _customCamera = value;
-                #endif
+#else
+                _customCamera = value;
+#endif
             }
         }
         public Vector3 VolumeSizeForLightObjects { get { return _volumeSizeForLightObjects; } set { _volumeSizeForLightObjects = Vector3.Max(MinObjectVolumeSize, value.GetVectorWithAbsComponents()); } }
         public Vector3 VolumeSizeForParticleSystemObjects { get { return _volumeSizeForParticleSystemObjects; } set { _volumeSizeForParticleSystemObjects = Vector3.Max(MinObjectVolumeSize, value.GetVectorWithAbsComponents()); } }
         public Vector3 VolumeSizeForEmptyObjects { get { return _volumeSizeForEmptyObjects; } set { _volumeSizeForEmptyObjects = Vector3.Max(MinObjectVolumeSize, value.GetVectorWithAbsComponents()); } }
         public XZGrid XZGrid { get { return _xzGrid; } }
-        #endregion
+#endregion
 
-        #region Private Methods
+#region Private Methods
         private void Start()
         {
             // Perform init here.
@@ -141,10 +143,10 @@ namespace RTEditor
             if (!Application.isPlaying) return;
             _xzGrid.Render();
         }
-        #endregion
+#endregion
 
-        #if UNITY_EDITOR
-        #region Menu Items
+#if UNITY_EDITOR
+#region Menu Items
         /// <summary>
         /// Creates all the necessary subsystems which are needed for the runtime editor.
         /// </summary>
@@ -153,11 +155,11 @@ namespace RTEditor
         {
             CreateRuntimeEditorApplicationSubsystems();
         }
-        #endregion
-        #endif
+#endregion
+#endif
 
-        #region Private Static Functions
-        #if UNITY_EDITOR
+#region Private Static Functions
+#if UNITY_EDITOR
         /// <summary>
         /// Creates all the necessary runtime editor subsystems.
         /// </summary>
@@ -243,7 +245,7 @@ namespace RTEditor
                 DestroyImmediate(entity.gameObject);
             }
         }
-        #endif
-        #endregion
+#endif
+#endregion
     }
 }

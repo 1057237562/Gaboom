@@ -57,7 +57,7 @@ public class BuildFunction : MonoBehaviour//MonoSingletonBase<BuildFunction>
 
             if (raycastHit.collider != null)
             {
-                if (align && !raycastHit.collider.gameObject.isStatic)
+                if (align && raycastHit.collider.gameObject.tag != "Terrain")
                 {
                     Collider hitObj = raycastHit.collider;
                     generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[SceneMaterial.Instance.selectedPrefab], Vector3.zero, Quaternion.identity);
@@ -103,7 +103,7 @@ public class BuildFunction : MonoBehaviour//MonoSingletonBase<BuildFunction>
                             Destroy(generated);
                             generated = null;
                         }
-                        if (align && !raycastHit.collider.gameObject.isStatic)
+                        if (align && raycastHit.collider.gameObject.tag != "Terrain")
                         {
                             Collider hitObj = raycastHit.collider;
                             generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[SceneMaterial.Instance.selectedPrefab], Vector3.zero, Quaternion.identity);
