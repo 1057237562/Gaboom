@@ -12,7 +12,7 @@ public class PhysicCore : MonoBehaviour
 
     public List<IBlock> GetBlocks()
     {
-        return mring.GetBlocks();
+        return mring.GetBlocks(false);
     }
 
     public void Load(List<IBlock> list)
@@ -124,7 +124,7 @@ public class PhysicCore : MonoBehaviour
         Vector3 axis;
         float angle;
         rotation.ToAngleAxis(out angle, out axis);
-        foreach (IBlock block in mring.GetBlocks())
+        foreach (IBlock block in mring.GetBlocks(false))
         {
             Vector3 vecProj;
             float radius = DisPoint2Line(block.transform.position, transform.TransformPoint(GetComponent<Rigidbody>().centerOfMass), transform.TransformPoint(GetComponent<Rigidbody>().centerOfMass) + axis, out vecProj);
@@ -137,7 +137,7 @@ public class PhysicCore : MonoBehaviour
 
     public void AppendIBlock(IBlock iblock)
     {
-        if (mring.GetBlocks().Contains(iblock)) return;
+        if (mring.GetBlocks(false).Contains(iblock)) return;
         Rigidbody rigidbody = GetComponent<Rigidbody>();
         float mass = rigidbody.mass + iblock.mass;
         rigidbody.centerOfMass *= rigidbody.mass;
@@ -175,7 +175,7 @@ public class PhysicCore : MonoBehaviour
         rigidbody.mass = mass;
 
         mring.GetBlocks().Remove(iblock);
-        if(mring.GetBlocks().Count == 0)
+        if(mring.GetBlocks(false).Count == 0)
         {
             Destroy(gameObject);
         }
@@ -244,7 +244,7 @@ public class PhysicCore : MonoBehaviour
     {
         rings.Clear();
         HashSet<IBlock> ol = new HashSet<IBlock>();
-        foreach (IBlock block in mring.GetBlocks())
+        foreach (IBlock block in mring.GetBlocks(false))
         {
             if (!ol.Contains(block))
             {
@@ -301,7 +301,7 @@ public class PhysicCore : MonoBehaviour
         Rigidbody rigidbody = GetComponent<Rigidbody>();
         rigidbody.mass = 0;
         rigidbody.centerOfMass = Vector3.zero;
-        foreach (IBlock block in mring.GetBlocks())
+        foreach (IBlock block in mring.GetBlocks(false))
         {
             block.transform.parent = transform;
             rigidbody.mass += block.mass;
@@ -349,9 +349,9 @@ public class Ring
     private List<IBlock> blocks = new List<IBlock>();
     public Action data_m;
 
-    public List<IBlock> GetBlocks()
+    public List<IBlock> GetBlocks(bool boardcast = true)
     {
-        if(data_m != null)
+        if(boardcast && data_m != null)
             data_m.Invoke();
         return blocks;
     }

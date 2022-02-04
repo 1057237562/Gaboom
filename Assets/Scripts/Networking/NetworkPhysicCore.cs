@@ -33,6 +33,7 @@ public class NetworkPhysicCore : NetworkBehaviour
             }
         };
         GetComponent<PhysicCore>().mring.data_m = DataListener;
+        DataListener.Invoke();
     }
 
     [ClientRpc]
