@@ -10,9 +10,11 @@ public class PhysicCore : MonoBehaviour
 {
     public Thread worker = new Thread(new ParameterizedThreadStart(ThreadWorker));
 
+    public Action<List<IBlock>> Recombine;
+
     public List<IBlock> GetBlocks()
     {
-        return mring.GetBlocks(false);
+        return mring.GetBlocksWithoutBoard();
     }
 
     public void Load(List<IBlock> list)
@@ -124,7 +126,7 @@ public class PhysicCore : MonoBehaviour
         Vector3 axis;
         float angle;
         rotation.ToAngleAxis(out angle, out axis);
-        foreach (IBlock block in mring.GetBlocks(false))
+        foreach (IBlock block in mring.GetBlocksWithoutBoard())
         {
             Vector3 vecProj;
             float radius = DisPoint2Line(block.transform.position, transform.TransformPoint(GetComponent<Rigidbody>().centerOfMass), transform.TransformPoint(GetComponent<Rigidbody>().centerOfMass) + axis, out vecProj);
@@ -137,7 +139,7 @@ public class PhysicCore : MonoBehaviour
 
     public void AppendIBlock(IBlock iblock)
     {
-        if (mring.GetBlocks(false).Contains(iblock)) return;
+        if (mring.GetBlocksWithoutBoard().Contains(iblock)) return;
         Rigidbody rigidbody = GetComponent<Rigidbody>();
         float mass = rigidbody.mass + iblock.mass;
         rigidbody.centerOfMass *= rigidbody.mass;
@@ -175,7 +177,7 @@ public class PhysicCore : MonoBehaviour
         rigidbody.mass = mass;
 
         mring.GetBlocks().Remove(iblock);
-        if(mring.GetBlocks(false).Count == 0)
+        if(mring.GetBlocksWithoutBoard().Count == 0)
         {
             Destroy(gameObject);
         }
@@ -197,6 +199,25 @@ public class PhysicCore : MonoBehaviour
     [HideInInspector]
     public Ring mring = new Ring();
     bool locked = false;
+
+    private void Awake()
+    {
+        Recombine = (list) => {
+            GameObject newObj = Instantiate(emptyGameObject, transform.position, transform.rotation);
+            Rigidbody rigidbody = newObj.GetComponent<Rigidbody>();
+            rigidbody.mass = 0;
+            rigidbody.centerOfMass = Vector3.zero;
+            foreach (IBlock block in list)
+            {
+                block.transform.parent = newObj.transform;
+                rigidbody.mass += block.mass;
+                rigidbody.centerOfMass += (block.transform.localPosition + block.centerOfmass) * block.mass;
+            }
+            rigidbody.centerOfMass /= rigidbody.mass;
+            PhysicCore physicCore = newObj.GetComponent<PhysicCore>();
+            physicCore.Load(list);
+        };
+    }
 
     private void Start()
     {
@@ -232,7 +253,7 @@ public class PhysicCore : MonoBehaviour
         {
             foreach (Ring ring in rings)
             {
-                ReCombind(ring.GetBlocks());
+                Recombine(ring.GetBlocksWithoutBoard());
             }
             rings.Clear();
             Destroy(gameObject);
@@ -244,7 +265,7 @@ public class PhysicCore : MonoBehaviour
     {
         rings.Clear();
         HashSet<IBlock> ol = new HashSet<IBlock>();
-        foreach (IBlock block in mring.GetBlocks(false))
+        foreach (IBlock block in mring.GetBlocksWithoutBoard())
         {
             if (!ol.Contains(block))
             {
@@ -259,23 +280,6 @@ public class PhysicCore : MonoBehaviour
     }
 
     public static GameObject emptyGameObject;
-
-    void ReCombind(List<IBlock> list)
-    {
-        GameObject newObj = Instantiate(emptyGameObject, transform.position, transform.rotation);
-        Rigidbody rigidbody = newObj.GetComponent<Rigidbody>();
-        rigidbody.mass = 0;
-        rigidbody.centerOfMass = Vector3.zero;
-        foreach (IBlock block in list)
-        {
-            block.transform.parent = newObj.transform;
-            rigidbody.mass += block.mass;
-            rigidbody.centerOfMass += (block.transform.localPosition + block.centerOfmass) * block.mass;
-        }
-        rigidbody.centerOfMass /= rigidbody.mass;
-        PhysicCore physicCore = newObj.GetComponent<PhysicCore>();
-        physicCore.Load(list);
-    }
 
     public void RecalculateRigidbody(List<IBlock> list)
     {
@@ -301,7 +305,7 @@ public class PhysicCore : MonoBehaviour
         Rigidbody rigidbody = GetComponent<Rigidbody>();
         rigidbody.mass = 0;
         rigidbody.centerOfMass = Vector3.zero;
-        foreach (IBlock block in mring.GetBlocks(false))
+        foreach (IBlock block in mring.GetBlocksWithoutBoard())
         {
             block.transform.parent = transform;
             rigidbody.mass += block.mass;
@@ -349,10 +353,15 @@ public class Ring
     private List<IBlock> blocks = new List<IBlock>();
     public Action data_m;
 
-    public List<IBlock> GetBlocks(bool boardcast = true)
+    public List<IBlock> GetBlocks()
     {
-        if(boardcast && data_m != null)
+        if(data_m != null)
             data_m.Invoke();
+        return blocks;
+    }
+
+    public List<IBlock> GetBlocksWithoutBoard()
+    {
         return blocks;
     }
 
