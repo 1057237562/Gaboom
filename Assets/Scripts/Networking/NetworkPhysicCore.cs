@@ -27,13 +27,14 @@ public class NetworkPhysicCore : NetworkBehaviour
             {
                 SyncDataClientRpc(SLMechanic.SerializeToXml(physicCore));
             }
-            else
+            else if(IsOwner)
             {
                 SyncDataServerRpc(SLMechanic.SerializeToXml(physicCore));
             }
         };
         GetComponent<PhysicCore>().mring.data_m = DataListener;
-        DataListener.Invoke();
+        if(IsOwner)
+            DataListener.Invoke();
     }
 
     [ClientRpc]
