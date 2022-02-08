@@ -16,6 +16,20 @@ public class NetworkBuildFunction : NetworkBehaviour
     public bool align = true;
     public bool autoConnect = true;
 
+    public static NetworkBuildFunction Instance;
+
+    [ClientRpc]
+    public void SyncDataClientRpc(string xmlstr,int index)
+    {
+        NetworkManager.Singleton.GetComponent<NetworkController>().physicCores[index].GetComponent<NetworkPhysicCore>().SyncDataClient(xmlstr);
+    }
+
+    [ServerRpc]
+    public void SyncDataServerRpc(string xmlstr,int index)
+    {
+        NetworkManager.Singleton.GetComponent<NetworkController>().physicCores[index].GetComponent<NetworkPhysicCore>().SyncDataServer(xmlstr);
+    }
+
     public void Toggle()
     {
         enabled = !enabled;
@@ -37,6 +51,7 @@ public class NetworkBuildFunction : NetworkBehaviour
         PhysicCore.emptyGameObject = emptyGameObject;
         SceneMaterial.Instance.runtimeEditor.CustomCamera = GetComponent<Camera>();
         SceneMaterial.Instance.runtimeEditor.gameObject.SetActive(true);
+        Instance = this;
     }
     public PhysicCore Reattach(PhysicCore core)
     {

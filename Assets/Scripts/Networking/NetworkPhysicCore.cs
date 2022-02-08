@@ -17,19 +17,25 @@ public class NetworkPhysicCore : NetworkBehaviour
     private Action DataListener;
     private PhysicCore physicCore;
 
+    private int index;
+
     private void Start()
     {
+        NetworkController networkController = NetworkManager.Singleton.GetComponent<NetworkController>();
+        index = networkController.physicCores.Count;
+        networkController.physicCores.Add(gameObject);
+        
         physicCore = GetComponent<PhysicCore>();
         DataListener = () =>
         {
             // Case sync
             if (IsServer || IsHost)
             {
-                SyncDataClientRpc(SLMechanic.SerializeToXml(physicCore));
+                NetworkBuildFunction.Instance.SyncDataClientRpc(SLMechanic.SerializeToXml(physicCore), index);
             }
             else if(IsOwner)
             {
-                SyncDataServerRpc(SLMechanic.SerializeToXml(physicCore));
+                NetworkBuildFunction.Instance.SyncDataServerRpc(SLMechanic.SerializeToXml(physicCore), index);
             }
         };
         GetComponent<PhysicCore>().mring.data_m = DataListener;
@@ -37,8 +43,7 @@ public class NetworkPhysicCore : NetworkBehaviour
             DataListener.Invoke();
     }
 
-    [ClientRpc]
-    public void SyncDataClientRpc(string xmlstr)
+    public void SyncDataClient(string xmlstr)
     {
         if (!IsClient) return;
         XmlDocument xml = new XmlDocument();
@@ -114,8 +119,7 @@ public class NetworkPhysicCore : NetworkBehaviour
         physic.RecalculateRigidbody();
     }
 
-    [ServerRpc]
-    public void SyncDataServerRpc(string xmlstr)
+    public void SyncDataServer(string xmlstr)
     {
         if (!IsServer) return;
         XmlDocument xml = new XmlDocument();
