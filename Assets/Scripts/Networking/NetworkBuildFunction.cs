@@ -30,6 +30,34 @@ public class NetworkBuildFunction : NetworkBehaviour
         NetworkManager.Singleton.GetComponent<NetworkController>().physicCores[index].GetComponent<NetworkPhysicCore>().SyncDataServer(xmlstr);
     }
 
+    [ServerRpc]
+    public void AttemptGeneratePhysicCore(Vector3 point, Quaternion rotation, int selectedPrefab)
+    {
+        if (IsClient) return;
+
+        GameObject parent = Instantiate(emptyGameObject, point, rotation);
+
+        PhysicCore core = parent.GetComponent<PhysicCore>();
+        parent.GetComponent<NetworkObject>().Spawn();
+        List<IBlock> blocks = new List<IBlock>();
+
+        GameObject n_obj = Instantiate(SceneMaterial.Instance.BuildingPrefabs[selectedPrefab], point, rotation);
+
+        IBlock block = n_obj.GetComponent<IBlock>();
+        //block.mass = generated.GetComponent<Rigidbody>().mass;
+        //block.centerOfmass = generated.GetComponent<Rigidbody>().centerOfMass;
+        n_obj.transform.parent = n_obj.transform;
+        foreach (Collider child in n_obj.GetComponentsInChildren<Collider>())
+        {
+            child.isTrigger = false;
+        }
+        block.Load();
+        blocks.Add(block);
+
+        core.RecalculateRigidbody(blocks);
+        core.enabled = true;
+    }
+
     public void Toggle()
     {
         enabled = !enabled;
@@ -178,26 +206,7 @@ public class NetworkBuildFunction : NetworkBehaviour
                         }
                         else
                         {
-                            GameObject parent = Instantiate(emptyGameObject, raycastHit.point, Quaternion.identity);
-
-                            PhysicCore core = parent.GetComponent<PhysicCore>();
-                            parent.GetComponent<NetworkObject>().Spawn();
-                            LifeCycle.gameObjects.Add(parent);
-                            List<IBlock> blocks = new List<IBlock>();
-
-                            IBlock block = generated.GetComponent<IBlock>();
-                            //block.mass = generated.GetComponent<Rigidbody>().mass;
-                            //block.centerOfmass = generated.GetComponent<Rigidbody>().centerOfMass;
-                            generated.transform.parent = parent.transform;
-                            foreach (Collider child in generated.GetComponentsInChildren<Collider>())
-                            {
-                                child.isTrigger = false;
-                            }
-                            block.Load();
-                            blocks.Add(block);
-
-                            core.RecalculateRigidbody(blocks);
-                            core.enabled = true;
+                            AttemptGeneratePhysicCore(generated.transform.position, generated.transform.rotation, SceneMaterial.Instance.selectedPrefab);
                         }
                         generated = null;
                     }

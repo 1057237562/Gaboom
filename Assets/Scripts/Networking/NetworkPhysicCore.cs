@@ -39,8 +39,11 @@ public class NetworkPhysicCore : NetworkBehaviour
             }
         };
         GetComponent<PhysicCore>().mring.data_m = DataListener;
-        if(IsOwner)
+        if (IsOwner)
+        {
             DataListener.Invoke();
+            LifeCycle.gameObjects.Add(gameObject);
+        }
     }
 
     public void SyncDataClient(string xmlstr)
