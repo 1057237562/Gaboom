@@ -112,6 +112,7 @@ GameObject:
   - component: {fileID: 6713683420702928215}
   - component: {fileID: 6713683420702928214}
   - component: {fileID: 8062882166162426556}
+  - component: {fileID: 6447343011452559575}
   m_Layer: 0
   m_Name: Network Main Camera
   m_TagString: MainCamera
@@ -353,8 +354,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   preview: {fileID: 2100000, guid: 3a891a6655067c343be0704d3af9f533, type: 2}
   deny: {fileID: 2100000, guid: b6af50ebaa244b3498a8a5a0658542d4, type: 2}
-  emptyGameObject: {fileID: 6307324326080874161, guid: 41dabf607127fbc4d929dfc8f95493ce,
-    type: 3}
   align: 1
   autoConnect: 1
 --- !u!114 &6713683420702928214
@@ -400,3 +399,17 @@ MonoBehaviour:
   InLocalSpace: 0
   Interpolate: 1
   CanCommitToTransform: 1
+--- !u!114 &6447343011452559575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6713683420702928218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d827349823b3af242801315b3eda2836, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  emptyGameObject: {fileID: 6307324326080874161, guid: 41dabf607127fbc4d929dfc8f95493ce,
+    type: 3}

@@ -6,45 +6,17 @@ using Gaboom.Scene;
 using UnityTemplateProjects;
 using UnityEngine.Rendering.HighDefinition;
 
+[RequireComponent(typeof(Communicator))]
 public class NetworkBuildFunction : NetworkBehaviour
 {
     public Material preview;
     public Material deny;
-    public GameObject emptyGameObject;
 
     GameObject generated;
     public bool align = true;
     public bool autoConnect = true;
 
     public static NetworkBuildFunction Instance;
-
-    [ServerRpc]
-    public void AttemptGeneratePhysicCoreServerRpc(Vector3 point, Quaternion rotation, int selectedPrefab)
-    {
-        if (!IsServer && !IsHost) return;
-
-        GameObject parent = Instantiate(emptyGameObject, point, rotation);
-
-        PhysicCore core = parent.GetComponent<PhysicCore>();
-        parent.GetComponent<NetworkObject>().Spawn();
-        List<IBlock> blocks = new List<IBlock>();
-
-        GameObject n_obj = Instantiate(SceneMaterial.Instance.BuildingPrefabs[selectedPrefab], Vector3.zero, Quaternion.identity);
-
-        IBlock block = n_obj.GetComponent<IBlock>();
-        //block.mass = generated.GetComponent<Rigidbody>().mass;
-        //block.centerOfmass = generated.GetComponent<Rigidbody>().centerOfMass;
-        n_obj.transform.parent = n_obj.transform;
-        foreach (Collider child in n_obj.GetComponentsInChildren<Collider>())
-        {
-            child.isTrigger = false;
-        }
-        block.Load();
-        blocks.Add(block);
-
-        core.RecalculateRigidbody(blocks);
-        core.enabled = true;
-    }
 
     public void Toggle()
     {
@@ -64,7 +36,6 @@ public class NetworkBuildFunction : NetworkBehaviour
             Destroy(this);
             return;
         }
-        PhysicCore.emptyGameObject = emptyGameObject;
         SceneMaterial.Instance.runtimeEditor.CustomCamera = GetComponent<Camera>();
         SceneMaterial.Instance.runtimeEditor.gameObject.SetActive(true);
         Instance = this;
@@ -160,7 +131,7 @@ public class NetworkBuildFunction : NetworkBehaviour
                         if (raycastHit.collider.transform.parent != null && raycastHit.collider.gameObject.tag != "Terrain")
                         {
                             IBlock block = generated.GetComponent<IBlock>();
-                            PhysicCore parent = raycastHit.collider.transform.parent.parent.GetComponent<PhysicCore>();
+                            PhysicCore parent = raycastHit.collider.transform.parent.parent.GetComponent<PhysicCore>(); // Problem
                             if (parent.GetComponent<NetworkObject>() != null && parent.GetComponent<NetworkObject>().IsOwner)
                             {
                                 //Building logic
@@ -194,7 +165,7 @@ public class NetworkBuildFunction : NetworkBehaviour
                         }
                         else
                         {
-                            AttemptGeneratePhysicCoreServerRpc(generated.transform.position, generated.transform.rotation, SceneMaterial.Instance.selectedPrefab);
+                            GetComponent<Communicator>().AttemptGeneratePhysicCoreServerRpc(generated.transform.position, generated.transform.rotation, SceneMaterial.Instance.selectedPrefab);
                             Destroy(generated);
                         }
                         generated = null;

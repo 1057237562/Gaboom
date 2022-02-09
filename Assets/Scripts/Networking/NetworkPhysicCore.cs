@@ -27,7 +27,7 @@ public class NetworkPhysicCore : NetworkBehaviour
             {
                 SyncDataClientRpc(SLMechanic.SerializeToXml(physicCore));
             }
-            else if(IsOwner)
+            else if (IsOwner)
             {
                 SyncDataServerRpc(SLMechanic.SerializeToXml(physicCore));
             }
@@ -120,7 +120,7 @@ public class NetworkPhysicCore : NetworkBehaviour
     [ServerRpc]
     public void SyncDataServerRpc(string xmlstr)
     {
-        if (!IsServer) return;
+        if (!IsServer && !IsHost) return;
         XmlDocument xml = new XmlDocument();
         xml.LoadXml(xmlstr);
         XmlElement parent = (XmlElement)xml.GetElementsByTagName("PhysicCore")[0];
