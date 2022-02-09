@@ -31,7 +31,7 @@ public class NetworkBuildFunction : NetworkBehaviour
     }
 
     [ServerRpc]
-    public void AttemptGeneratePhysicCore(Vector3 point, Quaternion rotation, int selectedPrefab)
+    public void AttemptGeneratePhysicCoreServerRpc(Vector3 point, Quaternion rotation, int selectedPrefab)
     {
         if (IsClient) return;
 
@@ -203,12 +203,12 @@ public class NetworkBuildFunction : NetworkBehaviour
                                 if (generated.GetComponent<Collider>() != null)
                                     generated.GetComponent<Collider>().isTrigger = false;
                             }
+                            generated = null;
                         }
                         else
                         {
-                            AttemptGeneratePhysicCore(generated.transform.position, generated.transform.rotation, SceneMaterial.Instance.selectedPrefab);
+                            AttemptGeneratePhysicCoreServerRpc(generated.transform.position, generated.transform.rotation, SceneMaterial.Instance.selectedPrefab);
                         }
-                        generated = null;
                     }
                 }
             }else if (raycastHit.collider != null)
