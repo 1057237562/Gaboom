@@ -18,22 +18,10 @@ public class NetworkBuildFunction : NetworkBehaviour
 
     public static NetworkBuildFunction Instance;
 
-    [ClientRpc]
-    public void SyncDataClientRpc(string xmlstr,int index)
-    {
-        NetworkManager.Singleton.GetComponent<NetworkController>().physicCores[index].GetComponent<NetworkPhysicCore>().SyncDataClient(xmlstr);
-    }
-
-    [ServerRpc]
-    public void SyncDataServerRpc(string xmlstr,int index)
-    {
-        NetworkManager.Singleton.GetComponent<NetworkController>().physicCores[index].GetComponent<NetworkPhysicCore>().SyncDataServer(xmlstr);
-    }
-
     [ServerRpc]
     public void AttemptGeneratePhysicCoreServerRpc(Vector3 point, Quaternion rotation, int selectedPrefab)
     {
-        if (IsClient) return;
+        if (!IsServer && !IsHost) return;
 
         GameObject parent = Instantiate(emptyGameObject, point, rotation);
 
@@ -41,7 +29,7 @@ public class NetworkBuildFunction : NetworkBehaviour
         parent.GetComponent<NetworkObject>().Spawn();
         List<IBlock> blocks = new List<IBlock>();
 
-        GameObject n_obj = Instantiate(SceneMaterial.Instance.BuildingPrefabs[selectedPrefab], point, rotation);
+        GameObject n_obj = Instantiate(SceneMaterial.Instance.BuildingPrefabs[selectedPrefab], Vector3.zero, Quaternion.identity);
 
         IBlock block = n_obj.GetComponent<IBlock>();
         //block.mass = generated.GetComponent<Rigidbody>().mass;
@@ -169,7 +157,7 @@ public class NetworkBuildFunction : NetworkBehaviour
                             generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[SceneMaterial.Instance.selectedPrefab], raycastHit.point + SceneMaterial.Instance.BuildingPrefabs[SceneMaterial.Instance.selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
                         }
 
-                        if (raycastHit.collider.transform.parent != null)
+                        if (raycastHit.collider.transform.parent != null && raycastHit.collider.gameObject.tag != "Terrain")
                         {
                             IBlock block = generated.GetComponent<IBlock>();
                             PhysicCore parent = raycastHit.collider.transform.parent.parent.GetComponent<PhysicCore>();
@@ -203,12 +191,13 @@ public class NetworkBuildFunction : NetworkBehaviour
                                 if (generated.GetComponent<Collider>() != null)
                                     generated.GetComponent<Collider>().isTrigger = false;
                             }
-                            generated = null;
                         }
                         else
                         {
                             AttemptGeneratePhysicCoreServerRpc(generated.transform.position, generated.transform.rotation, SceneMaterial.Instance.selectedPrefab);
+                            Destroy(generated);
                         }
+                        generated = null;
                     }
                 }
             }else if (raycastHit.collider != null)

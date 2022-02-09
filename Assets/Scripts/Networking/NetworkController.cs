@@ -38,9 +38,6 @@ public class NetworkController : MonoBehaviour,INetworkUpdateSystem
     Queue<Action> pendingPackage = new Queue<Action>();
     public GameObject networkCamera;
 
-    [HideInInspector]
-    public List<GameObject> physicCores = new List<GameObject> ();
-
     private void Start()
     {
         networkManager = GetComponent<NetworkManager>();

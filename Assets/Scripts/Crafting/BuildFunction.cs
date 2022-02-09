@@ -116,7 +116,7 @@ public class BuildFunction : MonoBehaviour//MonoSingletonBase<BuildFunction>
                             generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[SceneMaterial.Instance.selectedPrefab], raycastHit.point + SceneMaterial.Instance.BuildingPrefabs[SceneMaterial.Instance.selectedPrefab].transform.lossyScale / 2, Quaternion.Euler(raycastHit.collider.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, raycastHit.collider.transform.rotation.eulerAngles.z));
                         }
 
-                        if (raycastHit.collider.transform.parent != null)
+                        if (raycastHit.collider.transform.parent != null && raycastHit.collider.gameObject.tag != "Terrain")
                         {
                             IBlock block = generated.GetComponent<IBlock>();
                             PhysicCore parent = raycastHit.collider.transform.parent.parent.GetComponent<PhysicCore>();
