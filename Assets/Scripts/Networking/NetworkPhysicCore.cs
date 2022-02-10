@@ -33,9 +33,10 @@ public class NetworkPhysicCore : NetworkBehaviour
             }
         };
         GetComponent<PhysicCore>().mring.data_m = DataListener;
+        if(IsServer || IsHost) 
+            DataListener.Invoke();
         if (IsOwner)
         {
-            DataListener.Invoke();
             LifeCycle.gameObjects.Add(gameObject);
         }
     }
@@ -120,7 +121,6 @@ public class NetworkPhysicCore : NetworkBehaviour
     [ServerRpc]
     public void SyncDataServerRpc(string xmlstr)
     {
-        Debug.Log(xmlstr);
         if (!IsServer && !IsHost) return;
         XmlDocument xml = new XmlDocument();
         xml.LoadXml(xmlstr);
@@ -183,7 +183,7 @@ public class NetworkPhysicCore : NetworkBehaviour
             iblock.OnScale();
         }
 
-        physic.Load(content);
+        physic.Load(content);        
         physic.RecalculateRigidbody();
     }
 }

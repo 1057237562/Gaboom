@@ -369,8 +369,8 @@ public class Ring
 
     public void SetBlocks(List<IBlock> blocks)
     {
+        this.blocks = blocks;
         if (data_m != null)
             data_m.Invoke();
-        this.blocks = blocks;
     }
 }
