@@ -315,6 +315,10 @@ public class PhysicCore : MonoBehaviour
             rigidbody.centerOfMass += (block.transform.localPosition + block.centerOfmass) * block.mass;
         }
         rigidbody.centerOfMass /= rigidbody.mass;
+        if (!LifeCycle.gameStart)
+        {
+            rigidbody.constraints = RigidbodyConstraints.FreezeAll;
+        }
     }
 
     void dfs(IBlock block, ref HashSet<IBlock> blocks, ref HashSet<IBlock> ol)

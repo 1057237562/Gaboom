@@ -75,7 +75,11 @@ public class NetworkBuildFunction : MonoBehaviour
                     generated = Instantiate(SceneMaterial.Instance.BuildingPrefabs[SceneMaterial.Instance.selectedPrefab], Vector3.zero, Quaternion.identity);
                     generated.transform.position = Align(generated, raycastHit);
                     if (raycastHit.collider.transform.parent != null)
+                    {
                         generated.transform.rotation = Quaternion.FromToRotation(hitObj.transform.parent.forward, generated.transform.position - hitObj.transform.parent.position) * hitObj.transform.parent.rotation;
+                        if(raycastHit.collider.transform.parent.parent != null)
+                            occupied = occupied && raycastHit.collider.transform.parent.parent.GetComponent<NetworkObject>().IsOwner;
+                    }
                 }
                 else
                 {
@@ -161,6 +165,7 @@ public class NetworkBuildFunction : MonoBehaviour
                                 }
                                 if (generated.GetComponent<Collider>() != null)
                                     generated.GetComponent<Collider>().isTrigger = false;
+                                generated = null;
                             }
                         }
                         else
@@ -168,7 +173,6 @@ public class NetworkBuildFunction : MonoBehaviour
                             GetComponent<Communicator>().AttemptGeneratePhysicCoreServerRpc(generated.transform.position, generated.transform.rotation, SceneMaterial.Instance.selectedPrefab,NetworkManager.Singleton.LocalClientId);
                             Destroy(generated);
                         }
-                        generated = null;
                     }
                 }
             }else if (raycastHit.collider != null)
