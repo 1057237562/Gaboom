@@ -120,6 +120,7 @@ public class NetworkPhysicCore : NetworkBehaviour
     [ServerRpc]
     public void SyncDataServerRpc(string xmlstr)
     {
+        Debug.Log(xmlstr);
         if (!IsServer && !IsHost) return;
         XmlDocument xml = new XmlDocument();
         xml.LoadXml(xmlstr);

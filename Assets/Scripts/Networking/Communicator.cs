@@ -14,14 +14,14 @@ public class Communicator : NetworkBehaviour
     }
 
     [ServerRpc]
-    public void AttemptGeneratePhysicCoreServerRpc(Vector3 point, Quaternion rotation, int selectedPrefab)
+    public void AttemptGeneratePhysicCoreServerRpc(Vector3 point, Quaternion rotation, int selectedPrefab ,ulong clientId)
     {
         if (!IsServer && !IsHost) return;
 
         GameObject parent = Instantiate(emptyGameObject, point, Quaternion.identity);
 
         PhysicCore core = parent.GetComponent<PhysicCore>();
-        parent.GetComponent<NetworkObject>().Spawn();
+        parent.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
         List<IBlock> blocks = new List<IBlock>();
 
         GameObject n_obj = Instantiate(SceneMaterial.Instance.BuildingPrefabs[selectedPrefab], Vector3.zero, rotation);

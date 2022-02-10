@@ -7,7 +7,7 @@ using UnityTemplateProjects;
 using UnityEngine.Rendering.HighDefinition;
 
 [RequireComponent(typeof(Communicator))]
-public class NetworkBuildFunction : NetworkBehaviour
+public class NetworkBuildFunction : MonoBehaviour
 {
     public Material preview;
     public Material deny;
@@ -165,7 +165,7 @@ public class NetworkBuildFunction : NetworkBehaviour
                         }
                         else
                         {
-                            GetComponent<Communicator>().AttemptGeneratePhysicCoreServerRpc(generated.transform.position, generated.transform.rotation, SceneMaterial.Instance.selectedPrefab);
+                            GetComponent<Communicator>().AttemptGeneratePhysicCoreServerRpc(generated.transform.position, generated.transform.rotation, SceneMaterial.Instance.selectedPrefab,NetworkManager.Singleton.LocalClientId);
                             Destroy(generated);
                         }
                         generated = null;
