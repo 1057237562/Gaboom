@@ -77,8 +77,10 @@ public class NetworkBuildFunction : MonoBehaviour
                     if (raycastHit.collider.transform.parent != null)
                     {
                         generated.transform.rotation = Quaternion.FromToRotation(hitObj.transform.parent.forward, generated.transform.position - hitObj.transform.parent.position) * hitObj.transform.parent.rotation;
-                        if(raycastHit.collider.transform.parent.parent != null)
-                            occupied = occupied && raycastHit.collider.transform.parent.parent.GetComponent<NetworkObject>().IsOwner;
+                        if (raycastHit.collider.transform.parent.parent != null)
+                        {
+                            occupied = occupied || !raycastHit.collider.transform.parent.parent.GetComponent<NetworkObject>().IsOwner;
+                        }
                     }
                 }
                 else
