@@ -2,6 +2,7 @@ using Gaboom.IO;
 using Gaboom.Scene;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -38,11 +39,24 @@ public class LifeCycle : MonoBehaviour
 
     public void Pause()
     {
-        for(int i =0; i < gameObjects.Count; i++) { 
-            Destroy(gameObjects[i]);
-            GameObject physic  = SLMechanic.DeserializeToGameObject(physics[i]);
+        for(int i =0; i < gameObjects.Count; i++) {
+            if (gameObjects[i].GetComponent<NetworkPhysicCore>() != null)
+            {
+                gameObjects[i].GetComponent<NetworkPhysicCore>().DespawnServerRpc();
+            }
+            else
+            {
+                Destroy(gameObjects[i]);
+            }
+        }
+
+        gameObjects.Clear();
+
+        for(int i =0;i < physics.Count;i++)
+        {
+            GameObject physic = SLMechanic.DeserializeToGameObject(physics[i]);
             physic.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
-            gameObjects[i] = physic;
+            gameObjects.Add(physic);
         }
         foreach(GameObject panel in buildingPanel)
         {

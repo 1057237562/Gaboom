@@ -186,4 +186,11 @@ public class NetworkPhysicCore : NetworkBehaviour
         physic.Load(content);        
         physic.RecalculateRigidbody();
     }
+
+    [ServerRpc]
+    public void DespawnServerRpc()
+    {
+        GetComponent<NetworkObject>().Despawn();
+        Destroy(gameObject);
+    }
 }

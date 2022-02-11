@@ -219,6 +219,7 @@ public class PhysicCore : MonoBehaviour
             rigidbody.centerOfMass /= rigidbody.mass;
             PhysicCore physicCore = newObj.GetComponent<PhysicCore>();
             physicCore.Load(list);
+            LifeCycle.gameObjects.Add(newObj);
         };
     }
 
