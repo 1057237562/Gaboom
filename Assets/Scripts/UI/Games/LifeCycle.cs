@@ -52,11 +52,18 @@ public class LifeCycle : MonoBehaviour
 
         gameObjects.Clear();
 
-        for(int i =0;i < physics.Count;i++)
+        for (int i = 0; i < physics.Count; i++)
         {
-            GameObject physic = SLMechanic.DeserializeToGameObject(physics[i]);
-            physic.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
-            gameObjects.Add(physic);
+            if(NetworkManager.Singleton != null)
+            {
+                Camera.main.GetComponent<Communicator>().AttemptGeneratePhysicCoreServerRpc(physics[i], NetworkManager.Singleton.LocalClientId);
+            }
+            else
+            {
+                GameObject physic = SLMechanic.DeserializeToGameObject(physics[i]);
+                physic.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+                gameObjects.Add(physic);
+            }
         }
         foreach(GameObject panel in buildingPanel)
         {

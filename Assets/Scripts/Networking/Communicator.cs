@@ -26,6 +26,7 @@ public class Communicator : NetworkBehaviour
 
         PhysicCore core = parent.GetComponent<PhysicCore>();
         parent.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
+        parent.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
         List<IBlock> blocks = new List<IBlock>();
 
         GameObject n_obj = Instantiate(SceneMaterial.Instance.BuildingPrefabs[selectedPrefab], Vector3.zero, rotation);
