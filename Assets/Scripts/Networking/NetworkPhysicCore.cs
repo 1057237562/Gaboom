@@ -190,7 +190,7 @@ public class NetworkPhysicCore : NetworkBehaviour
     [ServerRpc]
     public void DespawnServerRpc()
     {
-        if (isClient) return;
+        if (IsClient) return;
         GetComponent<NetworkObject>().Despawn();
         Destroy(gameObject);
     }
