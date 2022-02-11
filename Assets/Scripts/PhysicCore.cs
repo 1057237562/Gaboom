@@ -260,7 +260,14 @@ public class PhysicCore : MonoBehaviour
                 Recombine(ring.GetBlocks());
             }
             rings.Clear();
-            Destroy(gameObject); // Bugged
+            if(GetComponent<NetworkPhysicCore>() != null)
+            {
+                GetComponent<NetworkPhysicCore>().DespawnServerRpc();
+            }
+            else
+            {
+                Destroy(gameObject); // Bugged
+            }
         }
     }
 

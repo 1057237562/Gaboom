@@ -50,15 +50,15 @@ public class Communicator : NetworkBehaviour
     public void AttemptGeneratePhysicCoreServerRpc(string xmlstr, ulong clientId)
     {
         if (!IsServer && !IsHost) return;
+
         XmlDocument xml = new XmlDocument();
         xml.LoadXml(xmlstr);
         XmlElement parent = (XmlElement)xml.GetElementsByTagName("PhysicCore")[0];
-        //GameObject core = Instantiate(PhysicCore.emptyGameObject, GetVec3ByString(parent.GetAttribute("position")), GetQuaByString(parent.GetAttribute("rotation")));
+
         GameObject core = Instantiate(emptyGameObject, SLMechanic.GetVec3ByString(parent.GetAttribute("position")), SLMechanic.GetQuaByString(parent.GetAttribute("rotation")));
-
         core.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
-
         PhysicCore physic = core.GetComponent<PhysicCore>();
+
         List<IBlock> content = new List<IBlock>();
         Dictionary<string, IBlock> reflection = new Dictionary<string, IBlock>();
 
@@ -112,7 +112,6 @@ public class Communicator : NetworkBehaviour
 
         physic.Load(content);
         physic.RecalculateRigidbody();
-        physic.enabled = true;
     }
 
 }
