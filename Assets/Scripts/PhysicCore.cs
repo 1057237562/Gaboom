@@ -260,7 +260,7 @@ public class PhysicCore : MonoBehaviour
                 Recombine(ring.GetBlocks());
             }
             rings.Clear();
-            Destroy(gameObject);
+            Destroy(gameObject); // Bugged
         }
     }
 
