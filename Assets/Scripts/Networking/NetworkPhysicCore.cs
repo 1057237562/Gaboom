@@ -29,6 +29,7 @@ public class NetworkPhysicCore : NetworkBehaviour
             }
             else if (IsOwner)
             {
+                Debug.Log(SLMechanic.SerializeToXml(physicCore));
                 SyncDataServerRpc(SLMechanic.SerializeToXml(physicCore));
             }
         };
@@ -38,6 +39,7 @@ public class NetworkPhysicCore : NetworkBehaviour
         if (IsOwner)
         {
             LifeCycle.gameObjects.Add(gameObject);
+            GetComponent<PhysicCore>().acceleration = Vector3.zero;
         }
     }
 
@@ -121,6 +123,7 @@ public class NetworkPhysicCore : NetworkBehaviour
     [ServerRpc]
     public void SyncDataServerRpc(string xmlstr)
     {
+        Debug.Log(xmlstr);
         if (!IsServer && !IsHost) return;
         XmlDocument xml = new XmlDocument();
         xml.LoadXml(xmlstr);
