@@ -27,7 +27,7 @@ public class NetworkPhysicCore : NetworkBehaviour
             {
                 SyncDataClientRpc(SLMechanic.SerializeToXml(physicCore));
             }
-            else if (isLocalPlayer)
+            else if (hasAuthority)
             {
                 CmdSyncData(SLMechanic.SerializeToXml(physicCore));
             }
@@ -35,7 +35,7 @@ public class NetworkPhysicCore : NetworkBehaviour
         GetComponent<PhysicCore>().mring.data_m = DataListener;
         if(isServer) 
             DataListener.Invoke();
-        if (isLocalPlayer)
+        if (hasAuthority)
         {
             LifeCycle.gameObjects.Add(gameObject);
             GetComponent<PhysicCore>().acceleration = Vector3.zero;
