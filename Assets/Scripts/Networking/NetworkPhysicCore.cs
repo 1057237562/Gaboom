@@ -29,8 +29,7 @@ public class NetworkPhysicCore : NetworkBehaviour
             }
             else if (isLocalPlayer)
             {
-                Debug.Log(SLMechanic.SerializeToXml(physicCore));
-                SyncDataServerRpc(SLMechanic.SerializeToXml(physicCore));
+                CmdSyncData(SLMechanic.SerializeToXml(physicCore));
             }
         };
         GetComponent<PhysicCore>().mring.data_m = DataListener;
@@ -120,8 +119,9 @@ public class NetworkPhysicCore : NetworkBehaviour
     }
 
     [Command]
-    public void SyncDataServerRpc(string xmlstr)
+    public void CmdSyncData(string xmlstr)
     {
+        Debug.Log(xmlstr);
         XmlDocument xml = new XmlDocument();
         xml.LoadXml(xmlstr);
         XmlElement parent = (XmlElement)xml.GetElementsByTagName("PhysicCore")[0];

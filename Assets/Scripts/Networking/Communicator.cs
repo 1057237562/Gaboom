@@ -18,7 +18,7 @@ public class Communicator : NetworkBehaviour
     }
 
     [Command]
-    public void AttemptGeneratePhysicCoreServerRpc(Vector3 point, Quaternion rotation, int selectedPrefab ,NetworkConnectionToClient clientId = null)
+    public void CmdAttemptGeneratePhysicCoreServerRpc(Vector3 point, Quaternion rotation, int selectedPrefab ,NetworkConnectionToClient clientId = null)
     {
         GameObject parent = Instantiate(emptyGameObject, point, Quaternion.identity);
 
@@ -45,7 +45,7 @@ public class Communicator : NetworkBehaviour
     }
 
     [Command]
-    public void AttemptGeneratePhysicCoreServerRpc(string xmlstr, NetworkConnectionToClient clientId = null)
+    public void CmdAttemptGeneratePhysicCoreServerRpc(string xmlstr, NetworkConnectionToClient clientId = null)
     {
         XmlDocument xml = new XmlDocument();
         xml.LoadXml(xmlstr);

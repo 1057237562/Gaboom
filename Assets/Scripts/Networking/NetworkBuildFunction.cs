@@ -172,7 +172,7 @@ public class NetworkBuildFunction : MonoBehaviour
                         }
                         else
                         {
-                            GetComponent<Communicator>().AttemptGeneratePhysicCoreServerRpc(generated.transform.position, generated.transform.rotation, SceneMaterial.Instance.selectedPrefab);
+                            GetComponent<Communicator>().CmdAttemptGeneratePhysicCoreServerRpc(generated.transform.position, generated.transform.rotation, SceneMaterial.Instance.selectedPrefab);
                             Destroy(generated);
                         }
                     }

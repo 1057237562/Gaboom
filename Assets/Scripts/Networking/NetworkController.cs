@@ -55,6 +55,16 @@ public class NetworkController : NetworkManager
     const int messageSize = 1024;
     //const int maxiumSize = 60000;
 
+    public override void OnServerConnect(NetworkConnectionToClient conn)
+    {
+        base.OnServerConnect(conn);
+        MapSyncMessage message = new MapSyncMessage()
+        {
+            mapname = mapname, mapsize = fileLength
+        };
+        conn.Send(message);
+    }
+
     public void BtnStartHost()
     {
         if (mode == NetworkManagerMode.Host) return;
@@ -74,8 +84,7 @@ public class NetworkController : NetworkManager
 
         doc.WriteTo(xw);
 
-        StartHost();
-
+        NetworkClient.RegisterHandler<MapSyncMessage>((message) =>{ });
         NetworkServer.RegisterHandler<RequireMap>((conn, message) => {
             string filename = Application.dataPath + "/maps/" + mapname + ".gmap";
             FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
@@ -113,8 +122,10 @@ public class NetworkController : NetworkManager
 
         NetworkServer.RegisterHandler<SummonCamera>((conn, message) => {
             GameObject cam = Instantiate(networkCamera);
-            NetworkServer.Spawn(cam,conn);
+            NetworkServer.AddPlayerForConnection(conn,cam);
         });
+
+        StartHost();
     }
 
     /*private void ApprovalCheck(byte[] connectionData, ulong clientId, ConnectionApprovedDelegate callback)
@@ -155,12 +166,11 @@ public class NetworkController : NetworkManager
 
     public void StartGame()
     {
-        if (mode != NetworkManagerMode.Host || mode != NetworkManagerMode.ServerOnly) return;
+        if (mode != NetworkManagerMode.Host && mode != NetworkManagerMode.ServerOnly) return;
         //networkManager.SceneManager.SetClientSynchronizationMode(LoadSceneMode.Single);
         //networkManager.SceneManager.LoadScene("GameScene",LoadSceneMode.Single);
         ServerChangeScene("GameScene");
         gameStarted = true;
-        Destroy(this);
     }
 
     public void BtnStartClient()
@@ -183,7 +193,6 @@ public class NetworkController : NetworkManager
         doc.WriteTo(xw);
 
         //networkManager.NetworkConfig.ConnectionData = Encoding.UTF8.GetBytes(writer.ToString());
-        StartClient();
 
         NetworkClient.RegisterHandler<MapSyncMessage>((message) => {
             mapname = message.mapname;
@@ -217,6 +226,8 @@ public class NetworkController : NetworkManager
                 progressbar.gameObject.SetActive(false);
             }
         }, true);
+
+        StartClient();
     }
 
     public void Update()
@@ -229,7 +240,6 @@ public class NetworkController : NetworkManager
 
     public void SpawnNetworkCamera()
     {
-        if (mode == NetworkManagerMode.ServerOnly || mode == NetworkManagerMode.Host) return;
         NetworkClient.Send(new SummonCamera());
     }
 }
