@@ -49,7 +49,7 @@ public class NetworkController : NetworkManager
     long fileLength;
     public static bool gameStarted = false;
 
-    Queue<Action> pendingPackage = new Queue<Action>();
+    //Queue<Action> pendingPackage = new Queue<Action>();
     public GameObject networkCamera;
 
     const int messageSize = 1024;
@@ -228,14 +228,6 @@ public class NetworkController : NetworkManager
         }, true);
 
         StartClient();
-    }
-
-    public void Update()
-    {
-        if(pendingPackage.Count >0)
-        {
-            pendingPackage.Dequeue().Invoke();
-        }
     }
 
     public void SpawnNetworkCamera()

@@ -51,7 +51,16 @@ namespace Gaboom.Scene
                 }
                 else
                 {
-                    NetworkManager.singleton.GetComponent<NetworkController>().SpawnNetworkCamera();
+                    /*if (NetworkManager.singleton.mode == NetworkManagerMode.Host || NetworkManager.singleton.mode == NetworkManagerMode.ServerOnly)
+                    {
+                        GameObject cam = Instantiate(networkcameraPrefab);
+                        NetworkServer.AddPlayerForConnection(NetworkClient.connection, cam);
+                        runtimeEditor.CustomCamera = cam.GetComponent<Camera>();
+                    }
+                    else
+                    {*/
+                        NetworkManager.singleton.GetComponent<NetworkController>().SpawnNetworkCamera();
+                    //}
                 }
             }
             if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("GameScene") && filepath != null)
