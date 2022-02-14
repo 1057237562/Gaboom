@@ -26,7 +26,7 @@ public class NetworkBuildFunction : MonoBehaviour
 
     private void Start()
     {
-        if (!GetComponent<NetworkObject>().IsOwner)
+        if (!GetComponent<NetworkIdentity>().hasAuthority)
         {
             gameObject.tag = "Untagged";
             Destroy(GetComponent<HDAdditionalCameraData>());
@@ -79,7 +79,7 @@ public class NetworkBuildFunction : MonoBehaviour
                         generated.transform.rotation = Quaternion.FromToRotation(hitObj.transform.parent.forward, generated.transform.position - hitObj.transform.parent.position) * hitObj.transform.parent.rotation;
                         if (raycastHit.collider.transform.parent.parent != null)
                         {
-                            occupied = occupied || !raycastHit.collider.transform.parent.parent.GetComponent<NetworkObject>().IsOwner;
+                            occupied = occupied || !raycastHit.collider.transform.parent.parent.GetComponent<NetworkIdentity>().hasAuthority;
                         }
                     }
                 }
@@ -138,7 +138,7 @@ public class NetworkBuildFunction : MonoBehaviour
                         {
                             IBlock block = generated.GetComponent<IBlock>();
                             PhysicCore parent = raycastHit.collider.transform.parent.parent.GetComponent<PhysicCore>(); // Problem
-                            if (parent.GetComponent<NetworkObject>() != null && parent.GetComponent<NetworkObject>().IsOwner)
+                            if (parent.GetComponent<NetworkIdentity>() != null && parent.GetComponent<NetworkIdentity>().hasAuthority)
                             {
                                 //Building logic
                                 if (block.GetType() == typeof(Engine))
@@ -172,7 +172,7 @@ public class NetworkBuildFunction : MonoBehaviour
                         }
                         else
                         {
-                            GetComponent<Communicator>().AttemptGeneratePhysicCoreServerRpc(generated.transform.position, generated.transform.rotation, SceneMaterial.Instance.selectedPrefab,NetworkManager.singleton.LocalClientId);
+                            GetComponent<Communicator>().AttemptGeneratePhysicCoreServerRpc(generated.transform.position, generated.transform.rotation, SceneMaterial.Instance.selectedPrefab);
                             Destroy(generated);
                         }
                     }

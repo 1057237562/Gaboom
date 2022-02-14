@@ -128,9 +128,9 @@ public class PhysXInterface : IBlock
     GameObject CreateNewCore(List<IBlock> list)
     {
         GameObject newObj = Instantiate(PhysicCore.emptyGameObject, transform.position + transform.forward, transform.rotation);
-        if(newObj.GetComponent<NetworkObject>() != null)
+        if(newObj.GetComponent<NetworkIdentity>() != null)
         {
-            newObj.GetComponent<NetworkIdentity>().Spawn();
+            NetworkServer.Spawn(newObj);
         }
         Rigidbody rigidbody = newObj.GetComponent<Rigidbody>();
         rigidbody.mass = 0;

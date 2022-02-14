@@ -56,7 +56,7 @@ public class LifeCycle : MonoBehaviour
         {
             if(NetworkManager.singleton != null)
             {
-                Camera.main.GetComponent<Communicator>().AttemptGeneratePhysicCoreServerRpc(physics[i], NetworkManager.singleton.LocalClientId);
+                Camera.main.GetComponent<Communicator>().AttemptGeneratePhysicCoreServerRpc(physics[i]);
             }
             else
             {

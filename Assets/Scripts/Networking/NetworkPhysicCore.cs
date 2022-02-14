@@ -190,7 +190,7 @@ public class NetworkPhysicCore : NetworkBehaviour
     [Command]
     public void CmdDespawn()
     {
-        GetComponent<NetworkIdentity>().Despawn();
-        Destroy(gameObject);
+        NetworkServer.UnSpawn(gameObject);
+        //Destroy(gameObject);
     }
 }

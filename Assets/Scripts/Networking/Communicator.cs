@@ -18,12 +18,12 @@ public class Communicator : NetworkBehaviour
     }
 
     [Command]
-    public void AttemptGeneratePhysicCoreServerRpc(Vector3 point, Quaternion rotation, int selectedPrefab ,ulong clientId)
+    public void AttemptGeneratePhysicCoreServerRpc(Vector3 point, Quaternion rotation, int selectedPrefab ,NetworkConnectionToClient clientId = null)
     {
         GameObject parent = Instantiate(emptyGameObject, point, Quaternion.identity);
 
         PhysicCore core = parent.GetComponent<PhysicCore>();
-        parent.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
+        NetworkServer.Spawn(parent,clientId);
         parent.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
         List<IBlock> blocks = new List<IBlock>();
 
@@ -45,14 +45,14 @@ public class Communicator : NetworkBehaviour
     }
 
     [Command]
-    public void AttemptGeneratePhysicCoreServerRpc(string xmlstr, ulong clientId)
+    public void AttemptGeneratePhysicCoreServerRpc(string xmlstr, NetworkConnectionToClient clientId = null)
     {
         XmlDocument xml = new XmlDocument();
         xml.LoadXml(xmlstr);
         XmlElement parent = (XmlElement)xml.GetElementsByTagName("PhysicCore")[0];
 
         GameObject core = Instantiate(emptyGameObject, SLMechanic.GetVec3ByString(parent.GetAttribute("position")), SLMechanic.GetQuaByString(parent.GetAttribute("rotation")));
-        core.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
+        NetworkServer.Spawn(core,clientId);
         PhysicCore physic = core.GetComponent<PhysicCore>();
 
         List<IBlock> content = new List<IBlock>();
