@@ -2801,6 +2801,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 693ece199e5b0924d899d119003ad744, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dontDestroyOnLoad: 1
+  runInBackground: 1
+  autoStartServerBuild: 1
+  serverTickRate: 30
+  offlineScene: 
+  onlineScene: 
+  transport: {fileID: 0}
+  networkAddress: localhost
+  maxConnections: 100
+  authenticator: {fileID: 614554745}
+  playerPrefab: {fileID: 6713683420702928218, guid: ccedb2236447035489d1ad7efd09b841,
+    type: 3}
+  autoCreatePlayer: 0
+  playerSpawnMethod: 0
+  spawnPrefabs:
+  - {fileID: 7174070733087649311, guid: 127cd734b76babf4e87ef527deb721d9, type: 3}
+  - {fileID: 6307324326080874161, guid: 41dabf607127fbc4d929dfc8f95493ce, type: 3}
+  address_hfield: {fileID: 1986269097}
+  port_hfield: {fileID: 2065898865}
+  password_hfield: {fileID: 0}
+  address_cfield: {fileID: 1311164546}
+  port_cfield: {fileID: 1254138630}
+  password_cfield: {fileID: 0}
+  progressbar: {fileID: 1126277017}
+  players: 
+  mapname: 
+  networkCamera: {fileID: 6713683420702928218, guid: ccedb2236447035489d1ad7efd09b841,
+    type: 3}
 --- !u!114 &614554749
 MonoBehaviour:
   m_ObjectHideFlags: 0
