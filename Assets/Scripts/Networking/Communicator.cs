@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 using System.Xml;
-using Unity.Netcode;
+using Mirror;
 using UnityEngine;
 
 public class Communicator : NetworkBehaviour
@@ -17,11 +17,9 @@ public class Communicator : NetworkBehaviour
         PhysicCore.emptyGameObject = emptyGameObject;
     }
 
-    [ServerRpc]
+    [Command]
     public void AttemptGeneratePhysicCoreServerRpc(Vector3 point, Quaternion rotation, int selectedPrefab ,ulong clientId)
     {
-        if (!IsServer && !IsHost) return;
-
         GameObject parent = Instantiate(emptyGameObject, point, Quaternion.identity);
 
         PhysicCore core = parent.GetComponent<PhysicCore>();
@@ -46,11 +44,9 @@ public class Communicator : NetworkBehaviour
         core.enabled = true;
     }
 
-    [ServerRpc]
+    [Command]
     public void AttemptGeneratePhysicCoreServerRpc(string xmlstr, ulong clientId)
     {
-        if (!IsServer && !IsHost) return;
-
         XmlDocument xml = new XmlDocument();
         xml.LoadXml(xmlstr);
         XmlElement parent = (XmlElement)xml.GetElementsByTagName("PhysicCore")[0];

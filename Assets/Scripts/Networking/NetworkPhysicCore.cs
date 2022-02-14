@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 using System.Xml;
-using Unity.Netcode;
+using Mirror;
 using UnityEngine;
 
 [RequireComponent(typeof(PhysicCore))]
@@ -23,20 +23,20 @@ public class NetworkPhysicCore : NetworkBehaviour
         DataListener = () =>
         {
             // Case sync
-            if (IsServer || IsHost)
+            if (isServer)
             {
                 SyncDataClientRpc(SLMechanic.SerializeToXml(physicCore));
             }
-            else if (IsOwner)
+            else if (isLocalPlayer)
             {
                 Debug.Log(SLMechanic.SerializeToXml(physicCore));
                 SyncDataServerRpc(SLMechanic.SerializeToXml(physicCore));
             }
         };
         GetComponent<PhysicCore>().mring.data_m = DataListener;
-        if(IsServer || IsHost) 
+        if(isServer) 
             DataListener.Invoke();
-        if (IsOwner)
+        if (isLocalPlayer)
         {
             LifeCycle.gameObjects.Add(gameObject);
             GetComponent<PhysicCore>().acceleration = Vector3.zero;
@@ -46,7 +46,6 @@ public class NetworkPhysicCore : NetworkBehaviour
     [ClientRpc]
     public void SyncDataClientRpc(string xmlstr)
     {
-        if (!IsClient) return;
         XmlDocument xml = new XmlDocument();
         xml.LoadXml(xmlstr);
         XmlElement parent = (XmlElement)xml.GetElementsByTagName("PhysicCore")[0];
@@ -120,11 +119,9 @@ public class NetworkPhysicCore : NetworkBehaviour
         physic.RecalculateRigidbody();
     }
 
-    [ServerRpc]
+    [Command]
     public void SyncDataServerRpc(string xmlstr)
     {
-        Debug.Log(xmlstr);
-        if (!IsServer && !IsHost) return;
         XmlDocument xml = new XmlDocument();
         xml.LoadXml(xmlstr);
         XmlElement parent = (XmlElement)xml.GetElementsByTagName("PhysicCore")[0];
@@ -190,11 +187,10 @@ public class NetworkPhysicCore : NetworkBehaviour
         physic.RecalculateRigidbody();
     }
 
-    [ServerRpc]
-    public void DespawnServerRpc()
+    [Command]
+    public void CmdDespawn()
     {
-        if (!IsServer && !IsHost) return;
-        GetComponent<NetworkObject>().Despawn();
+        GetComponent<NetworkIdentity>().Despawn();
         Destroy(gameObject);
     }
 }

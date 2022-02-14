@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Gaboom.Util;
-using Unity.Netcode;
+using Mirror;
 using Gaboom.Scene;
 using UnityTemplateProjects;
 using UnityEngine.Rendering.HighDefinition;
@@ -172,7 +172,7 @@ public class NetworkBuildFunction : MonoBehaviour
                         }
                         else
                         {
-                            GetComponent<Communicator>().AttemptGeneratePhysicCoreServerRpc(generated.transform.position, generated.transform.rotation, SceneMaterial.Instance.selectedPrefab,NetworkManager.Singleton.LocalClientId);
+                            GetComponent<Communicator>().AttemptGeneratePhysicCoreServerRpc(generated.transform.position, generated.transform.rotation, SceneMaterial.Instance.selectedPrefab,NetworkManager.singleton.LocalClientId);
                             Destroy(generated);
                         }
                     }

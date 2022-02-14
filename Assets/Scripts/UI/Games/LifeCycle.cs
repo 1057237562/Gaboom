@@ -2,7 +2,7 @@ using Gaboom.IO;
 using Gaboom.Scene;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Netcode;
+using Mirror;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -42,7 +42,7 @@ public class LifeCycle : MonoBehaviour
         for(int i =0; i < gameObjects.Count; i++) {
             if (gameObjects[i].GetComponent<NetworkPhysicCore>() != null)
             {
-                gameObjects[i].GetComponent<NetworkPhysicCore>().DespawnServerRpc();
+                gameObjects[i].GetComponent<NetworkPhysicCore>().CmdDespawn();
             }
             else
             {
@@ -54,9 +54,9 @@ public class LifeCycle : MonoBehaviour
 
         for (int i = 0; i < physics.Count; i++)
         {
-            if(NetworkManager.Singleton != null)
+            if(NetworkManager.singleton != null)
             {
-                Camera.main.GetComponent<Communicator>().AttemptGeneratePhysicCoreServerRpc(physics[i], NetworkManager.Singleton.LocalClientId);
+                Camera.main.GetComponent<Communicator>().AttemptGeneratePhysicCoreServerRpc(physics[i], NetworkManager.singleton.LocalClientId);
             }
             else
             {

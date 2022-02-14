@@ -262,7 +262,7 @@ public class PhysicCore : MonoBehaviour
             rings.Clear();
             if(GetComponent<NetworkPhysicCore>() != null)
             {
-                GetComponent<NetworkPhysicCore>().DespawnServerRpc();
+                GetComponent<NetworkPhysicCore>().CmdDespawn();
             }
             else
             {

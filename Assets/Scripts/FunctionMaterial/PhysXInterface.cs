@@ -1,7 +1,7 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Netcode;
 using UnityEditor;
 using UnityEngine;
 
@@ -130,7 +130,7 @@ public class PhysXInterface : IBlock
         GameObject newObj = Instantiate(PhysicCore.emptyGameObject, transform.position + transform.forward, transform.rotation);
         if(newObj.GetComponent<NetworkObject>() != null)
         {
-            newObj.GetComponent<NetworkObject>().Spawn();
+            newObj.GetComponent<NetworkIdentity>().Spawn();
         }
         Rigidbody rigidbody = newObj.GetComponent<Rigidbody>();
         rigidbody.mass = 0;

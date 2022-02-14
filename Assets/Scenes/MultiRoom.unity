@@ -2743,9 +2743,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 614554747}
-  - component: {fileID: 614554746}
-  - component: {fileID: 614554745}
   - component: {fileID: 614554748}
+  - component: {fileID: 614554749}
+  - component: {fileID: 614554745}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -2762,69 +2762,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 614554744}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b84c2d8dfe509a34fb59e2b81f8e1319, type: 3}
+  m_Script: {fileID: 11500000, guid: 28496b776660156428f00cf78289c1ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MessageBufferSize: 5120
-  MaxConnections: 100
-  MaxSentMessageQueueSize: 128
-  ConnectAddress: 127.0.0.1
-  ConnectPort: 25565
-  ServerListenPort: 25565
-  MessageSendMode: 0
---- !u!114 &614554746
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 614554744}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 593a2fe42fa9d37498c96f9a383b6521, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  DontDestroy: 1
-  RunInBackground: 1
-  LogLevel: 1
-  NetworkConfig:
-    ProtocolVersion: 0
-    NetworkTransport: {fileID: 614554745}
-    PlayerPrefab: {fileID: 0}
-    NetworkPrefabs:
-    - Override: 0
-      Prefab: {fileID: 7174070733087649311, guid: 127cd734b76babf4e87ef527deb721d9,
-        type: 3}
-      SourcePrefabToOverride: {fileID: 0}
-      SourceHashToOverride: 0
-      OverridingTargetPrefab: {fileID: 0}
-    - Override: 0
-      Prefab: {fileID: 6307324326080874161, guid: 41dabf607127fbc4d929dfc8f95493ce,
-        type: 3}
-      SourcePrefabToOverride: {fileID: 0}
-      SourceHashToOverride: 0
-      OverridingTargetPrefab: {fileID: 0}
-    - Override: 0
-      Prefab: {fileID: 6713683420702928218, guid: ccedb2236447035489d1ad7efd09b841,
-        type: 3}
-      SourcePrefabToOverride: {fileID: 0}
-      SourceHashToOverride: 0
-      OverridingTargetPrefab: {fileID: 0}
-    TickRate: 32
-    ClientConnectionBufferTimeout: 60
-    ConnectionApproval: 1
-    ConnectionData: 
-    EnableTimeResync: 0
-    TimeResyncInterval: 30
-    EnsureNetworkVariableLengthSafety: 0
-    EnableSceneManagement: 1
-    ForceSamePrefabs: 1
-    RecycleNetworkIds: 1
-    NetworkIdRecycleDelay: 120
-    RpcHashSize: 0
-    LoadSceneTimeOut: 120
-    MessageBufferTimeout: 20
-    EnableNetworkLogs: 1
+  OnServerAuthenticated:
+    m_PersistentCalls:
+      m_Calls: []
+  OnClientAuthenticated:
+    m_PersistentCalls:
+      m_Calls: []
+  serverUsername: 
+  serverPassword: 
+  username: 
+  password: 
 --- !u!4 &614554747
 Transform:
   m_ObjectHideFlags: 0
@@ -2851,17 +2801,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 693ece199e5b0924d899d119003ad744, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  address_hfield: {fileID: 1986269097}
-  port_hfield: {fileID: 2065898865}
-  password_hfield: {fileID: 0}
-  address_cfield: {fileID: 1311164546}
-  port_cfield: {fileID: 1254138630}
-  password_cfield: {fileID: 0}
-  progressbar: {fileID: 1126277017}
-  players: 
-  mapname: 
-  networkCamera: {fileID: 6713683420702928218, guid: ccedb2236447035489d1ad7efd09b841,
-    type: 3}
+--- !u!114 &614554749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 614554744}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7424c1070fad4ba2a7a96b02fbeb4bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  port: 25565
+  NoDelay: 1
+  SendTimeout: 5000
+  ReceiveTimeout: 30000
+  serverMaxMessageSize: 16384
+  serverMaxReceivesPerTick: 10000
+  serverSendQueueLimitPerConnection: 10000
+  serverReceiveQueueLimitPerConnection: 10000
+  clientMaxMessageSize: 16384
+  clientMaxReceivesPerTick: 1000
+  clientSendQueueLimit: 10000
+  clientReceiveQueueLimit: 10000
 --- !u!1 &647438024
 GameObject:
   m_ObjectHideFlags: 0

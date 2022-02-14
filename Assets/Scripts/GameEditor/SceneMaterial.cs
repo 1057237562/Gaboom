@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Xml;
-using Unity.Netcode;
+using Mirror;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -43,7 +43,7 @@ namespace Gaboom.Scene
             Instance = this;
             if (GameObject.FindGameObjectsWithTag("MainCamera").Length == 0 && SceneManager.GetActiveScene().name == "GameScene")
             {
-                if (NetworkManager.Singleton == null)
+                if (NetworkManager.singleton == null)
                 {
                     GameObject cam = Instantiate(cameraPrefab);
                     runtimeEditor.CustomCamera = cam.GetComponent<Camera>();
@@ -51,16 +51,16 @@ namespace Gaboom.Scene
                 }
                 else
                 {
-                    if (NetworkManager.Singleton.IsServer || NetworkManager.Singleton.IsHost)
+                    if (NetworkManager.singleton.mode == NetworkManagerMode.ServerOnly || NetworkManager.singleton.mode == NetworkManagerMode.Host)
                     {
                         GameObject cam = Instantiate(networkcameraPrefab);
                         runtimeEditor.CustomCamera = cam.GetComponent<Camera>();
-                        cam.GetComponent<NetworkObject>().SpawnAsPlayerObject(NetworkManager.Singleton.LocalClientId);
+                        NetworkServer.Spawn(cam);
                         //mainController = cam.GetComponent<BuildFunction>();
                     }
                     else
                     {
-                        NetworkManager.Singleton.GetComponent<NetworkController>().SpawnNetworkCamera();
+                        NetworkManager.singleton.GetComponent<NetworkController>().SpawnNetworkCamera();
                     }
                 }
             }
