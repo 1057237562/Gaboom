@@ -156,8 +156,9 @@ public class NetworkController : NetworkManager
     public void StartGame()
     {
         if (mode != NetworkManagerMode.Host || mode != NetworkManagerMode.ServerOnly) return;
-        networkManager.SceneManager.SetClientSynchronizationMode(LoadSceneMode.Single);
-        networkManager.SceneManager.LoadScene("GameScene",LoadSceneMode.Single);
+        //networkManager.SceneManager.SetClientSynchronizationMode(LoadSceneMode.Single);
+        //networkManager.SceneManager.LoadScene("GameScene",LoadSceneMode.Single);
+        ServerChangeScene("GameScene");
         gameStarted = true;
         Destroy(this);
     }
