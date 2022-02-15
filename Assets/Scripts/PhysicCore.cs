@@ -12,6 +12,8 @@ public class PhysicCore : MonoBehaviour
 
     public Action<List<IBlock>> Recombine;
 
+    public bool vulnerable = false;
+
     public List<IBlock> GetBlocks()
     {
         return mring.GetBlocks();
@@ -47,7 +49,7 @@ public class PhysicCore : MonoBehaviour
                 core.collideEvent.TryGetValue(block, out collisionforce);
                 Vector3 f = (force + collisionforce - core.acceleration * block.mass) / block.connector.Count;
                 f *= IMath.Sigmoid(1 / Vector3.Dot(f.normalized, block.r_pos[i].normalized), 2 / (block.bouncy + m.bouncy));
-                if (f.magnitude > block.breakForce + m.breakForce)
+                if (f.magnitude > block.breakForce + m.breakForce && core.vulnerable)
                 {
                     block.connector.Remove(m);
                     m.connector.Remove(block);
@@ -308,6 +310,7 @@ public class PhysicCore : MonoBehaviour
         if (!LifeCycle.gameStart)
         {
             rigidbody.constraints = RigidbodyConstraints.FreezeAll;
+            vulnerable = false;
         }
     }
 
@@ -326,6 +329,7 @@ public class PhysicCore : MonoBehaviour
         if (!LifeCycle.gameStart)
         {
             rigidbody.constraints = RigidbodyConstraints.FreezeAll;
+            vulnerable = false;
         }
     }
 

@@ -61,7 +61,6 @@ public class LifeCycle : MonoBehaviour
             else
             {
                 GameObject physic = SLMechanic.DeserializeToGameObject(physics[i]);
-                physic.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
                 gameObjects.Add(physic);
             }
         }
@@ -80,6 +79,7 @@ public class LifeCycle : MonoBehaviour
             GameObject physic = gameObjects[i];
             physics.Add(SLMechanic.SerializeToXml(physic.GetComponent<PhysicCore>()));
             physic.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+            physic.GetComponent<PhysicCore>().vulnerable = true;
         }
         foreach(GameObject panel in buildingPanel)
         {
