@@ -453,6 +453,7 @@ namespace RTEditor
 
         private void RenderPipelineManager_endFrameRendering(ScriptableRenderContext arg1, Camera[] arg2)
         {
+            if(_camera != null)
             OnRenderObject();
         }
 

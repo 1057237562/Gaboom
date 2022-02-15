@@ -23,7 +23,7 @@ public class NetworkPhysicCore : NetworkBehaviour
         DataListener = () =>
         {
             // Case sync
-            if (isServer)
+            if (NetworkManager.singleton.mode == NetworkManagerMode.ServerOnly || NetworkManager.singleton.mode == NetworkManagerMode.Host)
             {
                 SyncDataClientRpc(SLMechanic.SerializeToXml(physicCore));
             }
@@ -121,7 +121,6 @@ public class NetworkPhysicCore : NetworkBehaviour
     [Command]
     public void CmdSyncData(string xmlstr)
     {
-        Debug.Log(xmlstr);
         XmlDocument xml = new XmlDocument();
         xml.LoadXml(xmlstr);
         XmlElement parent = (XmlElement)xml.GetElementsByTagName("PhysicCore")[0];
@@ -191,6 +190,6 @@ public class NetworkPhysicCore : NetworkBehaviour
     public void CmdDespawn()
     {
         NetworkServer.UnSpawn(gameObject);
-        //Destroy(gameObject);
+        Destroy(gameObject);
     }
 }

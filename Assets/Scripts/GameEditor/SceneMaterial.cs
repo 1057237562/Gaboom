@@ -37,10 +37,14 @@ namespace Gaboom.Scene
             selectedPrefab = index;
         }
 
+        private void Awake()
+        {
+            Instance = this;
+        }
+
         // Start is called before the first frame update
         void Start()
         {
-            Instance = this;
             if (GameObject.FindGameObjectsWithTag("MainCamera").Length == 0 && SceneManager.GetActiveScene().name == "GameScene")
             {
                 if (NetworkManager.singleton == null)
@@ -51,16 +55,7 @@ namespace Gaboom.Scene
                 }
                 else
                 {
-                    /*if (NetworkManager.singleton.mode == NetworkManagerMode.Host || NetworkManager.singleton.mode == NetworkManagerMode.ServerOnly)
-                    {
-                        GameObject cam = Instantiate(networkcameraPrefab);
-                        NetworkServer.AddPlayerForConnection(NetworkClient.connection, cam);
-                        runtimeEditor.CustomCamera = cam.GetComponent<Camera>();
-                    }
-                    else
-                    {*/
-                        NetworkManager.singleton.GetComponent<NetworkController>().SpawnNetworkCamera();
-                    //}
+                    NetworkManager.singleton.GetComponent<NetworkController>().SpawnNetworkCamera();
                 }
             }
             if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("GameScene") && filepath != null)
