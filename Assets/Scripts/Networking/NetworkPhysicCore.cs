@@ -25,6 +25,7 @@ public class NetworkPhysicCore : NetworkBehaviour
             // Case sync
             if (NetworkManager.singleton.mode == NetworkManagerMode.ServerOnly || NetworkManager.singleton.mode == NetworkManagerMode.Host)
             {
+                Debug.Log("send");
                 SyncDataClientRpc(SLMechanic.SerializeToXml(physicCore));
             }
             else if (hasAuthority)
