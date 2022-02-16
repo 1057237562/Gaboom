@@ -20,6 +20,7 @@ public class NetworkPhysicCore : NetworkBehaviour
     private void Start()
     {
         physicCore = GetComponent<PhysicCore>();
+
         DataListener = () =>
         {
             // Case sync
@@ -39,7 +40,17 @@ public class NetworkPhysicCore : NetworkBehaviour
         {
             LifeCycle.gameObjects.Add(gameObject);
             GetComponent<PhysicCore>().acceleration = Vector3.zero;
+            physicCore.Recombine = (list) =>
+            {
+
+            };
         }
+    }
+
+    [Command]
+    public void CmdRecombine(string xmlstr)
+    {
+
     }
 
     [ClientRpc]
