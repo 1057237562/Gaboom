@@ -86,38 +86,7 @@ public class NetworkController : NetworkManager
 
         NetworkClient.RegisterHandler<MapSyncMessage>((message) =>{ });
         NetworkServer.RegisterHandler<RequireMap>((conn, message) => {
-            string filename = Application.dataPath + "/maps/" + mapname + ".gmap";
-            FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
-            byte[] buffer;
-            if (fs.Length < messageSize)
-            {
-                buffer = new byte[fs.Length];
-                fs.Read(buffer, 0, buffer.Length);
-                MapData mapData = new MapData() { data = buffer };
-                conn.Send(mapData);
-                fs.Close();
-                fs.Dispose();
-            }
-            else
-            {
-                int i = 0;
-                for (; i < fs.Length / messageSize; i++)
-                {
-                    buffer = new byte[messageSize];
-                    fs.Read(buffer, 0, messageSize);
-                    MapData mapData = new MapData() { data = buffer };
-                    conn.Send(mapData);
-                    progressbar.gameObject.SetActive(true);
-                    progressbar.value = (float)i / (fs.Length / messageSize);
-                }
-                buffer = new byte[fs.Length - messageSize * i];
-                fs.Read(buffer, 0, buffer.Length);
-                MapData data = new MapData() { data = buffer };
-                conn.Send(data);
-                fs.Close();
-                fs.Dispose();
-                progressbar.gameObject.SetActive(false);
-            }
+            StartCoroutine(SendMapData(conn));
         }, true);
 
         NetworkServer.RegisterHandler<SummonCamera>((conn, message) => {
@@ -126,6 +95,43 @@ public class NetworkController : NetworkManager
         });
 
         StartHost();
+    }
+
+    IEnumerator SendMapData(NetworkConnection conn)
+    {
+        string filename = Application.dataPath + "/maps/" + mapname + ".gmap";
+        FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
+        byte[] buffer;
+        if (fs.Length < messageSize)
+        {
+            buffer = new byte[fs.Length];
+            fs.Read(buffer, 0, buffer.Length);
+            MapData mapData = new MapData() { data = buffer };
+            conn.Send(mapData);
+            fs.Close();
+            fs.Dispose();
+        }
+        else
+        {
+            int i = 0;
+            for (; i < fs.Length / messageSize; i++)
+            {
+                buffer = new byte[messageSize];
+                fs.Read(buffer, 0, messageSize);
+                MapData mapData = new MapData() { data = buffer };
+                conn.Send(mapData);
+                progressbar.gameObject.SetActive(true);
+                progressbar.value = (float)i / (fs.Length / messageSize);
+            }
+            buffer = new byte[fs.Length - messageSize * i];
+            fs.Read(buffer, 0, buffer.Length);
+            MapData data = new MapData() { data = buffer };
+            conn.Send(data);
+            fs.Close();
+            fs.Dispose();
+            progressbar.gameObject.SetActive(false);
+        }
+        yield return 0;
     }
 
     /*private void ApprovalCheck(byte[] connectionData, ulong clientId, ConnectionApprovedDelegate callback)
