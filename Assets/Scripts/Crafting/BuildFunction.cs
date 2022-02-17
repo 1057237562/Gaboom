@@ -140,7 +140,7 @@ public class BuildFunction : MonoBehaviour//MonoSingletonBase<BuildFunction>
                             block.Load();
                             relativeBlock.ReloadRPos();
                             block.core.AppendIBlock(block);
-
+                            parent.enabled = true;
                             foreach (Collider child in generated.GetComponentsInChildren<Collider>())
                             {
                                 child.isTrigger = false;
@@ -168,7 +168,7 @@ public class BuildFunction : MonoBehaviour//MonoSingletonBase<BuildFunction>
                             blocks.Add(block);
 
                             core.RecalculateRigidbody(blocks);
-                            core.enabled = true;
+                            //core.enabled = true;
                         }
                         generated = null;
                     }

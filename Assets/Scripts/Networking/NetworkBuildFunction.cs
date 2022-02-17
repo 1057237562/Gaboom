@@ -160,7 +160,7 @@ public class NetworkBuildFunction : MonoBehaviour
                                 block.Load();
                                 relativeBlock.ReloadRPos();
                                 block.core.AppendIBlock(block);
-
+                                parent.enabled = true;
                                 foreach (Collider child in generated.GetComponentsInChildren<Collider>())
                                 {
                                     child.isTrigger = false;
