@@ -31,7 +31,7 @@ public class Btn_LoadCustomName : MonoBehaviour
             {
                 Directory.CreateDirectory(mapPath);
             }
-            File.Copy(pth.file, mapPath + "/" + Path.GetFileName(pth.file));
+            File.Copy(pth.file, mapPath + "/" + Path.GetFileName(pth.file), true);
         }
         reloadEvent.Invoke();
     }

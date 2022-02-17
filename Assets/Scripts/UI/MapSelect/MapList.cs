@@ -30,7 +30,8 @@ public class MapList : MonoBehaviour
     {
         foreach(Transform child in viewport.transform)
         {
-            Destroy(child.gameObject);
+            if(child.gameObject.activeSelf)
+                Destroy(child.gameObject);
         }
         string mapPath = Application.dataPath + "/maps";
         if (!Directory.Exists(mapPath))

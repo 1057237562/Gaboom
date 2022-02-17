@@ -18,6 +18,7 @@ public class MultiplayerMap : MonoBehaviour
         networkController.OnMapChanged();
         display.text = mapname.text;
         string filepath = Application.dataPath + "/maps/"+Path.GetFileNameWithoutExtension(mapname.text) + "_thumbnail.png";
-        thumbnail.sprite = Sprite.Create(RenderPreviewImage.GetTexrture2DFromPath(filepath),new Rect(0,0,512,512),new Vector2(0.5f,0.5f));
+        if(File.Exists(filepath))
+            thumbnail.sprite = Sprite.Create(RenderPreviewImage.GetTexrture2DFromPath(filepath),new Rect(0,0,512,512),new Vector2(0.5f,0.5f));
     }
 }
