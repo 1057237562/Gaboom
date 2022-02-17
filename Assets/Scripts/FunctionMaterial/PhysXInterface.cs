@@ -128,10 +128,6 @@ public class PhysXInterface : IBlock
     GameObject CreateNewCore(List<IBlock> list)
     {
         GameObject newObj = Instantiate(PhysicCore.emptyGameObject, transform.position + transform.forward, transform.rotation);
-        if(newObj.GetComponent<NetworkIdentity>() != null)
-        {
-            NetworkServer.Spawn(newObj);
-        }
         Rigidbody rigidbody = newObj.GetComponent<Rigidbody>();
         rigidbody.mass = 0;
         rigidbody.centerOfMass = Vector3.zero;

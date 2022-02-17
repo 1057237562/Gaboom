@@ -1,4 +1,5 @@
 using Gaboom.Util;
+using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,6 +17,10 @@ public class KeyFunction : MonoBehaviour
     void Update()
     {
         if (GameLogic.inputingKey) return;
+        if (transform.parent.GetComponent<NetworkIdentity>() != null && !transform.parent.GetComponent<NetworkIdentity>().hasAuthority) { 
+            enabled = false;
+            return;
+        }
         if (Input.GetKeyDown(keycode) && pattern == 0)
         {
             action.Invoke();
