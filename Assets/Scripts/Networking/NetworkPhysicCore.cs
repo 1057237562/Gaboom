@@ -42,7 +42,7 @@ public class NetworkPhysicCore : NetworkBehaviour
             GetComponent<PhysicCore>().acceleration = Vector3.zero;
             physicCore.Recombine = (list) =>
             {
-
+                Camera.main.GetComponent<Communicator>().CmdAttemptGeneratePhysicCoreServerRpc(SLMechanic.SerializeToXml(list, transform.position, transform.rotation, Vector3.zero));
             };
         }
     }

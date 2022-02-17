@@ -140,6 +140,76 @@ namespace Gaboom.IO
             return xml.InnerXml;
         }
 
+        public static string SerializeToXml(List<IBlock> blocks,Vector3 position,Quaternion rotation,Vector3 velocity)
+        {
+            XmlDocument xml = new XmlDocument();
+            xml.AppendChild(xml.CreateXmlDeclaration("1.0", "utf-8", "yes"));
+
+            XmlElement parent = xml.CreateElement("PhysicCore");
+            parent.SetAttribute("position", position.ToString("r"));
+            parent.SetAttribute("rotation", rotation.ToString("r"));
+            parent.SetAttribute("velocity", velocity.ToString("r"));
+            XmlNode root = xml.CreateElement("Blocks");
+            foreach (IBlock block in blocks)
+            {
+                XmlElement ele = xml.CreateElement("Block");
+                ele.SetAttribute("InstanceID", block.GetInstanceID().ToString());
+                ele.SetAttribute("type", SceneMaterial.Instance.BuildingPrefabs.IndexOf(SceneMaterial.Instance.BuildingPrefabs.First((x) => { return block.name.Contains(x.name); })).ToString());
+                ele.SetAttribute("position", block.position.ToString("r"));
+                ele.SetAttribute("rotation", block.transform.localRotation.ToString("r"));
+                ele.SetAttribute("scale", block.transform.localScale.ToString("r"));
+                ele.SetAttribute("health", block.health.ToString());
+
+                FieldInfo[] fields = block.GetType().GetFields();  //Only retrun public field
+                if (fields.Length > 0)
+                {
+                    XmlElement attr = xml.CreateElement("Attributes");
+                    foreach (FieldInfo item in fields)
+                    {
+                        if (item.GetCustomAttribute<AttributeField>() == null)
+                            continue;
+                        XmlElement a = xml.CreateElement("Attribute");
+                        object obj = item.GetValue(block);
+                        a.SetAttribute(item.Name, obj.ToString());
+                        attr.AppendChild(a);
+                    }
+                    ele.AppendChild(attr);
+                }
+
+                KeyFunction[] funcs = block.GetComponents<KeyFunction>();
+                if (funcs.Length > 0)
+                {
+                    XmlElement attr = xml.CreateElement("KeyFunctions");
+                    foreach (KeyFunction listener in funcs)
+                    {
+                        XmlElement a = xml.CreateElement("KeyListener");
+                        a.SetAttribute("keycode", ((int)listener.keycode).ToString());
+                        attr.AppendChild(a);
+                    }
+                    ele.AppendChild(attr);
+                }
+                root.AppendChild(ele);
+            }
+            parent.AppendChild(root);
+
+            XmlNode connection = xml.CreateElement("Connections");
+            foreach (IBlock block in blocks)
+            {
+                foreach (IBlock connector in block.connector)
+                {
+                    XmlElement ele = xml.CreateElement("Connect");
+                    ele.SetAttribute("a", block.GetInstanceID().ToString());
+                    ele.SetAttribute("b", connector.GetInstanceID().ToString());
+                    connector.connector.Remove(block);
+                    connection.AppendChild(ele);
+                }
+            }
+            parent.AppendChild(connection);
+            xml.AppendChild(parent);
+
+            return xml.InnerXml;
+        }
+
         public static GameObject DeserializeToGameObject(string xmlstr)
         {
             XmlDocument xml = new XmlDocument();
