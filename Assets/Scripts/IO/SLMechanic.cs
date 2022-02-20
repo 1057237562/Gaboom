@@ -85,7 +85,7 @@ namespace Gaboom.IO
                 XmlElement ele = xml.CreateElement("Block");
                 ele.SetAttribute("InstanceID", block.GetInstanceID().ToString());
                 ele.SetAttribute("type", SceneMaterial.Instance.BuildingPrefabs.IndexOf(SceneMaterial.Instance.BuildingPrefabs.First((x) => { return block.name.Contains(x.name); })).ToString());
-                ele.SetAttribute("position", block.position.ToString("r"));
+                ele.SetAttribute("position", core.transform.InverseTransformPoint(block.transform.position).ToString("r"));
                 ele.SetAttribute("rotation", block.transform.localRotation.ToString("r"));
                 ele.SetAttribute("scale", block.transform.localScale.ToString("r"));
                 ele.SetAttribute("health", block.health.ToString());

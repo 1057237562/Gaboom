@@ -26,5 +26,7 @@ public class Engine : PhysXInterface
         }
         if(joint != null)
         joint.GetComponent<Rigidbody>().AddRelativeTorque((reverse ? 1:-1)*joint.transform.InverseTransformPoint(transform.position) * rotationSpeed, ForceMode.Force);
+
+        core.mring.Invoke();
     }
 }
