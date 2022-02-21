@@ -140,6 +140,7 @@ public class PhysXInterface : IBlock
         rigidbody.centerOfMass /= rigidbody.mass;
         PhysicCore physicCore = newObj.GetComponent<PhysicCore>();
         physicCore.Load(list);
+        physicCore.mring.data_m = core.mring.data_m;
         physicCore.deriveFrom = this;
         return newObj;
     }

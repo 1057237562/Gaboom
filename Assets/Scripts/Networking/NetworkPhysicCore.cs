@@ -54,8 +54,8 @@ public class NetworkPhysicCore : NetworkBehaviour
     }
 
     private void OnCollisionEnter(Collision collision)
-    {
-
+    {//collision.GetContact(0).thisCollider.transform.parent.GetComponent<IBlock>(),
+        CmdAppliedForce(transform.InverseTransformVector(collision.impulse / Time.fixedDeltaTime));
     }
 
     [ClientRpc]
