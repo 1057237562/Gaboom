@@ -48,7 +48,12 @@ public class NetworkPhysicCore : NetworkBehaviour
     }
 
     [Command]
-    public void CmdRecombine(string xmlstr)
+    public void CmdAppliedForce(Vector3 force)
+    {
+
+    }
+
+    private void OnCollisionEnter(Collision collision)
     {
 
     }
