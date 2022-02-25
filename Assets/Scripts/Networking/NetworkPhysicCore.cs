@@ -48,14 +48,23 @@ public class NetworkPhysicCore : NetworkBehaviour
     }
 
     [Command]
-    public void CmdAppliedForce(Vector3 force)
+    public void CmdAppliedForce(ContactPoint cp,Vector3 force)
     {
+        AppliedForceClientRpc(cp,force);
+    }
 
+    [ClientRpc]
+    public void AppliedForceClientRpc(ContactPoint cp, Vector3 force)
+    {
+        if (hasAuthority)
+        {
+            Collider[] collider = Physics.OverlapSphere(cp.point, 1);
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
     {//collision.GetContact(0).thisCollider.transform.parent.GetComponent<IBlock>(),
-        CmdAppliedForce(transform.InverseTransformVector(collision.impulse / Time.fixedDeltaTime));
+        CmdAppliedForce(collision.GetContact(0),transform.InverseTransformVector(collision.impulse / Time.fixedDeltaTime));
     }
 
     [ClientRpc]
