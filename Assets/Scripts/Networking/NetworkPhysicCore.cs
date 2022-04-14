@@ -58,16 +58,18 @@ public class NetworkPhysicCore : NetworkBehaviour
     {
         if (hasAuthority)
         {
-            Collider[] collider = Physics.OverlapSphere(cp.point, 1);
-            foreach(Collider col in collider)
+            //Collider[] collider = Physics.OverlapSphere(cp.point, 1);
+            Ray ray = new Ray(cp.point, -cp.normal);
+            RaycastHit info;
+            Physics.Raycast(ray, out info);
+            Collider col = info.collider;
+
+            IBlock block = col.GetComponent<IBlock>();
+            if (block != null)
             {
-                IBlock block = col.GetComponent<IBlock>();
-                if(block != null)
+                if (block.core == physicCore)
                 {
-                    if(block.core == physicCore)
-                    {
-                        physicCore.AppendForce(block, force);
-                    }
+                    physicCore.AppendForce(block, force);
                 }
             }
         }
